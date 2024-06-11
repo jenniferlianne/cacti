@@ -16,3 +16,4 @@ runs:
         restore-keys: |
           ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
     - run: ./tools/ci.sh
+      shell: bash
