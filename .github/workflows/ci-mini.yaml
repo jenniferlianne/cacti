@@ -26,7 +26,7 @@ jobs:
       CUSTOM_CHECKS_DISABLED: true
       CONFIGURE_DISABLED: false
       CHECK_WORK_TREE_STATUS_DISABLED: true
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v1
       - uses: ./.github/actions/ci-tools-job/
@@ -41,7 +41,7 @@ jobs:
       TAPE_TEST_PATTERN: ./packages/cactus-api-client/src/test/typescript/integration/default-consortium-provider.test.ts
       TAPE_TEST_RUNNER_DISABLED: false
     needs: build-dev
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v1
       - uses: ./.github/actions/ci-tools-job/
