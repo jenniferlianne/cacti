@@ -1,0 +1,53 @@
+# Below are the full description for the shorten job names:
+#
+# ce - cactus-example
+# cp - cactus-plugin
+# cpk - cactus-plugin-keychain
+# cpl - cactus-plugin-ledger
+# cplc - cactus-plugin-ledger-connector
+# plc - plugin-ledger-connector
+# cpp - cactus-plugin-persistence
+# ct - cactus-test
+# ctp - cactus-test-plugin
+---
+env:
+  NODEJS_VERSION: v18.18.2
+  RUN_TRIVY_SCAN: true 
+jobs:
+
+  build-dev:
+    continue-on-error: false
+    env:
+      DEV_BUILD_DISABLED: false
+      FULL_BUILD_DISABLED: true
+      JEST_TEST_RUNNER_DISABLED: true
+      TAPE_TEST_RUNNER_DISABLED: true
+      TOOLS_VALIDATE_BUNDLE_NAMES_DISABLED: true
+      CUSTOM_CHECKS_DISABLED: true
+      CONFIGURE_DISABLED: false
+      CHECK_WORK_TREE_STATUS_DISABLED: true
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./.github/actions/ci-tools-job/
+
+  cactus-api-client:
+    continue-on-error: false
+    env:
+      DEV_BUILD_DISABLED: false
+      FULL_BUILD_DISABLED: true
+      JEST_TEST_PATTERN: packages/cactus-api-client/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
+      JEST_TEST_RUNNER_DISABLED: false
+      TAPE_TEST_PATTERN: ./packages/cactus-api-client/src/test/typescript/integration/default-consortium-provider.test.ts
+      TAPE_TEST_RUNNER_DISABLED: false
+    needs: build-dev
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./.github/actions/ci-tools-job/
+
+name: Cactus_CI Experiment With Shared Action
+'on':
+  push:
+    branches:
+      - add_common_ci_tools_action
