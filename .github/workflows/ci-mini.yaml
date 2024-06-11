@@ -67,3 +67,4 @@ name: Cactus_CI Experiment With Shared Action
   push:
     branches:
       - add_common_ci_tools_action
+      - use_jest_junit_to_make_github_report

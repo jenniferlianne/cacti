@@ -12,6 +12,7 @@ coverage/
 
 # Optional npm cache directory
 .npm
+junit.xml
 
 # Optional eslint cache
 .eslintcache

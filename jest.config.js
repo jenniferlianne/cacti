@@ -14,6 +14,7 @@ module.exports = {
     `**/cactus-*/src/test/typescript/{unit,integration,benchmark}/**/*.test.ts`,
     `**/cacti-*/src/test/typescript/{unit,integration,benchmark}/**/*.test.ts`,
   ],
+  reporters: [ 'default', 'jest-junit'],
   // Ignore the tests that are still using tap/tape for as their test runner
   testPathIgnorePatterns: [
     `./packages/cactus-plugin-keychain-aws-sm/src/test/typescript/integration/openapi/openapi-validation.test.ts`,

@@ -17,3 +17,9 @@ runs:
           ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
     - run: ./tools/ci.sh
       shell: bash
+    - if: ${{ (env.JEST_TEST_PATTERN != '') }}
+      name: upload junit report
+      uses: mikepenz/action-junit-report@v4
+      with:
+        report_paths: 'junit.xml'
+
