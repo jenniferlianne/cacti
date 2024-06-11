@@ -28,8 +28,24 @@ jobs:
       CHECK_WORK_TREE_STATUS_DISABLED: true
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v1
-      - uses: ./.github/actions/ci-tools-job/
+      - name: Use Node.js ${{ env.NODEJS_VERSION }}
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ env.NODEJS_VERSION }}
+      - uses: actions/checkout@v4.1.1
+
+      - id: yarn-cache
+        name: Initialize Yarn Cache
+        uses: actions/cache@v4.0.1
+        with:
+          key: ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
+          path: ./.yarn/
+          restore-keys: |
+            ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
+
+      - if : ${{ (steps.yarn-cache.outputs.cache-hit != 'true') }}
+        name: tools_ci_sh
+        run: ./tools/ci.sh
 
   cactus-api-client:
     continue-on-error: false
