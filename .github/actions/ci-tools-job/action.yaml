@@ -23,4 +23,5 @@ runs:
       with:
         report_paths: 'junit.xml'
         include_passed: true
+        detailed_summary: true
 
