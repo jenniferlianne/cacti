@@ -5,16 +5,20 @@
 name: Unit Test Fabric Interop CC and Sample Chaincode
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_call:
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: go-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
+
+  debug_event_type:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo "${{ github.event_name }}"
+     
   check_code_changed:
     outputs:
       interopcc_changed: ${{ steps.changes.outputs.interopcc_changed }}
@@ -61,7 +65,7 @@ jobs:
 
   unit_test_interopcc:
     needs: check_code_changed
-    if: needs.check_code_changed.outputs.interopcc_changed == 'true'
+    if:   github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -85,7 +89,7 @@ jobs:
 
   unit_test_assetmgmt:
     needs: check_code_changed
-    if: needs.check_code_changed.outputs.interopcc_changed == 'true'
+    if:  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true'
     # if: ${{ false }}  # disable
     runs-on: ubuntu-22.04
     steps:
@@ -110,7 +114,7 @@ jobs:
       
   build_test_libs_utils:
     needs: check_code_changed
-    if: needs.check_code_changed.outputs.interopcc_changed == 'true'
+    if:  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -130,7 +134,7 @@ jobs:
       
   build_test_libs_assetexchange:
     needs: check_code_changed
-    if: needs.check_code_changed.outputs.interopcc_changed == 'true'
+    if:  github.event_name == 'workflow_dispatch' ||  needs.check_code_changed.outputs.interopcc_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -150,7 +154,7 @@ jobs:
       
   unit_test_sdk:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.gosdk_changed   == 'true' }}
+    if:  github.event_name == 'workflow_dispatch' ||  ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.gosdk_changed   == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -174,7 +178,7 @@ jobs:
       
   build_test_cli:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.gocli_changed == 'true' }}
+    if: ${{   github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.gocli_changed == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -194,7 +198,7 @@ jobs:
 
   unit_test_simplestate:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simplestate_changed == 'true' }}
+    if: ${{  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simplestate_changed == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -218,7 +222,7 @@ jobs:
 
   unit_test_satpsimpleasset:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.satpsimpleasset_changed == 'true' }}
+    if: ${{  github.event_name == 'workflow_dispatch' ||  needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.satpsimpleasset_changed == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -242,7 +246,7 @@ jobs:
 
   unit_test_simpleasset:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simpleasset_changed == 'true' }}
+    if: ${{  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simpleasset_changed == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -266,7 +270,7 @@ jobs:
 
   unit_test_simpleassetandinterop:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simpleassetandinterop_changed == 'true' }}
+    if: ${{  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simpleassetandinterop_changed == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -290,7 +294,7 @@ jobs:
 
   unit_test_simpleassettransfer:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simpleassettransfer_changed == 'true' }}
+    if: ${{  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.simpleassettransfer_changed == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
@@ -314,7 +318,7 @@ jobs:
       
   unit_test_sdk_membership:
     needs: check_code_changed
-    if: ${{ needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.gosdk_changed   == 'true' }}
+    if: ${{  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.interopcc_changed == 'true' || needs.check_code_changed.outputs.gosdk_changed   == 'true' }}
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.1
