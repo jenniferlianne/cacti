@@ -1,0 +1,40 @@
+
+# A placeholder for a full test of external interfaces in the cacti repository
+# This workflow is intended to be run periodically (eg. monthly)
+
+name: Test Weaver
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  fabric-fabric-satp:
+    uses: ./.github/workflows/test_weaver-fabric-fabric-satp.yaml
+  asset-exchange-corda:
+      uses: ./.github/workflows/test_weaver-asset-exchange-corda.yaml
+  asset-transfer:
+      uses: ./.github/workflows/test_weaver-asset-transfer.yaml
+  relay:
+      uses: ./.github/workflows/test_weaver-relay.yaml
+  corda-interop-app:
+      uses: ./.github/workflows/test_weaver-corda-interop-app.yaml
+  pre-release:
+      uses: ./.github/workflows/test_weaver-pre-release.yaml
+  asset-exchange-fabric:
+      uses: ./.github/workflows/test_weaver-asset-exchange-fabric.yaml
+  data-sharing:
+      uses: ./.github/workflows/test_weaver-data-sharing.yaml
+  node-pkgs:
+      uses: ./.github/workflows/test_weaver-node-pkgs.yaml
+  docker-build:
+      uses: ./.github/workflows/test_weaver-docker-build.yaml
+  asset-exchange-besu:
+      uses: ./.github/workflows/test_weaver-asset-exchange-besu.yaml
+  go:
+      uses: ./.github/workflows/test_weaver-go.yaml
+

@@ -12,13 +12,11 @@ env:
   NODEJS_NEXT_LTS_VERSION: v20.9.0
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_call:
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: node-pkg-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -134,7 +132,7 @@ jobs:
 
   build_docs:
     needs: check_code_changed
-    if: needs.check_code_changed.outputs.docs_changed == 'true'
+    if:  github.event_name == 'workflow_dispatch' || needs.check_code_changed.outputs.docs_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
