@@ -5,16 +5,16 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<link href="https://jenniferlianne.github.io/cacti/openapi/" rel="canonical"/>
-<link href="../images/HL_Cacti_Logo_Colorreverse.svg" rel="icon"/>
+<link href="https://jenniferlianne.github.io/cacti/openapi/cactus-plugin-ledger-connector-xdai_openapi/" rel="canonical"/>
+<link href="../../images/HL_Cacti_Logo_Colorreverse.svg" rel="icon"/>
 <meta content="mkdocs-1.6.0, mkdocs-material-9.5.26" name="generator"/>
-<title>All Cacti Open API Specifications - Using and Developing with Hyperledger Cacti</title>
-<link href="../assets/stylesheets/main.6543a935.min.css" rel="stylesheet"/>
-<link href="../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<title>Cactus plugin ledger connector xdai openapi - Using and Developing with Hyperledger Cacti</title>
+<link href="../../assets/stylesheets/main.6543a935.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config",""),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
 </head>
@@ -23,9 +23,6 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#packages">
-          Skip to content
-        </a>
 </div>
 <div data-md-component="announce">
 </div>
@@ -34,7 +31,7 @@
 <div class="md-banner__inner md-grid md-typeset">
               
   You're not viewing the latest version.
-  <a href="../..">
+  <a href="../../..">
 <strong>Click here to go to latest.</strong>
 </a>
 </div>
@@ -43,8 +40,8 @@
 </div>
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
 <nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="Using and Developing with Hyperledger Cacti" class="md-header__button md-logo" data-md-component="logo" href=".." title="Using and Developing with Hyperledger Cacti">
-<img alt="logo" src="../images/HL_Cacti_Logo_Colorreverse.svg"/>
+<a aria-label="Using and Developing with Hyperledger Cacti" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Using and Developing with Hyperledger Cacti">
+<img alt="logo" src="../../images/HL_Cacti_Logo_Colorreverse.svg"/>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
@@ -59,7 +56,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              All Cacti Open API Specifications
+              Cactus plugin ledger connector xdai openapi
             
           </span>
 </div>
@@ -121,7 +118,7 @@
 <div class="md-grid">
 <ul class="md-tabs__list">
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="..">
+<a class="md-tabs__link" href="../..">
         
   
     
@@ -131,7 +128,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../vision/">
+<a class="md-tabs__link" href="../../vision/">
         
   
     
@@ -141,7 +138,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture/">
+<a class="md-tabs__link" href="../../architecture/">
         
   
     
@@ -151,7 +148,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../concepts/data-sharing/">
+<a class="md-tabs__link" href="../../concepts/data-sharing/">
           
   
   Key Concepts
@@ -159,7 +156,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../use-cases/">
+<a class="md-tabs__link" href="../../use-cases/">
         
   
     
@@ -169,7 +166,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../cactus/introduction/">
+<a class="md-tabs__link" href="../../cactus/introduction/">
           
   
   Cactus
@@ -177,7 +174,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../weaver/introduction/">
+<a class="md-tabs__link" href="../../weaver/introduction/">
           
   
   Weaver
@@ -185,7 +182,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../guides/operations/">
+<a class="md-tabs__link" href="../../guides/operations/">
           
   
   Guides
@@ -193,7 +190,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../references/specs/">
+<a class="md-tabs__link" href="../../references/specs/">
           
   
   References
@@ -201,7 +198,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../contributing/how-to-contribute/">
+<a class="md-tabs__link" href="../../contributing/how-to-contribute/">
           
   
   Contributing
@@ -209,7 +206,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../faqs/">
+<a class="md-tabs__link" href="../../faqs/">
         
   
     
@@ -219,7 +216,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../glossary/">
+<a class="md-tabs__link" href="../../glossary/">
         
   
     
@@ -229,7 +226,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../contact-us/">
+<a class="md-tabs__link" href="../../contact-us/">
         
   
     
@@ -239,7 +236,7 @@
       </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../blog/2021-01-21-cross-chain-asset/">
+<a class="md-tabs__link" href="../../blog/2021-01-21-cross-chain-asset/">
           
   
   Blog
@@ -258,8 +255,8 @@
 <div class="md-sidebar__inner">
 <nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="Using and Developing with Hyperledger Cacti" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Using and Developing with Hyperledger Cacti">
-<img alt="logo" src="../images/HL_Cacti_Logo_Colorreverse.svg"/>
+<a aria-label="Using and Developing with Hyperledger Cacti" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Using and Developing with Hyperledger Cacti">
+<img alt="logo" src="../../images/HL_Cacti_Logo_Colorreverse.svg"/>
 </a>
     Using and Developing with Hyperledger Cacti
   </label>
@@ -275,21 +272,21 @@
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="..">
+<a class="md-nav__link" href="../..">
 <span class="md-ellipsis">
     Introduction
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../vision/">
+<a class="md-nav__link" href="../../vision/">
 <span class="md-ellipsis">
     Vision
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture/">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     Architecture
   </span>
@@ -310,7 +307,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../concepts/data-sharing/">
+<a class="md-nav__link" href="../../concepts/data-sharing/">
 <span class="md-ellipsis">
     Data Sharing
   </span>
@@ -320,7 +317,7 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../use-cases/">
+<a class="md-nav__link" href="../../use-cases/">
 <span class="md-ellipsis">
     Use Cases
   </span>
@@ -341,14 +338,14 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/introduction/">
+<a class="md-nav__link" href="../../cactus/introduction/">
 <span class="md-ellipsis">
     Introduction
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/build/">
+<a class="md-nav__link" href="../../cactus/build/">
 <span class="md-ellipsis">
     Building
   </span>
@@ -369,14 +366,14 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/examples/">
+<a class="md-nav__link" href="../../cactus/examples/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/examples/supply-chain-app/">
+<a class="md-nav__link" href="../../cactus/examples/supply-chain-app/">
 <span class="md-ellipsis">
     Supply Chain Application
   </span>
@@ -386,35 +383,35 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/governance/">
+<a class="md-nav__link" href="../../cactus/governance/">
 <span class="md-ellipsis">
     Governance
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/code-of-conduct/">
+<a class="md-nav__link" href="../../cactus/code-of-conduct/">
 <span class="md-ellipsis">
     Code of Conduct
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/contributing/">
+<a class="md-nav__link" href="../../cactus/contributing/">
 <span class="md-ellipsis">
     Contributing
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/whitepaper/">
+<a class="md-nav__link" href="../../cactus/whitepaper/">
 <span class="md-ellipsis">
     Whitepaper
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/regulatory-and-industry-initiatives-reading-list/">
+<a class="md-nav__link" href="../../cactus/regulatory-and-industry-initiatives-reading-list/">
 <span class="md-ellipsis">
     Regulatory and Industry Initiatives
   </span>
@@ -435,105 +432,105 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/">
+<a class="md-nav__link" href="../../cactus/packages/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-api-client/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-api-client/">
 <span class="md-ellipsis">
     Api Client
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-cmd-api-server/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-cmd-api-server/">
 <span class="md-ellipsis">
     CMD Api Server
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-common/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-common/">
 <span class="md-ellipsis">
     Cactus Common
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-core/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-core/">
 <span class="md-ellipsis">
     Cactus Core
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-plugin-consortium-manual/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-plugin-consortium-manual/">
 <span class="md-ellipsis">
     Consortium Manual
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-plugin-keychain-vault/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-plugin-keychain-vault/">
 <span class="md-ellipsis">
     Keychain Vault
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-plugin-ledger-connector-besu/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-plugin-ledger-connector-besu/">
 <span class="md-ellipsis">
     Connector Besu
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-plugin-ledger-connector-corda/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-plugin-ledger-connector-corda/">
 <span class="md-ellipsis">
     Connector Corda
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-plugin-ledger-connector-fabric/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-plugin-ledger-connector-fabric/">
 <span class="md-ellipsis">
     Connector Fabric
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-plugin-ledger-connector-quorum/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-plugin-ledger-connector-quorum/">
 <span class="md-ellipsis">
     Connector Quorum
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-test-api-client/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-test-api-client/">
 <span class="md-ellipsis">
     Test Api Client
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-test-cmd-api-server/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-test-cmd-api-server/">
 <span class="md-ellipsis">
     Test CMD Api Server
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-test-plugin-ledger-connector-quorum/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-test-plugin-ledger-connector-quorum/">
 <span class="md-ellipsis">
     Test Connector Quorum
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/packages/cactus-test-tooling/">
+<a class="md-nav__link" href="../../cactus/packages/cactus-test-tooling/">
 <span class="md-ellipsis">
     Test Tooling
   </span>
@@ -557,49 +554,49 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/">
+<a class="md-nav__link" href="../../cactus/support/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/besu/">
+<a class="md-nav__link" href="../../cactus/support/besu/">
 <span class="md-ellipsis">
     Hyperledger Besu
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/corda/">
+<a class="md-nav__link" href="../../cactus/support/corda/">
 <span class="md-ellipsis">
     R3 Corda
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/fabric/">
+<a class="md-nav__link" href="../../cactus/support/fabric/">
 <span class="md-ellipsis">
     Hyperledger Fabric
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/iroha.md">
+<a class="md-nav__link" href="../../cactus/support/iroha.md">
 <span class="md-ellipsis">
     Hyperledger Iroha
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/quorum/">
+<a class="md-nav__link" href="../../cactus/support/quorum/">
 <span class="md-ellipsis">
     Quorum
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../cactus/support/xdai/">
+<a class="md-nav__link" href="../../cactus/support/xdai/">
 <span class="md-ellipsis">
     xDai
   </span>
@@ -626,7 +623,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/introduction/">
+<a class="md-nav__link" href="../../weaver/introduction/">
 <span class="md-ellipsis">
     Framework
   </span>
@@ -647,7 +644,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/guide/">
+<a class="md-nav__link" href="../../weaver/getting-started/guide/">
 <span class="md-ellipsis">
     Using Weaver
   </span>
@@ -668,49 +665,49 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/overview/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/overview/">
 <span class="md-ellipsis">
     Component Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/setup-local/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/setup-local/">
 <span class="md-ellipsis">
     Setup with Locally Built Weaver Components
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/setup-local-docker/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/setup-local-docker/">
 <span class="md-ellipsis">
     Setup with Locally Built Dockerized Weaver Components
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/setup-packages/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/setup-packages/">
 <span class="md-ellipsis">
     Setup with Imported Weaver Components
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/setup-packages-docker/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/setup-packages-docker/">
 <span class="md-ellipsis">
     Setup with Imported Dockerized Weaver Components
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/ledger-initialization/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/ledger-initialization/">
 <span class="md-ellipsis">
     Ledger Initialization
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/test-network/advanced-configuration/">
+<a class="md-nav__link" href="../../weaver/getting-started/test-network/advanced-configuration/">
 <span class="md-ellipsis">
     Advanced Configuration
   </span>
@@ -734,14 +731,14 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/overview/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/overview/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/data-sharing/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/data-sharing/">
 <span class="md-ellipsis">
     Data Sharing
   </span>
@@ -762,49 +759,49 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/overview/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/overview/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/fabric-fabric/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/fabric-fabric/">
 <span class="md-ellipsis">
     Fabric with Fabric
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/fabric-corda/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/fabric-corda/">
 <span class="md-ellipsis">
     Fabric with Corda
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/fabric-besu/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/fabric-besu/">
 <span class="md-ellipsis">
     Fabric with Besu
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/corda-corda/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/corda-corda/">
 <span class="md-ellipsis">
     Corda with Corda
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/corda-besu/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/corda-besu/">
 <span class="md-ellipsis">
     Corda with Besu
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-exchange/besu-besu/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-exchange/besu-besu/">
 <span class="md-ellipsis">
     Besu with Besu
   </span>
@@ -814,7 +811,7 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/interop/asset-transfer/">
+<a class="md-nav__link" href="../../weaver/getting-started/interop/asset-transfer/">
 <span class="md-ellipsis">
     Asset Transfer
   </span>
@@ -838,28 +835,28 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/enabling-weaver-network/overview/">
+<a class="md-nav__link" href="../../weaver/getting-started/enabling-weaver-network/overview/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/enabling-weaver-network/fabric/">
+<a class="md-nav__link" href="../../weaver/getting-started/enabling-weaver-network/fabric/">
 <span class="md-ellipsis">
     Hyperledger Fabric
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/enabling-weaver-network/corda/">
+<a class="md-nav__link" href="../../weaver/getting-started/enabling-weaver-network/corda/">
 <span class="md-ellipsis">
     R3 Corda
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/getting-started/enabling-weaver-network/besu/">
+<a class="md-nav__link" href="../../weaver/getting-started/enabling-weaver-network/besu/">
 <span class="md-ellipsis">
     Hyperledger Besu
   </span>
@@ -886,21 +883,21 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/what-is-interoperability/understanding-interoperability/">
+<a class="md-nav__link" href="../../weaver/what-is-interoperability/understanding-interoperability/">
 <span class="md-ellipsis">
     Understanding Interoperability
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/what-is-interoperability/levels-of-interoperability/">
+<a class="md-nav__link" href="../../weaver/what-is-interoperability/levels-of-interoperability/">
 <span class="md-ellipsis">
     Levels of Interoperability
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/what-is-interoperability/integration-patterns/">
+<a class="md-nav__link" href="../../weaver/what-is-interoperability/integration-patterns/">
 <span class="md-ellipsis">
     Integration Patterns
   </span>
@@ -910,14 +907,14 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/interoperability-modes/">
+<a class="md-nav__link" href="../../weaver/interoperability-modes/">
 <span class="md-ellipsis">
     Interoperability Modes
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/design-principles/">
+<a class="md-nav__link" href="../../weaver/design-principles/">
 <span class="md-ellipsis">
     Design Principles
   </span>
@@ -938,28 +935,28 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/user-stories/overview/">
+<a class="md-nav__link" href="../../weaver/user-stories/overview/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/user-stories/global-trade/">
+<a class="md-nav__link" href="../../weaver/user-stories/global-trade/">
 <span class="md-ellipsis">
     Global Trade
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/user-stories/financial-markets/">
+<a class="md-nav__link" href="../../weaver/user-stories/financial-markets/">
 <span class="md-ellipsis">
     DvP in Financial Markets
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/user-stories/legacy-integration/">
+<a class="md-nav__link" href="../../weaver/user-stories/legacy-integration/">
 <span class="md-ellipsis">
     Legacy Integration
   </span>
@@ -983,35 +980,35 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/architecture-and-design/overview/">
+<a class="md-nav__link" href="../../weaver/architecture-and-design/overview/">
 <span class="md-ellipsis">
     Overview
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/architecture-and-design/relay/">
+<a class="md-nav__link" href="../../weaver/architecture-and-design/relay/">
 <span class="md-ellipsis">
     Relay
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/architecture-and-design/drivers/">
+<a class="md-nav__link" href="../../weaver/architecture-and-design/drivers/">
 <span class="md-ellipsis">
     Drivers
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/architecture-and-design/weaver-dapps/">
+<a class="md-nav__link" href="../../weaver/architecture-and-design/weaver-dapps/">
 <span class="md-ellipsis">
     Weaver DApps
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/architecture-and-design/decentralized-identity/">
+<a class="md-nav__link" href="../../weaver/architecture-and-design/decentralized-identity/">
 <span class="md-ellipsis">
     Decentralized Identity
   </span>
@@ -1035,28 +1032,28 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/security-model/authentication/">
+<a class="md-nav__link" href="../../weaver/security-model/authentication/">
 <span class="md-ellipsis">
     Authentication
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/security-model/access-control/">
+<a class="md-nav__link" href="../../weaver/security-model/access-control/">
 <span class="md-ellipsis">
     Access Control
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/security-model/proofs-and-verification/">
+<a class="md-nav__link" href="../../weaver/security-model/proofs-and-verification/">
 <span class="md-ellipsis">
     Proofs and Verification
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/security-model/end-to-end-security/">
+<a class="md-nav__link" href="../../weaver/security-model/end-to-end-security/">
 <span class="md-ellipsis">
     End-to-End Security
   </span>
@@ -1080,21 +1077,21 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/deployment-considerations/deployment-patterns/">
+<a class="md-nav__link" href="../../weaver/deployment-considerations/deployment-patterns/">
 <span class="md-ellipsis">
     Deployment Patterns
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/deployment-considerations/governance-and-policies/">
+<a class="md-nav__link" href="../../weaver/deployment-considerations/governance-and-policies/">
 <span class="md-ellipsis">
     Governance and Policies
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/deployment-considerations/legal-and-regulation/">
+<a class="md-nav__link" href="../../weaver/deployment-considerations/legal-and-regulation/">
 <span class="md-ellipsis">
     Legal and Regulation
   </span>
@@ -1104,21 +1101,21 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/specifications/">
+<a class="md-nav__link" href="../../weaver/specifications/">
 <span class="md-ellipsis">
     Specifications
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/roadmap/">
+<a class="md-nav__link" href="../../weaver/roadmap/">
 <span class="md-ellipsis">
     Roadmap
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../weaver/publications/">
+<a class="md-nav__link" href="../../weaver/publications/">
 <span class="md-ellipsis">
     Publications
   </span>
@@ -1142,21 +1139,21 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../guides/operations/">
+<a class="md-nav__link" href="../../guides/operations/">
 <span class="md-ellipsis">
     Operations
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../guides/developers/">
+<a class="md-nav__link" href="../../guides/developers/">
 <span class="md-ellipsis">
     Developers
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../guides/upgrading/">
+<a class="md-nav__link" href="../../guides/upgrading/">
 <span class="md-ellipsis">
     Upgrading
   </span>
@@ -1180,42 +1177,42 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../references/specs/">
+<a class="md-nav__link" href="../../references/specs/">
 <span class="md-ellipsis">
     Technical Specifications
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../references/publications/">
+<a class="md-nav__link" href="../../references/publications/">
 <span class="md-ellipsis">
     Publications
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../references/events/">
+<a class="md-nav__link" href="../../references/events/">
 <span class="md-ellipsis">
     Events and Podcasts
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../references/business/">
+<a class="md-nav__link" href="../../references/business/">
 <span class="md-ellipsis">
     Business Usage
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../references/best-practices/">
+<a class="md-nav__link" href="../../references/best-practices/">
 <span class="md-ellipsis">
     Project Best Practices
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../references/github/">
+<a class="md-nav__link" href="../../references/github/">
 <span class="md-ellipsis">
     GitHub Contributions
   </span>
@@ -1239,28 +1236,28 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../contributing/how-to-contribute/">
+<a class="md-nav__link" href="../../contributing/how-to-contribute/">
 <span class="md-ellipsis">
     How to Contribute
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../contributing/reporting-a-bug/">
+<a class="md-nav__link" href="../../contributing/reporting-a-bug/">
 <span class="md-ellipsis">
     Reporting a Bug
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../contributing/requesting-a-change/">
+<a class="md-nav__link" href="../../contributing/requesting-a-change/">
 <span class="md-ellipsis">
     Requesting a Change
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../contributing/asking-a-question/">
+<a class="md-nav__link" href="../../contributing/asking-a-question/">
 <span class="md-ellipsis">
     Asking a Question
   </span>
@@ -1270,21 +1267,21 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../faqs/">
+<a class="md-nav__link" href="../../faqs/">
 <span class="md-ellipsis">
     FAQs
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../glossary/">
+<a class="md-nav__link" href="../../glossary/">
 <span class="md-ellipsis">
     Glossary
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../contact-us/">
+<a class="md-nav__link" href="../../contact-us/">
 <span class="md-ellipsis">
     Contact Us
   </span>
@@ -1319,14 +1316,14 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../blog/2021-01-21-cross-chain-asset/">
+<a class="md-nav__link" href="../../blog/2021-01-21-cross-chain-asset/">
 <span class="md-ellipsis">
     Enabling Cross-Chain Asset Exchange On Permissioned Blockchains
   </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../blog/2021-01-21-emergence-enterprise-interoperability/">
+<a class="md-nav__link" href="../../blog/2021-01-21-emergence-enterprise-interoperability/">
 <span class="md-ellipsis">
     Emergence of Enterprise DLT Interoperability
   </span>
@@ -1350,7 +1347,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../blog/2022-11-07-introducing-hyperledger-cacti/">
+<a class="md-nav__link" href="../../blog/2022-11-07-introducing-hyperledger-cacti/">
 <span class="md-ellipsis">
     Introducing Hyperledger Cacti, a multi-faceted pluggable interoperability framework
   </span>
@@ -1374,7 +1371,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../blog/2023-10-03-hyperledger-cacti-graduation/">
+<a class="md-nav__link" href="../../blog/2023-10-03-hyperledger-cacti-graduation/">
 <span class="md-ellipsis">
     Hyperledger Cacti, A General-Purpose Modular Interoperability Framework, Moves to Graduated Status
   </span>
@@ -1393,48 +1390,8 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>All Cacti Open API Specifications</h1>
-<h2 id="packages">Packages<a class="headerlink" href="#packages" title="Permanent link">¶</a></h2>
-<ul>
-<li><a href="cacti-plugin-ledger-connector-stellar_openapi/">cacti-plugin-ledger-connector-stellar</a></li>
-<li><a href="cactus-cmd-api-server_openapi/">cactus-cmd-api-server</a></li>
-<li><a href="cactus-core-api_openapi/">cactus-core-api</a></li>
-<li><a href="cactus-plugin-bungee-hermes_openapi/">cactus-plugin-bungee-hermes</a></li>
-<li><a href="cactus-plugin-consortium-manual_openapi/">cactus-plugin-consortium-manual</a></li>
-<li><a href="cactus-plugin-htlc-eth-besu_openapi/">cactus-plugin-htlc-eth-besu</a></li>
-<li><a href="cactus-plugin-htlc-eth-besu-erc20_openapi/">cactus-plugin-htlc-eth-besu-erc20</a></li>
-<li><a href="cactus-plugin-keychain-aws-sm_openapi/">cactus-plugin-keychain-aws-sm</a></li>
-<li><a href="cactus-plugin-keychain-azure-kv_openapi/">cactus-plugin-keychain-azure-kv</a></li>
-<li><a href="cactus-plugin-keychain-google-sm_openapi/">cactus-plugin-keychain-google-sm</a></li>
-<li><a href="cactus-plugin-keychain-memory_openapi/">cactus-plugin-keychain-memory</a></li>
-<li><a href="cactus-plugin-keychain-memory-wasm_openapi/">cactus-plugin-keychain-memory-wasm</a></li>
-<li><a href="cactus-plugin-keychain-vault_openapi/">cactus-plugin-keychain-vault</a></li>
-<li><a href="cactus-plugin-ledger-connector-aries_openapi/">cactus-plugin-ledger-connector-aries</a></li>
-<li><a href="cactus-plugin-ledger-connector-besu_openapi/">cactus-plugin-ledger-connector-besu</a></li>
-<li><a href="cactus-plugin-ledger-connector-cdl_openapi/">cactus-plugin-ledger-connector-cdl</a></li>
-<li><a href="cactus-plugin-ledger-connector-corda_openapi/">cactus-plugin-ledger-connector-corda</a></li>
-<li><a href="cactus-plugin-ledger-connector-ethereum_openapi/">cactus-plugin-ledger-connector-ethereum</a></li>
-<li><a href="cactus-plugin-ledger-connector-fabric_openapi/">cactus-plugin-ledger-connector-fabric</a></li>
-<li><a href="cactus-plugin-ledger-connector-iroha2_openapi/">cactus-plugin-ledger-connector-iroha2</a></li>
-<li><a href="cactus-plugin-ledger-connector-polkadot_openapi/">cactus-plugin-ledger-connector-polkadot</a></li>
-<li><a href="cactus-plugin-ledger-connector-quorum_openapi/">cactus-plugin-ledger-connector-quorum</a></li>
-<li><a href="cactus-plugin-ledger-connector-sawtooth_openapi/">cactus-plugin-ledger-connector-sawtooth</a></li>
-<li><a href="cactus-plugin-ledger-connector-sawtooth_openapi/">cactus-plugin-ledger-connector-sawtooth</a></li>
-<li><a href="cactus-plugin-ledger-connector-xdai_openapi/">cactus-plugin-ledger-connector-xdai</a></li>
-<li><a href="cactus-plugin-persistence-ethereum_openapi/">cactus-plugin-persistence-ethereum</a></li>
-<li><a href="cactus-plugin-persistence-fabric_openapi/">cactus-plugin-persistence-fabric</a></li>
-<li><a href="cactus-plugin-satp-hermes_openapi/">cactus-plugin-satp-hermes</a></li>
-</ul>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¶</a></h2>
-<ul>
-<li><a href="cactus-example-carbon-accounting-business-logic-plugin_openapi/">cactus-example-carbon-accounting-business-logic-plugin</a></li>
-<li><a href="cactus-example-supply-chain-business-logic-plugin_openapi/">cactus-example-supply-chain-business-logic-plugin</a></li>
-</ul>
-<h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">¶</a></h2>
-<ul>
-<li><a href="cactus-plugin-htlc-coordinator-besu_openapi/">cactus-plugin-htlc-coordinator-besu</a></li>
-<li><a href="cactus-plugin-object-store-ipfs_openapi/">cactus-plugin-object-store-ipfs</a></li>
-</ul>
+<h1>Cactus plugin ledger connector xdai openapi</h1>
+<p><iframe class="swagger-ui-iframe" frameborder="0" id="06930510" src="swagger-06930510.html" style="overflow:hidden;width:100%;" width="100%"></iframe></p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
@@ -1465,8 +1422,8 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "navigation.expand", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "toc.follow", "toc.integrate"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
-<script src="../assets/javascripts/bundle.ad660dcc.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "navigation.expand", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
 <script>document$.subscribe(() => {
             window.update_swagger_ui_iframe_height = function (id) {
                 var iFrameID = document.getElementById(id);
@@ -1483,7 +1440,7 @@
                 iframe_id_list.push(iframes[i].getAttribute("id"))
             }
         
-            let ticking = true;
+            let ticking = false;
             
             document.addEventListener('scroll', function(e) {
                 if (!ticking) {
