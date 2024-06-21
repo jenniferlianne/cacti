@@ -17,7 +17,7 @@
     "info": {
         "title": "Hyperledger Cactus Plugin - BUNGEE-Hermes",
         "description": "Can create blockchain views of different networks",
-        "version": "2.0.0-alpha.2",
+        "version": "2.0.0-rc.1",
         "license": {
             "name": "Apache-2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
@@ -83,10 +83,19 @@
                                 "example": "participant-1"
                             }
                         },
-                        "example": { "connectorApiPath": "http://localhost:3000", "participant": "participant-1" }
+                        "example": {
+                            "connectorApiPath": "http://localhost:3000",
+                            "participant": "participant-1"
+                        }
                     }
                 },
-                "example": { "strategyId": "fabric-strategy", "networkDetails": { "connectorApiPath": "http://localhost:3000", "participant": "participant-1" } }
+                "example": {
+                    "strategyId": "fabric-strategy",
+                    "networkDetails": {
+                        "connectorApiPath": "http://localhost:3000",
+                        "participant": "participant-1"
+                    }
+                }
             },
             "CreateViewResponse": {
                 "type": "object",
@@ -101,7 +110,10 @@
                         "example": "signature of Object"
                     }
                 },
-                "example": { "view": "Object", "signature": "signature of Object" }
+                "example": {
+                    "view": "Object",
+                    "signature": "signature of Object"
+                }
             },
             "GetPublicKeyResponse": {
                 "type": "object",
@@ -162,7 +174,10 @@
                         "example": "signature of Object"
                     }
                 },
-                "example": { "integratedView": "Object", "signature": "signature of Object" }
+                "example": {
+                    "integratedView": "Object",
+                    "signature": "signature of Object"
+                }
             },
             "MergeViewsRequest": {
                 "type": "object",
@@ -190,7 +205,10 @@
                         }
                     }
                 },
-                "example": { "serializedViews": ["View 1", "View2"], "mergePolicy": "undefined" }
+                "example": {
+                    "serializedViews": ["View 1", "View2"],
+                    "mergePolicy": "undefined"
+                }
             },
             "ProcessViewRequest": {
                 "type": "object",
@@ -213,7 +231,11 @@
                         }
                     }
                 },
-                "example": { "serializedView": "View 1", "policyId": "policy 1", "policyArguments": ["stateId"] }
+                "example": {
+                    "serializedView": "View 1",
+                    "policyId": "policy 1",
+                    "policyArguments": ["stateId"]
+                }
             }
         }
     },
@@ -249,7 +271,10 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/CreateViewResponse"
                                 },
-                                "example": { "view": "Object", "signature": "signature of Object" }
+                                "example": {
+                                    "view": "Object",
+                                    "signature": "signature of Object"
+                                }
                             }
                         }
                     },
@@ -279,7 +304,9 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/GetPublicKeyResponse"
                                 },
-                                "example": { "pubKey": "----BEGIN CERTIFICATE----random content...." }
+                                "example": {
+                                    "pubKey": "----BEGIN CERTIFICATE----random content...."
+                                }
                             }
                         }
                     },
@@ -350,7 +377,9 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/VerifyMerkleRootResponse"
                                 },
-                                "example": { "result": true }
+                                "example": {
+                                    "result": true
+                                }
                             }
                         }
                     },
@@ -431,7 +460,10 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/CreateViewResponse"
                                 },
-                                "example": { "view": "Object", "signature": "signature of Object" }
+                                "example": {
+                                    "view": "Object",
+                                    "signature": "signature of Object"
+                                }
                             }
                         }
                     },
