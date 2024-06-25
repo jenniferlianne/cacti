@@ -1,0 +1,57 @@
+{
+    "name": "@hyperledger/cacti-plugin-weaver-fabric-sdk-go",
+    "version": "2.0.0-alpha.2",
+    "description": "",
+    "keywords": [
+        "Hyperledger",
+        "cacti",
+        "Integration",
+        "Blockchain",
+        "Distributed Ledger Technology",
+        "Weaver"
+    ],
+    "homepage": "https://github.com/hyperledger/cacti#readme",
+    "bugs": {
+        "url": "https://github.com/hyperledger/cacti/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hyperledger/cacti.git"
+    },
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Hyperledger cacti Contributors",
+        "email": "cacti@lists.hyperledger.org",
+        "url": "https://www.hyperledger.org/use/cacti"
+    },
+    "contributors": [
+        {
+            "name": "Please add yourself to the list of contributors",
+            "email": "your.name@example.com",
+            "url": "https://example.com"
+        },
+        {
+            "name": "Venkatraman Ramakrishna",
+            "email": "vramakr2@in.ibm.com",
+            "url": "https://researcher.watson.ibm.com/researcher/view.php?person=in-vramakr2"
+        },
+        {
+            "name": "Sandeep Nishad",
+            "email": "sandeep.nishad1@ibm.com",
+            "url": "https://github.com/sandeepnRES"
+        },
+        {
+            "name": "Krishnasuri Narayanam",
+            "email": "knaraya3@in.ibm.com",
+            "url": "https://research.ibm.com/people/krishnasuri-narayanam"
+        }
+    ],
+    "scripts": {
+        "build": "make build",
+        "clean": "make clean",
+        "test": "make test"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

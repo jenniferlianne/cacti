@@ -8,6 +8,7 @@
     "extensions/cacti-*",
     "weaver/common/protos-js",
     "weaver/sdks/fabric/interoperation-node-sdk",
+    "weaver/sdks/fabric/go-sdk",
     "weaver/sdks/besu/node",
     "weaver/core/drivers/fabric-driver",
     "weaver/core/identity-management/iin-agent",
