@@ -276,6 +276,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://hyperledger.github.io/cacti/references/openapi/</loc>
+         <lastmod>2024-06-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://hyperledger.github.io/cacti/weaver/design-principles/</loc>
          <lastmod>2024-06-27</lastmod>
          <changefreq>daily</changefreq>
