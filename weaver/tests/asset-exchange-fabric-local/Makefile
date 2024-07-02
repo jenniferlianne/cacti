@@ -3,7 +3,7 @@ WORKSPACE=$(rootdir)/../../..
 
 dependencies: 
 	cd ../common && \
-	make fabric-cli fabric-cli-config fabric-cli-env interop-sdk js-protos
+	make js-protos fabric-cli fabric-cli-config fabric-cli-env interop-sdk 
 
 start-fabric-network:
 	cd ..//network-setups/fabric/dev && \
