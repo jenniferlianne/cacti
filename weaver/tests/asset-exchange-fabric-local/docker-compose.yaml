@@ -1,0 +1,12 @@
+services:
+  test:
+      environment:
+        - NODEJS_VERSION=v18.18.2
+      build: .
+      working_dir: /weaver/tests/asset-exchange-fabric-local
+      command: make test
+      volumes:
+        - ../../:/weaver
+        - /var/run/docker.sock:/var/run/docker.sock 
+volumes:
+  weaver:
