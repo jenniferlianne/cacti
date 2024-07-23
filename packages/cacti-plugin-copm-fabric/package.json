@@ -1,6 +1,10 @@
 {
   "name": "@hyperledger-cacti/cacti-plugin-copm-fabric",
+<<<<<<< HEAD
   "version": "2.0.0",
+=======
+  "version": "0.0.1",
+>>>>>>> b3dfeaab2 (feat(copm): add fabric COPM implementation)
   "description": "Cacti Common Operators - Fabric",
   "homepage": "https://github.com/hyperledger-cacti/cacti#readme",
   "bugs": {
