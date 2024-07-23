@@ -1,9 +1,6 @@
 import { FabricRemoteTransactionContext } from "./fabric-remote-transaction-context";
 import { FabricConfiguration } from "./fabric-configuration";
-import {
-  Interfaces as CopmIF,
-  DLAccount,
-} from "@hyperledger-cacti/cacti-copm-core";
+import { Interfaces as CopmIF, DLAccount } from "@hyperledger-cacti/cacti-copm-core";
 import { Logger } from "@hyperledger/cactus-common";
 import { FabricTransactionContext } from "./fabric-transaction-context";
 
