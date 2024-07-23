@@ -4,8 +4,5 @@ node_modules/
 coverage/
 package-lock.json
 old/
-protos/
-protos-js/*
-fabric-protos/
 build/
 docs/

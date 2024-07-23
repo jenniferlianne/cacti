@@ -1,0 +1,26 @@
+{
+  "name": "@hyperledger/cacti-copm-core",
+  "version": "0.0.1",
+  "description": "Cacti Common Operators",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "bundleopenapi": "yarn run --top-level tools:bundle-open-api-tpl-files",
+    "codegen": "yarn run --top-level run-s 'codegen:*'",
+    "codegen:proto": "yarn run proto:openapi",
+    "proto:openapi": "yarn run --top-level openapi-generator-cli generate -i ./src/main/json/openapi.json -g protobuf-schema --model-name-suffix=PB --language-specific-primitives=google.protobuf.Any --type-mappings=AnyType=google.protobuf.Any --type-mappings=object=google.protobuf.Any --additional-properties=packageName=org.hyperledger.cacti.plugin.cacti.plugin.copm.core -o ./src/main/proto/generated/openapi/ -t=./src/main/mustache/openapi-generator/templates/protobuf-schema/ --ignore-file-override ../../openapi-generator-ignore"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.13.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyperledger/cacti.git"
+  },
+  "author": "Jennifer Bell",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hyperledger/cacti/issues"
+  },
+  "homepage": "https://github.com/hyperledger/cacti#readme"
+}
