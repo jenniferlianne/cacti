@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+      - copm_draft
+
 
     paths:
       - 'docs/**'

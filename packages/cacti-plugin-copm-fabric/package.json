@@ -1,0 +1,32 @@
+{
+  "name": "@hyperledger/cacti-plugin-copm-fabric",
+  "version": "0.0.1",
+  "description": "Cacti Common Operators - Fabric",
+  "scripts": {
+    "test": "test",
+    "proto": "yarn run proto:copy; yarn run proto:connectrpc",
+    "proto:copy": "/bin/bash ../cacti-plugin-copm-core/export-protos.sh . fabric",
+    "proto:connectrpc": "yarn run buf generate"
+  },
+  "dependencies": {
+    "@bufbuild/buf": "^1.35.1",
+    "@bufbuild/protobuf": "^2.0.0",
+    "@connectrpc/connect": "^1.4.0",
+    "@hyperledger/cacti-plugin-copm-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@bufbuild/protoc-gen-es": "^2.0.0",
+    "@connectrpc/protoc-gen-connect-es": "^1.4.0",
+    "@openapitools/openapi-generator-cli": "2.13.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyperledger/cacti.git"
+  },
+  "author": "Jennifer Bell",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hyperledger/cacti/issues"
+  },
+  "homepage": "https://github.com/hyperledger/cacti#readme"
+}

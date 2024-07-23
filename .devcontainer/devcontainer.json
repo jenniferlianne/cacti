@@ -23,7 +23,7 @@
 			"installGradle": true,
 			"installMaven": false,
 			"installAnt": false,
-			"version": "8.0.392-amzn",
+			"version": "17.0.12-amzn",
 			"jdkDistro": "amzn",
 			"gradleVersion": "5.6.4",
 			"mavenVersion": "3.9.5",
