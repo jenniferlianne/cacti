@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1721747937026,
+  "lastUpdate": 1721934085158,
   "repoUrl": "https://github.com/jenniferlianne/cacti",
   "entries": {
     "Benchmark": [
@@ -67,6 +67,44 @@ window.BENCHMARK_DATA = {
             "name": "plugin-ledger-connector-besu_HTTP_GET_getOpenApiSpecV1",
             "value": 765,
             "range": "±2.62%",
+            "unit": "ops/sec",
+            "extra": "180 samples"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "petermetz@users.noreply.github.com",
+            "name": "Peter Somogyvari",
+            "username": "petermetz"
+          },
+          "distinct": false,
+          "id": "75150014fad883510208eddefe13f08aa01db296",
+          "message": "build(core-api): bump tokio from 1.34.0 to 1.39.1\n\nBumps the cargo group with 1 update in the /packages/cactus-core-api\ndirectory: [tokio](https://github.com/tokio-rs/tokio).\n\nUpdates `tokio` from 1.34.0 to 1.39.1\n- [Release notes](https://github.com/tokio-rs/tokio/releases)\n- [Commits](https://github.com/tokio-rs/tokio/compare/tokio-1.34.0...tokio-1.39.1)\n\n---\nupdated-dependencies:\n- dependency-name: tokio\n  dependency-type: direct:production\n  dependency-group: cargo\n...\n\nCo-authored-by: Peter Somogyvari <peter.somogyvari@accenture.com>\n\nSigned-off-by: dependabot[bot] <support@github.com>\nSigned-off-by: Peter Somogyvari <peter.somogyvari@accenture.com>",
+          "timestamp": "2024-07-25T09:14:06-07:00",
+          "tree_id": "17f895924eb968b59ceddcdb013b9dd79defdfb1",
+          "url": "https://github.com/jenniferlianne/cacti/commit/75150014fad883510208eddefe13f08aa01db296"
+        },
+        "date": 1721934083549,
+        "tool": "benchmarkjs",
+        "benches": [
+          {
+            "name": "cmd-api-server_HTTP_GET_getOpenApiSpecV1",
+            "value": 591,
+            "range": "±1.66%",
+            "unit": "ops/sec",
+            "extra": "176 samples"
+          },
+          {
+            "name": "cmd-api-server_gRPC_GetOpenApiSpecV1",
+            "value": 363,
+            "range": "±1.14%",
             "unit": "ops/sec",
             "extra": "180 samples"
           }
