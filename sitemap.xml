@@ -271,6 +271,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://jenniferlianne.github.io/cacti/references/openapi/cacti-plugin-copm-core_openapi/</loc>
+         <lastmod>2024-08-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://jenniferlianne.github.io/cacti/references/openapi/cacti-plugin-ledger-connector-stellar_openapi/</loc>
          <lastmod>2024-08-01</lastmod>
          <changefreq>daily</changefreq>
