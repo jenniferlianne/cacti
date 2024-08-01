@@ -152,11 +152,11 @@
                 "properties": {
                     "gateway": {
                         "type": "string",
-                        "example": "gateway1.network2.org"
+                        "example": "relay1.example.com:7542;relay2.example.com:7542;"
                     },
                     "network": {
                         "type": "string",
-                        "example": "network2.org"
+                        "example": "network1"
                     },
                     "view": {
                         "$ref": "#/components/schemas/ViewV1"
