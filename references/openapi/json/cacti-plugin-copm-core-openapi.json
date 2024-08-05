@@ -11,8 +11,9 @@
     },
     "components": {
         "schemas": {
-            "AssetV1": {
+            "TransferrableAssetV1": {
                 "type": "object",
+                "description": "An asset.  One of 'asset_id' or 'asset_quantity' is required.  Please see https://github.com/hyperledger/cacti/blob/main/weaver/rfcs/protocols/asset-transfer/generic.md",
                 "oneOf": [
                     {
                         "required": ["asset_type", "asset_id"]
@@ -50,7 +51,7 @@
                     },
                     "user_id": {
                         "type": "string",
-                        "example": "Bob"
+                        "example": "Alice"
                     }
                 }
             },
@@ -62,10 +63,19 @@
                         "$ref": "#/components/schemas/AssetAccountV1"
                     },
                     "destination": {
-                        "$ref": "#/components/schemas/AssetAccountV1"
+                        "$ref": "#/components/schemas/AssetAccountV1",
+                        "example": {
+                            "network": "network2.org",
+                            "gateway": "gateway2.network2.org",
+                            "user_id": "Bob"
+                        }
                     },
                     "asset": {
-                        "$ref": "#/components/schemas/AssetV1"
+                        "$ref": "#/components/schemas/TransferrableAssetV1",
+                        "example": {
+                            "type": "bond",
+                            "asset_id": "ref203"
+                        }
                     },
                     "expiry_secs": {
                         "type": "integer",
@@ -80,7 +90,7 @@
                 "properties": {
                     "pledge_id": {
                         "type": "string",
-                        "example": "uuid-550e8400-e29b-41d4-a716-446655440000"
+                        "example": "pledge-550e8400-e29b-41d4-a716-446655440000"
                     }
                 }
             },
