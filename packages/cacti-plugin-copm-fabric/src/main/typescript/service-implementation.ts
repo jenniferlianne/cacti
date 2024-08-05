@@ -3,6 +3,8 @@ import {
   Logger,
   LoggerProvider,
 } from "@hyperledger/cactus-common";
+import { ServiceImpl } from "@connectrpc/connect";
+import type { ServiceType } from "@bufbuild/protobuf";
 
 import { DefaultService } from "./generated/services/default_service_connect";
 import {
@@ -12,7 +14,6 @@ import {
 } from "./generated/services/default_service_pb.js";
 import { ClaimAssetV1200ResponsePB } from "./generated//models/claim_asset_v1200_response_pb_pb";
 import { PledgeAssetV1200ResponsePB } from "./generated/models/pledge_asset_v1200_response_pb_pb";
-import { IPluginCopmFabricOptions } from "./plugin-copm-fabric";
 
 type DefaultServiceMethodDefinitions = typeof DefaultService.methods;
 type DefaultServiceMethodNames = keyof DefaultServiceMethodDefinitions;
@@ -21,33 +22,35 @@ type ICopmFabricApi = {
   [key in DefaultServiceMethodNames]: (...args: never[]) => unknown;
 };
 
-export class CopmFabricImpl implements ICopmFabricApi {
-  public readonly logLevel: LogLevelDesc;
+export class CopmFabricImpl implements ICopmFabricApi, Partial<ServiceImpl<ServiceType>>
+{
+  // We cannot avoid this due to how the types of the upstream library are
+  // structured/designed hence we just disable the linter on this particular line.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k: string]: any;
+
   private readonly log: Logger;
 
-  constructor(readonly opts: IPluginCopmFabricOptions) {
-    this.logLevel = opts.logLevel ? opts.logLevel : "WARN";
+  constructor(logLevel: LogLevelDesc) {
     this.log = LoggerProvider.getOrCreate({
-      level: this.logLevel,
+      level: logLevel,
       label: "CopmFabricImpl",
     });
   }
 
   public pledgeAssetV1(req: PledgeAssetV1Request): PledgeAssetV1200ResponsePB {
     this.log.debug("pledgeAssetV1 ENTRY req=%o", req);
-    const res: PledgeAssetV1200ResponsePB = {
-      pledgeId: "mypledgeId",
-    };
+    const res = new PledgeAssetV1200ResponsePB({ pledgeId: "mypledgeid" });
     return res;
   }
 
   public claimAssetV1(req: ClaimAssetV1Request): ClaimAssetV1200ResponsePB {
     this.log.debug("claimAssetV1 ENTRY req=%o", req);
-    let res: ClaimAssetV1200ResponsePB;
+    const res = new ClaimAssetV1200ResponsePB({ claimId: "myclaimid" });
     return res;
   }
 
-  public async provestateV1(req: ProvestateV1Request): Promise<> {
+  public provestateV1(req: ProvestateV1Request): void {
     this.log.debug("provestateV1 ENTRY req=%o", req);
     return;
   }

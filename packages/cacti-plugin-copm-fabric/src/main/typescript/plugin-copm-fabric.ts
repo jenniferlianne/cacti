@@ -14,17 +14,21 @@ export interface IPluginCopmFabricOptions extends ICactusPluginOptions {
 
 export class PluginCopmFabric implements IPluginCrpcService {
   public static readonly CLASS_NAME = "PluginCopmFabric";
+  private readonly instanceId: string;
+  private readonly logLevel: LogLevelDesc;
 
-  constructor(public readonly opts: IPluginCopmFabricOptions) {}
+  constructor(public readonly opts: IPluginCopmFabricOptions) {
+
+    this.logLevel = opts.logLevel || "INFO";
+    this.instanceId = this.opts.instanceId;
+  }
 
   public async createCrpcSvcRegistrations(): Promise<
     ICrpcSvcRegistration<ServiceType>[]
   > {
     const out: ICrpcSvcRegistration<ServiceType>[] = [];
 
-    const implementation = new CopmFabricImpl({
-      logLevel: this.opts.logLevel,
-    });
+    const implementation = new CopmFabricImpl(this.logLevel);
 
     const crpcSvcRegistration: ICrpcSvcRegistration<ServiceType> = {
       definition: DefaultService,
