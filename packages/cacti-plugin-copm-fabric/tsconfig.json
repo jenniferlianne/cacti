@@ -6,7 +6,7 @@
     "declarationDir": "dist/lib",
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "tsBuildInfoFile": "../../.build-cache/cacti-plugin-copm-core.tsbuildinfo"
+    "tsBuildInfoFile": "../../.build-cache/cacti-plugin-copm-fabric.tsbuildinfo"
   },
   "include": [
     "./src",
@@ -21,9 +21,6 @@
     },
     {
       "path": "../cactus-core-api/tsconfig.json"
-    },
-    {
-      "path": "../cactus-plugin-keychain-memory/tsconfig.json"
     },
     {
       "path": "../cactus-test-tooling/tsconfig.json"

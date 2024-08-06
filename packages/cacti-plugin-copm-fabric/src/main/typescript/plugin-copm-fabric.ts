@@ -18,7 +18,6 @@ export class PluginCopmFabric implements IPluginCrpcService {
   private readonly logLevel: LogLevelDesc;
 
   constructor(public readonly opts: IPluginCopmFabricOptions) {
-
     this.logLevel = opts.logLevel || "INFO";
     this.instanceId = this.opts.instanceId;
   }
@@ -37,5 +36,17 @@ export class PluginCopmFabric implements IPluginCrpcService {
     };
     out.push(crpcSvcRegistration);
     return out;
+  }
+
+  public getInstanceId(): string {
+    return this.instanceId;
+  }
+
+  public getPackageName(): string {
+    return `@hyperledger/cacti-plugin-copm-fabric`;
+  }
+
+  public async onPluginInit(): Promise<unknown> {
+    return;
   }
 }
