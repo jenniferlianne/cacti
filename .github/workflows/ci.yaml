@@ -14,6 +14,7 @@ env:
   NODEJS_VERSION: v18.18.2
   RUN_TRIVY_SCAN: true
   RUN_CODE_COVERAGE: true
+  RUN_ALL_TESTS: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
 jobs:
   ActionLint:
     uses: ./.github/workflows/actionlint.yaml
@@ -429,7 +430,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.cmd-api-server-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.cmd-api-server-changed == 'true'
     env:
       DEV_BUILD_DISABLED: false
       FULL_BUILD_DISABLED: true
@@ -1217,7 +1218,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-aries-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-aries-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-plugin-ledger-connector-aries/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -1253,7 +1254,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-besu-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-besu-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-plugin-ledger-connector-besu/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -1330,7 +1331,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-polkadot-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-polkadot-changed == 'true'
     runs-on: ubuntu-22.04
     steps:
       - name: Use Node.js ${{ env.NODEJS_VERSION }}
@@ -1359,7 +1360,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-corda-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-corda-changed == 'true'
     env:
       FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
       FULL_BUILD_DISABLED: true
@@ -1400,7 +1401,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-stellar-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-stellar-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cacti-plugin-ledger-connector-stellar/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -1437,7 +1438,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     continue-on-error: false
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
@@ -1478,7 +1479,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     continue-on-error: false
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
@@ -1512,7 +1513,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1544,7 +1545,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     continue-on-error: false
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
@@ -1578,7 +1579,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1611,7 +1612,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1644,7 +1645,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1677,7 +1678,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1710,7 +1711,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1743,7 +1744,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1775,7 +1776,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     continue-on-error: false
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
@@ -1809,7 +1810,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1842,7 +1843,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       CACTI_NPM_PACKAGE_NAME: "@hyperledger/cactus-plugin-ledger-connector-fabric"
       HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
@@ -1875,7 +1876,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-iroha2-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-iroha2-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-plugin-ledger-connector-iroha2/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -1911,7 +1912,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-ethereum-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-ethereum-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-plugin-ledger-connector-ethereum/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -2207,7 +2208,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.cmd-api-server-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.cmd-api-server-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-test-cmd-api-server/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -2388,7 +2389,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-fabric-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-test-plugin-ledger-connector-besu/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -2458,7 +2459,7 @@ jobs:
     needs:
       - build-dev
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.test-tooling-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.test-tooling-changed == 'true'
     env:
       FULL_BUILD_DISABLED: true
       JEST_TEST_PATTERN: packages/cactus-test-tooling/src/test/typescript/(unit|integration|benchmark)/.*/*.test.ts
@@ -2534,7 +2535,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.plugin-ledger-connector-corda-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.plugin-ledger-connector-corda-changed == 'true'
 
     steps:
       - uses: actions/checkout@v4.1.1
@@ -2561,7 +2562,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - compute_changed_packages
-    if: needs.compute_changed_packages.outputs.ghcr-dev-container-vscode-changed == 'true'
+    if: vars.RUN_ALL_TESTS || needs.compute_changed_packages.outputs.ghcr-dev-container-vscode-changed == 'true'
     env:
       IMAGE_NAME: cacti-dev-container-vscode
     steps:
@@ -2622,3 +2623,7 @@ name: Cactus_CI
     branches:
       - main
       - dev
+  workflow_dispatch:
+  schedule:
+      # run at 1am the first day of every month
+    - cron: "0 1 1 * *"
