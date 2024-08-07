@@ -14,6 +14,7 @@ import {
 } from "./generated/services/default_service_pb.js";
 import { ClaimAssetV1200ResponsePB } from "./generated//models/claim_asset_v1200_response_pb_pb";
 import { PledgeAssetV1200ResponsePB } from "./generated/models/pledge_asset_v1200_response_pb_pb";
+import { pledgeAssetV1Impl } from "./pledge-asset/pledge-asset-impl-v1";
 
 type DefaultServiceMethodDefinitions = typeof DefaultService.methods;
 type DefaultServiceMethodNames = keyof DefaultServiceMethodDefinitions;
@@ -22,7 +23,8 @@ type ICopmFabricApi = {
   [key in DefaultServiceMethodNames]: (...args: never[]) => unknown;
 };
 
-export class CopmFabricImpl implements ICopmFabricApi, Partial<ServiceImpl<ServiceType>>
+export class CopmFabricImpl
+  implements ICopmFabricApi, Partial<ServiceImpl<ServiceType>>
 {
   // We cannot avoid this due to how the types of the upstream library are
   // structured/designed hence we just disable the linter on this particular line.
@@ -30,17 +32,33 @@ export class CopmFabricImpl implements ICopmFabricApi, Partial<ServiceImpl<Servi
   [k: string]: any;
 
   private readonly log: Logger;
+  private channelName: string;
+  private connProfilePath: string;
 
   constructor(logLevel: LogLevelDesc) {
     this.log = LoggerProvider.getOrCreate({
       level: logLevel,
       label: "CopmFabricImpl",
     });
+    this.channelName = "placeholder";
+    this.connProfilePath = "placeholder";
   }
 
-  public pledgeAssetV1(req: PledgeAssetV1Request): PledgeAssetV1200ResponsePB {
+  public startFabric(): void {
+    // todo start fabric with the chaincode functions
+  }
+
+  public async pledgeAssetV1(
+    req: PledgeAssetV1Request,
+  ): Promise<PledgeAssetV1200ResponsePB> {
     this.log.debug("pledgeAssetV1 ENTRY req=%o", req);
-    const res = new PledgeAssetV1200ResponsePB({ pledgeId: "mypledgeid" });
+    const pledgeId = await pledgeAssetV1Impl(
+      req,
+      this.log,
+      this.channelName,
+      this.connProfilePath,
+    );
+    const res = new PledgeAssetV1200ResponsePB({ pledgeId: pledgeId });
     return res;
   }
 
