@@ -9071,9 +9071,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger/cacti-plugin-copm-core@workspace:^, @hyperledger/cacti-plugin-copm-core@workspace:packages/cacti-plugin-copm-core":
+"@hyperledger/cacti-copm-core@workspace:^, @hyperledger/cacti-copm-core@workspace:packages/cacti-copm-core":
   version: 0.0.0-use.local
-  resolution: "@hyperledger/cacti-plugin-copm-core@workspace:packages/cacti-plugin-copm-core"
+  resolution: "@hyperledger/cacti-copm-core@workspace:packages/cacti-copm-core"
   dependencies:
     "@openapitools/openapi-generator-cli": "npm:2.13.4"
   languageName: unknown
@@ -9089,7 +9089,7 @@ __metadata:
     "@connectrpc/connect": "npm:^1.4.0"
     "@connectrpc/connect-node": "npm:^1.4.0"
     "@connectrpc/protoc-gen-connect-es": "npm:^1.4.0"
-    "@hyperledger/cacti-plugin-copm-core": "workspace:^"
+    "@hyperledger/cacti-copm-core": "workspace:^"
     "@openapitools/openapi-generator-cli": "npm:2.13.4"
   languageName: unknown
   linkType: soft

@@ -1,5 +1,5 @@
 {
-  "name": "@hyperledger/cacti-plugin-copm-core",
+  "name": "@hyperledger/cacti-copm-core",
   "version": "0.0.1",
   "description": "Cacti Common Operators",
   "main": "index.js",

@@ -6,7 +6,7 @@
     "declarationDir": "dist/lib",
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "tsBuildInfoFile": "../../.build-cache/cacti-plugin-copm-core.tsbuildinfo"
+    "tsBuildInfoFile": "../../.build-cache/cacti-copm-core.tsbuildinfo"
   },
   "include": [
     "./src",
