@@ -5,7 +5,7 @@ import {
 } from "@hyperledger/cactus-common";
 import { ServiceImpl } from "@connectrpc/connect";
 import type { ServiceType } from "@bufbuild/protobuf";
-
+import * as utils from "./lib/utils"
 import { DefaultService } from "./generated/services/default_service_connect";
 import {
   ClaimAssetV1Request,
@@ -32,16 +32,18 @@ export class CopmFabricImpl
   [k: string]: any;
 
   private readonly log: Logger;
-  private channelName: string;
-  private connProfilePath: string;
+  private readonly fabricSettings: utils.FabricSettings;
 
   constructor(logLevel: LogLevelDesc) {
     this.log = LoggerProvider.getOrCreate({
       level: logLevel,
       label: "CopmFabricImpl",
     });
-    this.channelName = "placeholder";
-    this.connProfilePath = "placeholder";
+    this.fabricSettings = {
+      channelName: "placeholder",
+      connProfilePath: "placeholder",
+      contractName: "simpleasset"
+    }
   }
 
   public startFabric(): void {
@@ -55,8 +57,7 @@ export class CopmFabricImpl
     const pledgeId = await pledgeAssetV1Impl(
       req,
       this.log,
-      this.channelName,
-      this.connProfilePath,
+      this.fabricSettings
     );
     const res = new PledgeAssetV1200ResponsePB({ pledgeId: pledgeId });
     return res;

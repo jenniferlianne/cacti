@@ -2,18 +2,17 @@ import { PledgeAssetV1Request } from "../generated/services/default_service_pb.j
 import { Logger } from "@hyperledger/cactus-common";
 import { fabricHelper } from "../../../../../../weaver/samples/fabric/fabric-cli/src/helpers/fabric-functions";
 import { getUserCertFromFile } from "../../../../../../weaver/samples/fabric/fabric-cli/src/helpers/helpers";
+import { FabricSettings } from "../lib/utils"
 
 export async function pledgeAssetV1Impl(
   req: PledgeAssetV1Request,
   log: Logger,
-  channelName: string,
-  connProfilePath: string,
+  fabricSettings: FabricSettings
 ): Promise<string> {
-  const contractName: string = "simpleasset";
-/* 
+  /*
   const currentQuery = {
-    channel: channelName,
-    contractName: contractName,
+    channel: fabricSettings.channelName,
+    contractName: fabricSettings.contractName,
     ccFunc: "",
     args: [],
   };
@@ -29,9 +28,9 @@ export async function pledgeAssetV1Impl(
     : "unknown-user";
 
   const { gateway, contract, wallet } = await fabricHelper({
-    channel: channelName,
-    contractName: contractName,
-    connProfilePath: connProfilePath,
+    channel: fabricSettings.channelName,
+    contractName: fabricSettings.contractName,
+    connProfilePath: fabricSettings.connProfilePath,
     networkName: sourceNetwork,
     mspId: global.__DEFAULT_MSPID__,
     userString: req.assetPledgeV1PB?.source?.userId,
