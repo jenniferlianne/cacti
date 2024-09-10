@@ -21,8 +21,11 @@ import {
   ClaimPledgedAssetV1Request,
   PledgeAssetV1Request,
 } from "../../../main/typescript/generated/services/default_service_pb";
+import { AssetAccountV1PB } from "../../../main/typescript/generated/models/asset_account_v1_pb_pb";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
+import { DLAccount } from "../../../main/typescript/lib/types";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
+import { TestAssetManager } from "../lib/test-asset-manager";
 import * as path from "path";
 import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -40,6 +43,13 @@ describe("PluginCopmFabric", () => {
   let apiServer: ApiServer;
   let addressInfoHttp: AddressInfo;
   let apiHttpHost: string;
+  let sourceAccount: DLAccount;
+  let sourceCert: string;
+  let destCert: string;
+  let sourceAccountPB: AssetAccountV1PB;
+  let destAccount: DLAccount;
+  let destAccountPB: AssetAccountV1PB;
+  let assetManager: TestAssetManager;
   const contractName: string = "simpleassettransfer";
   const pledgeAssetName: string =
     "pledgeasset" + new Date().getTime().toString();
@@ -96,6 +106,20 @@ describe("PluginCopmFabric", () => {
     log.info("CRPC AddressInfo=%o", addressInfoCrpc);
 
     expect(apiServer).toBeTruthy();
+
+    const [net1, net2] = fabricTestnet.networkNames();
+    const [user1, user2] = fabricTestnet.userNames();
+    assetManager = fabricTestnet.assetManager();
+    sourceAccount = { organization: net1, userId: user1 };
+    destAccount = { organization: net2, userId: user2 };
+    sourceAccountPB = AssetAccountV1PB.fromJson({
+      network: net1,
+      userId: user1,
+    });
+    destAccountPB = AssetAccountV1PB.fromJson({ network: net2, userId: user2 });
+    sourceCert = await fabricTestnet.getCertificateString(sourceAccount);
+    destCert = await fabricTestnet.getCertificateString(destAccount);
+
     log.info("test setup complete");
   });
 
@@ -112,39 +136,27 @@ describe("PluginCopmFabric", () => {
       httpVersion: "1.1",
     });
 
-    const [net1, net2] = fabricTestnet.networkNames();
-    const [user1, user2] = fabricTestnet.userNames();
-    const assetManager = fabricTestnet.assetManager();
-    const sourceAccount = { organization: net1, userId: user1 };
-    const destAccount = { organization: net2, userId: user2 };
+    const assetType = "bond01";
 
     await assetManager.addNonFungibleAsset(
-      "bond",
+      assetType,
       pledgeAssetName,
       sourceAccount,
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
-    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
     const pledgeNFTResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
         assetPledgeV1PB: {
           asset: {
-            assetType: "bond",
+            assetType: assetType,
             assetId: pledgeAssetName,
           },
-          source: {
-            network: net1,
-            userId: user1,
-          },
-          destination: {
-            network: net2,
-            userId: user2,
-          },
+          source: sourceAccountPB,
+          destination: destAccountPB,
           expirySecs: BigInt(45),
-          destinationCertificate: dest_cert,
+          destinationCertificate: destCert,
         },
       }),
     );
@@ -157,19 +169,16 @@ describe("PluginCopmFabric", () => {
         assetPledgeClaimV1PB: {
           pledgeId: pledgeNFTResult.pledgeId,
           asset: {
-            assetType: "bond",
+            assetType: assetType,
             assetId: pledgeAssetName,
           },
-          source: {
-            network: net1,
-            userId: user1,
-          },
+          source: sourceAccountPB,
           destination: {
-            network: net2,
-            userId: user2,
+            network: destAccount.organization,
+            userId: destAccount.userId,
           },
-          sourceCertificate: source_cert,
-          destCertificate: dest_cert,
+          sourceCertificate: sourceCert,
+          destCertificate: destCert,
         },
       }),
     );
@@ -178,7 +187,7 @@ describe("PluginCopmFabric", () => {
     // Check that the asset changed networks.
     expect(
       await assetManager.userOwnsNonFungibleAsset(
-        "bond",
+        assetType,
         pledgeAssetName,
         sourceAccount,
       ),
@@ -186,7 +195,7 @@ describe("PluginCopmFabric", () => {
 
     expect(
       await assetManager.userOwnsNonFungibleAsset(
-        "bond",
+        assetType,
         pledgeAssetName,
         destAccount,
       ),
@@ -199,16 +208,10 @@ describe("PluginCopmFabric", () => {
       httpVersion: "1.1",
     });
 
-    const [net1, net2] = fabricTestnet.networkNames();
-    const [user1, user2] = fabricTestnet.userNames();
-    const sourceAccount = { organization: net1, userId: user1 };
-    const destAccount = { organization: net2, userId: user2 };
-
-    const assetManager = fabricTestnet.assetManager();
-
     const assetType = "token1";
     const exchangeQuantity = 10;
 
+    // ensure initial account balance
     await assetManager.addToken(assetType, exchangeQuantity, sourceAccount);
     await assetManager.addToken(assetType, exchangeQuantity, destAccount);
 
@@ -222,8 +225,6 @@ describe("PluginCopmFabric", () => {
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
-    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
     const pledgeResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
@@ -232,16 +233,10 @@ describe("PluginCopmFabric", () => {
             assetType: assetType,
             assetQuantity: exchangeQuantity,
           },
-          source: {
-            network: net1,
-            userId: user1,
-          },
-          destination: {
-            network: net2,
-            userId: user2,
-          },
+          source: sourceAccountPB,
+          destination: destAccountPB,
           expirySecs: BigInt(45),
-          destinationCertificate: dest_cert,
+          destinationCertificate: destCert,
         },
       }),
     );
@@ -257,16 +252,10 @@ describe("PluginCopmFabric", () => {
             assetType: assetType,
             assetQuantity: exchangeQuantity,
           },
-          source: {
-            network: net1,
-            userId: user1,
-          },
-          destination: {
-            network: net2,
-            userId: user2,
-          },
-          sourceCertificate: source_cert,
-          destCertificate: dest_cert,
+          source: sourceAccountPB,
+          destination: destAccountPB,
+          sourceCertificate: sourceCert,
+          destCertificate: destCert,
         },
       }),
     );
