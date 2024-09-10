@@ -110,19 +110,26 @@ describe("PluginCopmFabric", () => {
 
     const net1 = fabricTestnet.networkNames()[0];
     const [user1, user2] = fabricTestnet.userNames();
+    const sourceAccount = {
+      organization: net1,
+      userId: user1,
+    };
+    const destAccount = {
+      organization: net1,
+      userId: user2,
+    };
     const assetManager = fabricTestnet.assetManager();
     const assetType = "bond";
 
     await assetManager.addNonFungibleAsset(
       assetType,
       lockAssetName,
-      user1,
-      net1,
+      sourceAccount,
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
-    const dest_cert = await fabricTestnet.getCertificateString(net1, user2);
+    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
+    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
     const res1 = await client.lockAssetV1(
       new LockAssetV1Request({

@@ -51,10 +51,10 @@ export async function lockAssetV1Impl(
   hash.setPreimage(hashSecret);
 
   const transactionContext =
-    await DLTransactionContextFactory.getTransactionContext(
-      ownerNetwork,
-      ownerId,
-    );
+    await DLTransactionContextFactory.getTransactionContext({
+      organization: ownerNetwork,
+      userId: ownerId,
+    });
 
   const assetExchangeAgreementStr =
     AssetManager.createAssetExchangeAgreementSerialized(

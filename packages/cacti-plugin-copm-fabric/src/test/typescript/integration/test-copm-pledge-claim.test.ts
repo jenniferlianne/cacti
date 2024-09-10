@@ -115,17 +115,18 @@ describe("PluginCopmFabric", () => {
     const [net1, net2] = fabricTestnet.networkNames();
     const [user1, user2] = fabricTestnet.userNames();
     const assetManager = fabricTestnet.assetManager();
+    const sourceAccount = { organization: net1, userId: user1 };
+    const destAccount = { organization: net2, userId: user2 };
 
     await assetManager.addNonFungibleAsset(
       "bond",
       pledgeAssetName,
-      user1,
-      net1,
+      sourceAccount,
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
-    const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
+    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
+    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
     const pledgeNFTResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
@@ -179,8 +180,7 @@ describe("PluginCopmFabric", () => {
       await assetManager.userOwnsNonFungibleAsset(
         "bond",
         pledgeAssetName,
-        net1,
-        user1,
+        sourceAccount,
       ),
     ).toBeFalse();
 
@@ -188,8 +188,7 @@ describe("PluginCopmFabric", () => {
       await assetManager.userOwnsNonFungibleAsset(
         "bond",
         pledgeAssetName,
-        net2,
-        user2,
+        destAccount,
       ),
     ).toBeTrue();
   });
@@ -202,29 +201,29 @@ describe("PluginCopmFabric", () => {
 
     const [net1, net2] = fabricTestnet.networkNames();
     const [user1, user2] = fabricTestnet.userNames();
+    const sourceAccount = { organization: net1, userId: user1 };
+    const destAccount = { organization: net2, userId: user2 };
+
     const assetManager = fabricTestnet.assetManager();
 
     const assetType = "token1";
     const exchangeQuantity = 10;
 
-    await assetManager.addToken(assetType, exchangeQuantity, user1, net1);
-    await assetManager.addToken(assetType, exchangeQuantity, user2, net2);
+    await assetManager.addToken(assetType, exchangeQuantity, sourceAccount);
+    await assetManager.addToken(assetType, exchangeQuantity, destAccount);
 
     const user1originalbalance = await assetManager.tokenBalance(
       assetType,
-      user1,
-      net1,
+      sourceAccount,
     );
     const user2originalbalance = await assetManager.tokenBalance(
       assetType,
-      user2,
-      net2,
+      destAccount,
     );
 
-
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
-    const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
+    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
+    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
     const pledgeResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
@@ -274,11 +273,11 @@ describe("PluginCopmFabric", () => {
     expect(claimResult).toBeTruthy();
 
     // Check that the tokens changed networks.
-    expect(await assetManager.tokenBalance(assetType, user1, net1)).toEqual(
+    expect(await assetManager.tokenBalance(assetType, sourceAccount)).toEqual(
       user1originalbalance - exchangeQuantity,
     );
 
-    expect(await assetManager.tokenBalance(assetType, user2, net2)).toEqual(
+    expect(await assetManager.tokenBalance(assetType, destAccount)).toEqual(
       user2originalbalance + exchangeQuantity,
     );
   });

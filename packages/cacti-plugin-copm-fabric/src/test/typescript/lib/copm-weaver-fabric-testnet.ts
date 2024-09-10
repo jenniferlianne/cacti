@@ -5,6 +5,7 @@ import { Wallet, Identity, DiscoveryOptions, Wallets } from "fabric-network";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
 import {
   DLContractContext,
+  DLAccount,
   RemoteNetworkConfig,
   CopmContractNames,
   LocalRelayConfig,
@@ -28,7 +29,6 @@ export class CopmWeaverFabricTestnet {
   private assetContractName: string;
   private interopContractName: string;
   private discoveryOptions: DiscoveryOptions;
-  private adminName: string;
   private networkAdminName: string;
   private weaverRelativePath = "../../../../../../weaver/";
   private weaverWalletPath = path.join(
@@ -46,7 +46,6 @@ export class CopmWeaverFabricTestnet {
     this.log = log;
     this.assetContractName = assetContractName;
     this.interopContractName = "interop";
-    this.adminName = "admin";
     this.networkAdminName = "networkadmin";
     this.discoveryOptions = {
       enabled: true,
@@ -67,19 +66,16 @@ export class CopmWeaverFabricTestnet {
     const testnet = this;
     const factory = {
       getTransactionContext: async function (
-        orgName: string,
-        userId: string,
+        account: DLAccount,
       ): Promise<DLTransactionContext> {
-        return await testnet.getTransactionContext(orgName, userId);
+        return await testnet.getTransactionContext(account);
       },
       getRemoteTransactionContext: async function (
-        organization: string,
-        userId: string,
+        account: DLAccount,
         remoteNetwork: string,
       ): Promise<RemoteTransactionContext> {
         return await testnet.getRemoteTransactionContext(
-          organization,
-          userId,
+          account,
           remoteNetwork,
         );
       },
@@ -94,14 +90,11 @@ export class CopmWeaverFabricTestnet {
     };
   }
 
-  public async getCertificateString(
-    organization: string,
-    userId: string,
-  ): Promise<string> {
-    const wallet = await this.getOrgWallet(organization);
-    const identity = (await wallet.get(userId)) as FabricIdentity;
+  public async getCertificateString(account: DLAccount): Promise<string> {
+    const wallet = await this.getOrgWallet(account.organization);
+    const identity = (await wallet.get(account.userId)) as FabricIdentity;
     if (!identity?.credentials?.certificate) {
-      throw new Error(`no credentials for user ${userId}`);
+      throw new Error(`no credentials for user ${account.userId}`);
     }
     const userCert = Buffer.from(identity.credentials.certificate).toString(
       "base64",
@@ -112,15 +105,13 @@ export class CopmWeaverFabricTestnet {
   public async tearDown() {}
 
   public async getRemoteTransactionContext(
-    orgName: string,
-    userId: string,
+    account: DLAccount,
     remoteNetwork: string,
   ): Promise<RemoteTransactionContext> {
     return new RemoteTransactionContext(
-      await this.getContractContext(orgName),
-      this.getLocalRelayConfig(orgName),
-      orgName,
-      userId,
+      await this.getContractContext(account.organization),
+      this.getLocalRelayConfig(account.organization),
+      account,
       this.getRemoteNetworkConfig(remoteNetwork),
       this.interopContractName,
       this.log,
@@ -132,25 +123,21 @@ export class CopmWeaverFabricTestnet {
     return new TestAssetManager(
       this.assetContractName,
       this.networkAdminName,
-      async function (
-        organization: string,
-        userId: string,
-      ): Promise<DLTransactionContext> {
-        return await testnet.getTransactionContext(organization, userId);
+      async function (account: DLAccount): Promise<DLTransactionContext> {
+        return await testnet.getTransactionContext(account);
       },
-      async function (organization: string, userId: string): Promise<string> {
-        return await testnet.getCertificateString(organization, userId);
+      async function (account: DLAccount): Promise<string> {
+        return await testnet.getCertificateString(account);
       },
       this.log,
     );
   }
 
   public async getTransactionContext(
-    orgName: string,
-    userId: string,
+    account: DLAccount,
   ): Promise<DLTransactionContext> {
-    const context = await this.getContractContext(orgName);
-    return new DLTransactionContext(context, orgName, userId, this.log);
+    const context = await this.getContractContext(account.organization);
+    return new DLTransactionContext(context, account, this.log);
   }
 
   private async getContractContext(
@@ -185,10 +172,10 @@ export class CopmWeaverFabricTestnet {
     return wallet;
   }
 
-  private getLocalRelayConfig(networkId: string): LocalRelayConfig {
-    const netConfig = this.getWeaverNetworkConfig(networkId);
+  private getLocalRelayConfig(orgName: string): LocalRelayConfig {
+    const netConfig = this.getWeaverNetworkConfig(orgName);
     if (!netConfig.relayEndpoint) {
-      throw Error(`no relay endpoint for ${networkId}`);
+      throw Error(`no relay endpoint for ${orgName}`);
     }
     return {
       endpoint: netConfig.relayEndpoint,
@@ -197,28 +184,28 @@ export class CopmWeaverFabricTestnet {
     };
   }
 
-  private getRemoteNetworkConfig(network: string): RemoteNetworkConfig {
+  private getRemoteNetworkConfig(orgName: string): RemoteNetworkConfig {
     const configPath = path.join(
       this.weaverNetConfigPath,
       "remote-network-config.json",
     );
     const configJSON = JSON.parse(fs.readFileSync(configPath).toString());
-    if (!configJSON[network]) {
+    if (!configJSON[orgName]) {
       throw Error(
-        `Network: ${network} does not exist in the config.template.json file at ${configPath}`,
+        `Network: ${orgName} does not exist in the config.template.json file at ${configPath}`,
       );
     }
-    const netConfig = configJSON[network];
+    const netConfig = configJSON[orgName];
     if (!netConfig.channelName) {
-      throw Error(`no channel name defined for ${network}`);
+      throw Error(`no channel name defined for ${orgName}`);
     }
     if (!netConfig.relayEndpoint) {
-      throw Error(`no relay endpoint defined for ${network}`);
+      throw Error(`no relay endpoint defined for ${orgName}`);
     }
 
     return {
       channelName: netConfig.channelName,
-      network: network,
+      network: orgName,
       relayAddr: netConfig.relayEndpoint,
       e2eConfidentiality: false,
       partyEndPoint: "", // corda-specific

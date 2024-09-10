@@ -32,10 +32,10 @@ export async function pledgeAssetV1Impl(
   const expirationTime = Math.floor(Date.now() / 1000 + expirySecs).toString();
 
   const transactionContext =
-    await DLTransactionContextFactory.getTransactionContext(
-      sourceNetwork,
-      sourceUser,
-    );
+    await DLTransactionContextFactory.getTransactionContext({
+      organization: sourceNetwork,
+      userId: sourceUser,
+    });
 
   const transferrableAsset = new TransferrableAsset(
     req.assetPledgeV1PB?.asset?.assetId,

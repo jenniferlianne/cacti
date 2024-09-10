@@ -3,6 +3,7 @@ import {
   DLContractContext,
   RemoteNetworkConfig,
   LocalRelayConfig,
+  DLAccount,
   DLTransactionParams,
 } from "./types";
 import { InteroperableHelper } from "@hyperledger/cacti-weaver-sdk-fabric";
@@ -13,33 +14,25 @@ import { ICryptoKey, Utils } from "fabric-common";
 export class RemoteTransactionContext {
   private localContext: DLContractContext;
   private localRelayConfig: LocalRelayConfig;
-  private orgName: string;
-  private userId: string;
+  private account: DLAccount;
   private interopContractName: string;
   private remoteNetConfig: RemoteNetworkConfig;
   private gateway: Gateway;
   private log: Logger;
-  private views: {
-    address: string;
-    view: any;
-  }[];
 
   constructor(
     localContext: DLContractContext,
     localRelayConfig: LocalRelayConfig,
-    orgName: string,
-    userId: string,
+    account: DLAccount,
     remoteNetworkConfig: RemoteNetworkConfig,
     interopContractName: string,
     log: Logger,
   ) {
     this.localContext = localContext;
     this.localRelayConfig = localRelayConfig;
-    this.orgName = orgName;
+    this.account = account;
     this.remoteNetConfig = remoteNetworkConfig;
     this.log = log;
-    this.userId = userId;
-    this.views = [];
     this.interopContractName = interopContractName;
     this.gateway = new Gateway();
   }
@@ -51,7 +44,7 @@ export class RemoteTransactionContext {
     const contract = await this.connect();
     const keyCert = await this.getKeyAndCertForRemoteRequestbyUserName(
       this.localContext.wallet,
-      this.userId,
+      this.account.userId,
     );
     const invokeObject = {
       channel: this.localContext.channelName,
@@ -119,11 +112,11 @@ export class RemoteTransactionContext {
     const contract = await this.connect();
     const keyCert = await this.getKeyAndCertForRemoteRequestbyUserName(
       this.localContext.wallet,
-      this.userId,
+      this.account.userId,
     );
 
     this.log.debug(
-      `contacting local relay ${this.localRelayConfig.endpoint} on network ${this.orgName} using cert for user ${this.userId}`,
+      `contacting local relay ${this.localRelayConfig.endpoint} on network ${this.account.organization} using cert for user ${this.account.userId}`,
     );
     try {
       const viewAddress = this.address(transactionParams);
@@ -148,7 +141,6 @@ export class RemoteTransactionContext {
       this.log.debug("got remote view");
 
       const view = viewResponse.view;
-      this.views.push({ address: viewAddress, view: view });
       this.log.debug(
         `ViewB64: ${Buffer.from(view.serializeBinary()).toString("base64")}`,
       );
@@ -172,26 +164,6 @@ export class RemoteTransactionContext {
     }
   }
 
-  public async verify(): Promise<boolean> {
-    const contract = await this.connect();
-    this.log.debug(`verifying ${this.views.length} views`);
-
-    for (const viewResponse of this.views) {
-      this.log.debug(`calling verif view for view ${viewResponse.address}`);
-      const verificationResponse = await InteroperableHelper.verifyView(
-        contract,
-        Buffer.from(viewResponse.view.serializeBinary()).toString("base64"),
-        viewResponse.address,
-      );
-      if (!verificationResponse) {
-        throw Error(`View not verified: ${viewResponse.address}`);
-      }
-    }
-
-    this.disconnect();
-    return true;
-  }
-
   public address(transactionParams: DLTransactionParams) {
     return new ViewAddress(this.remoteNetConfig, transactionParams).toString();
   }
@@ -202,10 +174,10 @@ export class RemoteTransactionContext {
   }
 
   private async connect(): Promise<Contract> {
-    const identity = await this.localContext.wallet.get(this.userId);
+    const identity = await this.localContext.wallet.get(this.account.userId);
     if (!identity) {
       throw new Error(
-        `An identity for the user "${this.userId}" does not exist in the wallet for network "${this.orgName}"`,
+        `An identity for the user "${this.account.userId}" does not exist in the wallet for network "${this.account.organization}"`,
       );
     }
 

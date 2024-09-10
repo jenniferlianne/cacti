@@ -1,8 +1,9 @@
 import { TransactionContextFactoryFunc } from "../../../main/typescript/lib/dl-context-factory";
+import { DLAccount } from "../../../main/typescript/lib/types";
 import { Logger } from "@hyperledger/cactus-common";
 
 export interface CertificateFactoryFunc {
-  (organization: string, userId: string): Promise<string>;
+  (account: DLAccount): Promise<string>;
 }
 
 export class TestAssetManager {
@@ -29,10 +30,9 @@ export class TestAssetManager {
   public async userOwnsNonFungibleAsset(
     assetType: string,
     assetId: string,
-    org: string,
-    userId: string,
+    account: DLAccount,
   ): Promise<boolean> {
-    const netContext = await this.contextFactory(org, userId);
+    const netContext = await this.contextFactory(account);
 
     try {
       const readResult = await netContext.invoke({
@@ -54,13 +54,9 @@ export class TestAssetManager {
   public async addToken(
     assetType: string,
     assetQuantity: number,
-    assetOwner: string,
-    assetOwnerOrg: string,
+    owner: DLAccount,
   ) {
-    const transaction = await this.contextFactory(
-      assetOwnerOrg,
-      this.networkAdminName,
-    );
+    const transaction = await this.contextFactory(owner);
 
     await transaction.invoke({
       contract: this.contractName,
@@ -68,30 +64,26 @@ export class TestAssetManager {
       args: [
         assetType,
         assetQuantity.toString(),
-        await this.certificateFactory(assetOwnerOrg, assetOwner),
+        await this.certificateFactory(owner),
       ],
     });
   }
+
   public async addNonFungibleAsset(
     assetType: string,
     assetId: string,
-    assetOwner: string,
-    assetOwnerOrg: string,
+    account: DLAccount,
   ) {
     const item = {
       assetType: assetType,
       id: assetId,
-      owner: assetOwner,
+      owner: account.userId,
       issuer: "treasury",
       facevalue: "500",
       maturitydate: "01 Jan 45 00:00 MST",
     };
-    const transaction = await this.contextFactory(
-      assetOwnerOrg,
-      this.networkAdminName,
-    );
-
-    const userCert = await this.certificateFactory(assetOwnerOrg, assetOwner);
+    const transaction = await this.contextFactory(account);
+    const userCert = await this.certificateFactory(account);
 
     await transaction.invoke({
       contract: this.contractName,
@@ -109,10 +101,9 @@ export class TestAssetManager {
 
   public async tokenBalance(
     tokenType: string,
-    userId: string,
-    userNetwork: string,
-  ) : Promise<number> {
-    const transaction = await this.contextFactory(userNetwork, userId);
+    account: DLAccount,
+  ): Promise<number> {
+    const transaction = await this.contextFactory(account);
 
     const walletBalance = await transaction.invoke({
       contract: this.contractName,

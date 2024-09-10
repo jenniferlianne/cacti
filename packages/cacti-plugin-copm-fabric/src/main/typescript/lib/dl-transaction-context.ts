@@ -1,31 +1,24 @@
 import { Gateway } from "fabric-network";
 import { Logger } from "@hyperledger/cactus-common";
-import { DLContractContext, DLTransactionParams } from "./types";
+import { DLContractContext, DLTransactionParams, DLAccount } from "./types";
 
 export class DLTransactionContext {
   private context: DLContractContext;
-  private orgName: string;
-  private userId: string;
+  private account: DLAccount;
   private log: Logger;
 
-  constructor(
-    context: DLContractContext,
-    orgName: string,
-    userId: string,
-    logger: Logger,
-  ) {
+  constructor(context: DLContractContext, account: DLAccount, logger: Logger) {
     this.context = context;
-    this.orgName = orgName;
-    this.userId = userId;
+    this.account = account;
     this.log = logger;
   }
 
   public async invoke(transactionParams: DLTransactionParams) {
     // get the user identity
-    const identity = await this.context.wallet.get(this.userId);
+    const identity = await this.context.wallet.get(this.account.userId);
     if (!identity) {
       throw new Error(
-        `An identity for the user "${this.userId}" does not exist in the wallet for network "${this.orgName}"`,
+        `An identity for the user "${this.account.userId}" does not exist in the wallet for network "${this.account.organization}"`,
       );
     }
     // Create a new gateway for connecting to our peer node.

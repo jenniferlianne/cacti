@@ -27,8 +27,7 @@ export async function proveStateV1Impl(
     : [];
 
   const remoteContext = await contextFactory.getRemoteTransactionContext(
-    localOrg,
-    user,
+    { organization: localOrg, userId: user },
     remoteNetwork,
   );
 
@@ -38,8 +37,7 @@ export async function proveStateV1Impl(
     method: func,
     args: args,
   });
-  log.debug("verifying view");
-  await remoteContext.verify();
+  log.debug("done getting view");
 
   return true;
 }

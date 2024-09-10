@@ -39,8 +39,7 @@ export async function claimPledgedAssetV1Impl(
 
   const interop_context =
     await DLTransactionContextFactory.getRemoteTransactionContext(
-      destNetwork,
-      destUser,
+      { organization: destNetwork, userId: destUser },
       sourceNetwork,
     );
 

@@ -58,10 +58,10 @@ export async function claimLockedAssetV1Impl(
   const claimInfoStr = AssetManager.createAssetClaimInfoSerialized(hash);
 
   const transactionContext =
-    await DLTransactionContextFactory.getTransactionContext(
-      destNetwork,
-      destUser,
-    );
+    await DLTransactionContextFactory.getTransactionContext({
+      organization: destNetwork,
+      userId: destUser,
+    });
 
   const claimId = await transactionContext.invoke({
     contract: contractName,

@@ -113,12 +113,18 @@ describe("PluginCopmFabric", () => {
 
     const [net1, net2] = fabricTestnet.networkNames();
     const [user1, user2] = fabricTestnet.userNames();
+    const sourceAccount = { organization: net1, userId: user1 };
+    const destAccount = { organization: net2, userId: user2 };
     const assetManager = fabricTestnet.assetManager();
 
-    await assetManager.addNonFungibleAsset("bond", proveAssetName, user1, net1);
+    await assetManager.addNonFungibleAsset(
+      "bond",
+      proveAssetName,
+      sourceAccount,
+    );
 
-    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
-    const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
+    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
+    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
     const client = createPromiseClient(DefaultService, transport);
 

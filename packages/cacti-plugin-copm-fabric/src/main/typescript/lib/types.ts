@@ -15,6 +15,11 @@ export type DLTransactionParams = {
   args: string[];
 };
 
+export type DLAccount = {
+  organization: string;
+  userId: string;
+};
+
 export type CopmContractNames = {
   pledgeContract: string;
   lockContract: string;
