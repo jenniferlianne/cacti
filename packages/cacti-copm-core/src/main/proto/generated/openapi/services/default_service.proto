@@ -18,6 +18,7 @@ import "models/asset_lock_v1_pb.proto";
 import "models/asset_pledge_claim_v1_pb.proto";
 import "models/asset_pledge_v1_pb.proto";
 import "models/claim_pledged_asset_v1200_response_pb.proto";
+import "models/lock_asset_v1200_response_pb.proto";
 import "models/pledge_asset_v1200_response_pb.proto";
 import "models/state_proof_v1_pb.proto";
 
@@ -26,7 +27,7 @@ service DefaultService {
 
   rpc ClaimPledgedAssetV1 (ClaimPledgedAssetV1Request) returns (ClaimPledgedAssetV1200ResponsePB);
 
-  rpc LockAssetV1 (LockAssetV1Request) returns (PledgeAssetV1200ResponsePB);
+  rpc LockAssetV1 (LockAssetV1Request) returns (LockAssetV1200ResponsePB);
 
   rpc PledgeAssetV1 (PledgeAssetV1Request) returns (PledgeAssetV1200ResponsePB);
 

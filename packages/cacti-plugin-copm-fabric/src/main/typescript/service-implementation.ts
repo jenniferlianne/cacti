@@ -15,6 +15,7 @@ import {
 } from "./generated/services/default_service_pb.js";
 import { ClaimAssetV1200ResponsePB } from "./generated//models/claim_asset_v1200_response_pb_pb";
 import { PledgeAssetV1200ResponsePB } from "./generated/models/pledge_asset_v1200_response_pb_pb";
+import { LockAssetV1200ResponsePB } from "./generated/models/lock_asset_v1200_response_pb_pb";
 import { pledgeAssetV1Impl } from "./endpoints/pledge-asset-impl-v1";
 import { claimLockedAssetV1Impl } from "./endpoints/claim-locked-asset-v1";
 import { claimPledgedAssetV1Impl } from "./endpoints/claim-pledged-asset-v1";
@@ -109,16 +110,16 @@ export class CopmFabricImpl
 
   public async lockAssetV1(
     req: LockAssetV1Request,
-  ): Promise<PledgeAssetV1200ResponsePB> {
+  ): Promise<LockAssetV1200ResponsePB> {
     this.log.debug("lockAssetV1 ENTRY req=%o", req);
     try {
-      const claimId = await lockAssetV1Impl(
+      const lockId = await lockAssetV1Impl(
         req,
         this.log,
         this.DLTransactionContextFactory,
         this.contractNames.lockContract,
       );
-      const res = new PledgeAssetV1200ResponsePB({ pledgeId: claimId });
+      const res = new LockAssetV1200ResponsePB({ lockId: lockId });
       return res;
     } catch (error) {
       this.log.error(error);

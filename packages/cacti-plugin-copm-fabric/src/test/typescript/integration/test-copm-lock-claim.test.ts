@@ -221,13 +221,13 @@ describe("PluginCopmFabric", () => {
     );
 
     expect(lockResult).toBeTruthy();
-    expect(lockResult.pledgeId).toBeString();
-    log.debug(lockResult.pledgeId);
+    expect(lockResult.lockId).toBeString();
+    log.debug(lockResult.lockId);
 
     const claimResult = await client.claimLockedAssetV1(
       new ClaimLockedAssetV1Request({
         assetLockClaimV1PB: {
-          lockId: lockResult.pledgeId,
+          lockId: lockResult.lockId,
           asset: {
             assetType: assetType,
             assetQuantity: assetQuantity,

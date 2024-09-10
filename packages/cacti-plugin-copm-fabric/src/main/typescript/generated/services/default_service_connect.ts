@@ -15,6 +15,7 @@
 import { ClaimLockedAssetV1Request, ClaimPledgedAssetV1Request, LockAssetV1Request, PledgeAssetV1Request, ProvestateV1Request } from "./default_service_pb.js";
 import { ClaimPledgedAssetV1200ResponsePB } from "../models/claim_pledged_asset_v1200_response_pb_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
+import { LockAssetV1200ResponsePB } from "../models/lock_asset_v1200_response_pb_pb.js";
 import { PledgeAssetV1200ResponsePB } from "../models/pledge_asset_v1200_response_pb_pb.js";
 
 /**
@@ -47,7 +48,7 @@ export const DefaultService = {
     lockAssetV1: {
       name: "LockAssetV1",
       I: LockAssetV1Request,
-      O: PledgeAssetV1200ResponsePB,
+      O: LockAssetV1200ResponsePB,
       kind: MethodKind.Unary,
     },
     /**

@@ -322,9 +322,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "pledge_id": {
+                    "lock_id": {
                       "type": "string",
-                      "example": "pledge-550e8400-e29b-41d4-a716-446655440000"
+                      "example": "lock-550e8400-e29b-41d4-a716-446655440000"
                     }
                   }
                 }
