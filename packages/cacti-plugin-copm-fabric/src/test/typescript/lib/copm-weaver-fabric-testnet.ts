@@ -102,8 +102,6 @@ export class CopmWeaverFabricTestnet {
     return userCert;
   }
 
-  public async tearDown() {}
-
   public async getRemoteTransactionContext(
     account: DLAccount,
     remoteNetwork: string,

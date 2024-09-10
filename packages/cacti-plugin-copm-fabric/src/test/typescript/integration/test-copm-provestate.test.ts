@@ -99,7 +99,6 @@ describe("PluginCopmFabric", () => {
   });
 
   afterAll(async () => {
-    await fabricTestnet.tearDown();
     if (apiServer) {
       await apiServer.shutdown();
     }

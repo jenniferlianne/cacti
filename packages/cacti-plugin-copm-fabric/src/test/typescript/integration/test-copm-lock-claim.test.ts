@@ -47,6 +47,7 @@ describe("PluginCopmFabric", () => {
   let sourceCert: string, destCert: string;
   let sourceAccountPB: AssetAccountV1PB, destAccountPB: AssetAccountV1PB;
   let assetManager: TestAssetManager;
+  let client: any;
 
   const hashSecret: string = "my_secret_123";
   const lockAssetName: string = "lockasset" + new Date().getTime().toString();
@@ -120,21 +121,22 @@ describe("PluginCopmFabric", () => {
     destCert = await fabricTestnet.getCertificateString(destAccount);
 
     assetManager = fabricTestnet.assetManager();
+
+    const transport = createConnectTransport({
+      baseUrl: apiHttpHost,
+      httpVersion: "1.1",
+    });
+
+    client = createPromiseClient(DefaultService, transport);
   });
 
   afterAll(async () => {
-    await fabricTestnet.tearDown();
     if (apiServer) {
       await apiServer.shutdown();
     }
   });
 
   test("fabric-fabric can lock/claim nft on same network", async () => {
-    const transport = createConnectTransport({
-      baseUrl: apiHttpHost,
-      httpVersion: "1.1",
-    });
-
     const assetType = "bond";
 
     await assetManager.addNonFungibleAsset(
@@ -142,8 +144,6 @@ describe("PluginCopmFabric", () => {
       lockAssetName,
       sourceAccount,
     );
-
-    const client = createPromiseClient(DefaultService, transport);
 
     const lockResult = await client.lockAssetV1(
       new LockAssetV1Request({
@@ -171,6 +171,52 @@ describe("PluginCopmFabric", () => {
           asset: {
             assetType: assetType,
             assetId: lockAssetName,
+          },
+          source: sourceAccountPB,
+          destination: destAccountPB,
+          sourceCertificate: sourceCert,
+          destCertificate: destCert,
+          hashInfo: {
+            secret: hashSecret,
+          },
+        },
+      }),
+    );
+    expect(claimResult).toBeTruthy();
+  });
+
+  test("fabric-fabric can lock/claim tokens on same network", async () => {
+    const assetType = "token1";
+    const assetQuantity = 10;
+
+    await assetManager.addToken(assetType, assetQuantity, sourceAccount);
+
+    const lockResult = await client.lockAssetV1(
+      new LockAssetV1Request({
+        assetLockV1PB: {
+          asset: {
+            assetType: assetType,
+            assetQuantity: assetQuantity,
+          },
+          owner: sourceAccountPB,
+          hashInfo: {
+            secret: hashSecret,
+          },
+          expirySecs: BigInt(45),
+          sourceCertificate: sourceCert,
+          destinationCertificate: destCert,
+        },
+      }),
+    );
+
+    expect(lockResult).toBeTruthy();
+
+    const claimResult = await client.claimLockedAssetV1(
+      new ClaimLockedAssetV1Request({
+        assetLockClaimV1PB: {
+          asset: {
+            assetType: assetType,
+            assetQuantity: assetQuantity,
           },
           source: sourceAccountPB,
           destination: destAccountPB,
