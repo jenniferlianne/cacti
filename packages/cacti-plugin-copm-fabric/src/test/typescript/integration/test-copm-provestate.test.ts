@@ -154,13 +154,13 @@ describe("PluginCopmFabric", () => {
     const res = await client.provestateV1(
       new ProvestateV1Request({
         stateProofV1PB: {
-          user: {
+          account: {
             network: net2,
             userId: user2,
           },
-          viewAddress: {
+          view: {
             network: net1,
-            view: {
+            viewAddress: {
               contractId: contractName,
               function: "GetAssetPledgeStatus",
               input: [pledgeResult.pledgeId, source_cert, net2, dest_cert],
