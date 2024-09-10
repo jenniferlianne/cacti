@@ -15,7 +15,6 @@ package org.hyperledger.cacti.plugin.cacti.plugin.copm.core;
 import "google/protobuf/any.proto";
 
 import "models/asset_account_v1_pb.proto";
-import "models/verification_policy_v1_pb.proto";
 import "models/view_address_v1_pb.proto";
 
 message StateProofV1PB {
@@ -23,7 +22,5 @@ message StateProofV1PB {
   AssetAccountV1PB user = 3599307;
 
   ViewAddressV1PB view_address = 312477787;
-
-  VerificationPolicyV1PB verification_policy = 536528856;
 
 }

@@ -11,19 +11,19 @@ export async function claimPledgedAssetV1Impl(
   log.debug("parsing data");
   const sourceNetwork = req.assetPledgeClaimV1PB?.source?.network
     ? req.assetPledgeClaimV1PB.source.network
-    : "unknown-network";
+    : "";
   const destNetwork = req.assetPledgeClaimV1PB?.destination?.network
     ? req.assetPledgeClaimV1PB?.destination.network
-    : "unknown-network";
+    : "";
   const destUser = req.assetPledgeClaimV1PB?.destination?.userId
     ? req.assetPledgeClaimV1PB.destination.userId
-    : "unknown-user";
+    : "";
   const ccType = req.assetPledgeClaimV1PB?.asset?.assetType
     ? req.assetPledgeClaimV1PB.asset.assetType
-    : "unknown-asset-type";
+    : "";
   const pledgeId: string = req.assetPledgeClaimV1PB?.pledgeId
     ? req.assetPledgeClaimV1PB.pledgeId
-    : "unknown-pledgeid";
+    : "";
   const sourceCert = req.assetPledgeClaimV1PB?.sourceCertificate
     ? req.assetPledgeClaimV1PB?.sourceCertificate
     : "";

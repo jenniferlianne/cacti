@@ -21,6 +21,6 @@ message ViewV1PB {
 
   string function = 307196890;
 
-  string input = 100358090;
+  repeated string input = 100358090;
 
 }

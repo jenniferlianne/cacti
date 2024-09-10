@@ -16,7 +16,6 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { AssetAccountV1PB } from "./asset_account_v1_pb_pb.js";
 import { ViewAddressV1PB } from "./view_address_v1_pb_pb.js";
-import { VerificationPolicyV1PB } from "./verification_policy_v1_pb_pb.js";
 
 /**
  * @generated from message org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.StateProofV1PB
@@ -32,11 +31,6 @@ export class StateProofV1PB extends Message<StateProofV1PB> {
    */
   viewAddress?: ViewAddressV1PB;
 
-  /**
-   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.VerificationPolicyV1PB verification_policy = 536528856;
-   */
-  verificationPolicy?: VerificationPolicyV1PB;
-
   constructor(data?: PartialMessage<StateProofV1PB>) {
     super();
     proto3.util.initPartial(data, this);
@@ -47,7 +41,6 @@ export class StateProofV1PB extends Message<StateProofV1PB> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 3599307, name: "user", kind: "message", T: AssetAccountV1PB },
     { no: 312477787, name: "view_address", kind: "message", T: ViewAddressV1PB },
-    { no: 536528856, name: "verification_policy", kind: "message", T: VerificationPolicyV1PB },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): StateProofV1PB {

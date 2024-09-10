@@ -57,6 +57,10 @@ export class CopmWeaverFabricTestnet {
     return ["network1", "network2"];
   }
 
+  public userNames(): string[] {
+    return ["alice", "bob"];
+  }
+
   public async setup(): Promise<DLTransactionContextFactory> {
     /* eslint:disable-next-line - required for passing class functions to an interface */
     const testnet = this;
@@ -84,10 +88,8 @@ export class CopmWeaverFabricTestnet {
 
   public getContractNames(): CopmContractNames {
     return {
-      currentContract: this.assetContractName,
       pledgeContract: "simpleassettransfer",
       lockContract: "simpleasset",
-      viewContract: this.interopContractName,
     };
   }
 
@@ -114,32 +116,20 @@ export class CopmWeaverFabricTestnet {
   ): Promise<boolean> {
     const netContext = await this.getTransactionContext(org, userId);
 
-    const readResult = await netContext.invoke({
-      contract: this.assetContractName,
-      method: "ReadAsset",
-      args: [assetType, assetId],
-    });
-
-    return readResult.includes(assetId);
-  }
-
-  public async userDoesntOwnNonFungibleAsset(
-    assetType: string,
-    assetId: string,
-    org: string,
-    userId: string,
-  ): Promise<boolean> {
-    const netContext = await this.getTransactionContext(org, userId);
-
     try {
-      await netContext.invoke({
+      const readResult = await netContext.invoke({
         contract: this.assetContractName,
         method: "ReadAsset",
         args: [assetType, assetId],
       });
+      return readResult.includes(assetId);
     } catch (ex) {
       this.log.debug(ex);
-      return ex.message.includes("does not exist");
+      if (ex.message.includes("does not exist")) {
+        return false;
+      }
+      // unexpected error case
+      throw ex;
     }
     return false;
   }

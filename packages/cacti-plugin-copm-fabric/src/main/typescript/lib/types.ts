@@ -16,10 +16,8 @@ export type DLTransactionParams = {
 };
 
 export type CopmContractNames = {
-  currentContract: string;
   pledgeContract: string;
   lockContract: string;
-  viewContract: string;
 };
 
 export type RemoteNetworkConfig = {

@@ -71,8 +71,6 @@ describe("PluginCopmFabric", () => {
 
     fabricTestnet = new CopmWeaverFabricTestnet(log, contractName);
 
-    networkNames = fabricTestnet.networkNames();
-
     DLTransactionContextFactory = await fabricTestnet.setup();
 
     const compFabricPlugin = new PluginCopmFabric({
@@ -115,25 +113,22 @@ describe("PluginCopmFabric", () => {
       httpVersion: "1.1",
     });
 
+    const [net1, net2] = fabricTestnet.networkNames();
+    const [user1, user2] = fabricTestnet.userNames();
+
     await fabricTestnet.addNonFungibleAsset(
       "bond",
       proveAssetName,
-      "alice",
-      networkNames[0],
+      user1,
+      net1,
     );
 
-    const source_cert = await fabricTestnet.getCertificateString(
-      networkNames[0],
-      "alice",
-    );
-    const dest_cert = await fabricTestnet.getCertificateString(
-      networkNames[1],
-      "bob",
-    );
+    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
+    const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
 
     const client = createPromiseClient(DefaultService, transport);
 
-    const resPledge = await client.pledgeAssetV1(
+    const pledgeResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
         assetPledgeV1PB: {
           asset: {
@@ -141,12 +136,12 @@ describe("PluginCopmFabric", () => {
             assetId: proveAssetName,
           },
           source: {
-            network: networkNames[0],
-            userId: "alice",
+            network: net1,
+            userId: user1,
           },
           destination: {
-            network: networkNames[1],
-            userId: "bob",
+            network: net2,
+            userId: user2,
           },
           expirySecs: BigInt(45),
           destinationCertificate: dest_cert,
@@ -154,23 +149,22 @@ describe("PluginCopmFabric", () => {
       }),
     );
 
-    expect(resPledge).toBeTruthy();
-
-    const args = [resPledge, source_cert, networkNames[1], dest_cert];
+    expect(pledgeResult).toBeTruthy();
+    expect(pledgeResult.pledgeId).toBeString();
 
     const res = await client.provestateV1(
       new ProvestateV1Request({
         stateProofV1PB: {
           user: {
-            network: networkNames[0],
-            userId: "alice",
+            network: net2,
+            userId: user2,
           },
           viewAddress: {
-            network: networkNames[1],
+            network: net1,
             view: {
               contractId: contractName,
               function: "GetAssetPledgeStatus",
-              input: args.join(";"),
+              input: [pledgeResult.pledgeId, source_cert, net2, dest_cert],
             },
           },
         },

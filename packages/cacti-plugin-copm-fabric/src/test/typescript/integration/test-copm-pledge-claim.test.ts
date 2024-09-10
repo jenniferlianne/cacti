@@ -35,7 +35,6 @@ const log: Logger = LoggerProvider.getOrCreate({
 
 describe("PluginCopmFabric", () => {
   let fabricTestnet: CopmWeaverFabricTestnet;
-  let networkNames: string[];
   let httpServer: http.Server;
   let DLTransactionContextFactory: DLTransactionContextFactory;
   let apiServer: ApiServer;
@@ -70,8 +69,6 @@ describe("PluginCopmFabric", () => {
     log.info("setting up fabric test network");
 
     fabricTestnet = new CopmWeaverFabricTestnet(log, contractName);
-
-    networkNames = fabricTestnet.networkNames();
 
     DLTransactionContextFactory = await fabricTestnet.setup();
 
@@ -115,24 +112,21 @@ describe("PluginCopmFabric", () => {
       httpVersion: "1.1",
     });
 
+    const [net1, net2] = fabricTestnet.networkNames();
+    const [user1, user2] = fabricTestnet.userNames();
+
     await fabricTestnet.addNonFungibleAsset(
       "bond",
       pledgeAssetName,
-      "alice",
-      networkNames[0],
+      user1,
+      net1,
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(
-      networkNames[0],
-      "alice",
-    );
-    const dest_cert = await fabricTestnet.getCertificateString(
-      networkNames[1],
-      "bob",
-    );
+    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
+    const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
 
-    const res2 = await client.pledgeAssetV1(
+    const pledgeResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
         assetPledgeV1PB: {
           asset: {
@@ -140,12 +134,12 @@ describe("PluginCopmFabric", () => {
             assetId: pledgeAssetName,
           },
           source: {
-            network: networkNames[0],
-            userId: "alice",
+            network: net1,
+            userId: user1,
           },
           destination: {
-            network: networkNames[1],
-            userId: "bob",
+            network: net2,
+            userId: user2,
           },
           expirySecs: BigInt(45),
           destinationCertificate: dest_cert,
@@ -153,25 +147,24 @@ describe("PluginCopmFabric", () => {
       }),
     );
 
-    expect(res2).toBeTruthy();
-    const pledgeId = res2.pledgeId;
-    expect(pledgeId).toBeTruthy();
+    expect(pledgeResult).toBeTruthy();
+    expect(pledgeResult.pledgeId).toBeString();
 
     const res4 = await client.claimPledgedAssetV1(
       new ClaimPledgedAssetV1Request({
         assetPledgeClaimV1PB: {
-          pledgeId: pledgeId,
+          pledgeId: pledgeResult.pledgeId,
           asset: {
             assetType: "bond",
             assetId: pledgeAssetName,
           },
           source: {
-            network: networkNames[0],
-            userId: "alice",
+            network: net1,
+            userId: user1,
           },
           destination: {
-            network: networkNames[1],
-            userId: "bob",
+            network: net2,
+            userId: user2,
           },
           sourceCertificate: source_cert,
           destCertificate: dest_cert,
@@ -182,20 +175,20 @@ describe("PluginCopmFabric", () => {
 
     // Check that the asset changed networks.
     expect(
-      await fabricTestnet.userDoesntOwnNonFungibleAsset(
+      await fabricTestnet.userOwnsNonFungibleAsset(
         "bond",
         pledgeAssetName,
-        networkNames[0],
-        "alice",
+        net1,
+        user1,
       ),
-    ).toBeTrue();
+    ).toBeFalse();
 
     expect(
       await fabricTestnet.userOwnsNonFungibleAsset(
         "bond",
         pledgeAssetName,
-        networkNames[1],
-        "bob",
+        net2,
+        user2,
       ),
     ).toBeTrue();
   });

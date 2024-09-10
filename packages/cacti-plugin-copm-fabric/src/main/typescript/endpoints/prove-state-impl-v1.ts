@@ -9,22 +9,22 @@ export async function proveStateV1Impl(
 ): Promise<boolean> {
   const localOrg = req.stateProofV1PB?.user?.network
     ? req.stateProofV1PB.user.network
-    : "unknown-network";
+    : "";
   const user = req.stateProofV1PB?.user?.userId
     ? req.stateProofV1PB.user.userId
-    : "unknown-user";
+    : "";
   const remoteNetwork = req.stateProofV1PB?.viewAddress?.network
     ? req.stateProofV1PB.viewAddress.network
-    : "unknown-network";
+    : "";
   const contractId = req.stateProofV1PB?.viewAddress?.view?.contractId
     ? req.stateProofV1PB.viewAddress.view.contractId
-    : "unknown-contract-id";
+    : "";
   const func = req.stateProofV1PB?.viewAddress?.view?.function
     ? req.stateProofV1PB.viewAddress.view.function
-    : "unknown-function";
+    : "";
   const args = req.stateProofV1PB?.viewAddress?.view?.input
     ? req.stateProofV1PB.viewAddress.view.input
-    : "";
+    : [];
 
   const remoteContext = await contextFactory.getRemoteTransactionContext(
     localOrg,
@@ -36,7 +36,7 @@ export async function proveStateV1Impl(
   await remoteContext.invoke({
     contract: contractId,
     method: func,
-    args: args.split(";"),
+    args: args,
   });
   log.debug("verifying view");
   await remoteContext.verify();

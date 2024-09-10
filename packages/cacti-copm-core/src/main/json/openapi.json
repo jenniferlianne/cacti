@@ -213,50 +213,6 @@
           }
         }
       },
-      "CriteriaV1": {
-        "description": "from criteria defined here https://github.com/hyperledger/cacti/blob/main/weaver/rfcs/formats/policies/proof-verification.md",
-        "properties": {
-          "operator": {
-            "type": "string",
-            "example": "and"
-          },
-          "values": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "example": ":issuer:id"
-            }
-          }
-        }
-      },
-      "VerificationRuleV1": {
-        "properties": {
-          "policy_type": {
-            "type": "string",
-            "example": "signature"
-          },
-          "policy_criteria": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CriteriaV1"
-            }
-          }
-        }
-      },
-      "VerificationPolicyV1": {
-        "properties": {
-          "security_domain": {
-            "type": "string",
-            "example": "trade-network"
-          },
-          "rules": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/VerificationRuleV1"
-            }
-          }
-        }
-      },
       "ViewV1": {
         "description": "View per https://github.com/hyperledger/cacti/blob/main/weaver/rfcs/formats/views/addressing.md#views",
         "properties": {
@@ -269,8 +225,11 @@
             "example": "getBillOfLading"
           },
           "input": {
-            "type": "string",
-            "example": "bill-10012"
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "bill-10012"
+            }
           }
         }
       },
@@ -291,16 +250,13 @@
         }
       },
       "StateProofV1": {
-        "description": "Combination of a View Address and Verification Policy.  Please see https://github.com/hyperledger/cacti/blob/main/weaver/rfcs/protocols/data-sharing/generic.md#summary",
+        "description": "Verifies a view address according to the configured verification policy for the view",
         "properties": {
           "user": {
             "$ref": "#/components/schemas/AssetAccountV1"
           },
           "view_address": {
             "$ref": "#/components/schemas/ViewAddressV1"
-          },
-          "verification_policy": {
-            "$ref": "#/components/schemas/VerificationPolicyV1"
           }
         }
       }

@@ -30,9 +30,9 @@ export class ViewV1PB extends Message<ViewV1PB> {
   function = "";
 
   /**
-   * @generated from field: string input = 100358090;
+   * @generated from field: repeated string input = 100358090;
    */
-  input = "";
+  input: string[] = [];
 
   constructor(data?: PartialMessage<ViewV1PB>) {
     super();
@@ -44,7 +44,7 @@ export class ViewV1PB extends Message<ViewV1PB> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 512823451, name: "contract_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 307196890, name: "function", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 100358090, name: "input", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 100358090, name: "input", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ViewV1PB {
