@@ -1,4 +1,5 @@
 name: 'Copm Test'
+description: "common setup steps for the weaver network needed to run copm tests"
 runs:
   using: "composite"
   steps:
