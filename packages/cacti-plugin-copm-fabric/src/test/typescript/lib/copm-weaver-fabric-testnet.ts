@@ -12,6 +12,7 @@ import {
 import { RemoteTransactionContext } from "../../../main/typescript/lib/remote-transaction-context";
 import { DLTransactionContext } from "../../../main/typescript/lib/dl-transaction-context";
 import { LogLevelDesc, Logger } from "@hyperledger/cactus-common";
+import { TestAssetManager } from "./test-asset-manager";
 
 type FabricIdentity = Identity & {
   credentials: {
@@ -108,67 +109,6 @@ export class CopmWeaverFabricTestnet {
     return userCert;
   }
 
-  public async userOwnsNonFungibleAsset(
-    assetType: string,
-    assetId: string,
-    org: string,
-    userId: string,
-  ): Promise<boolean> {
-    const netContext = await this.getTransactionContext(org, userId);
-
-    try {
-      const readResult = await netContext.invoke({
-        contract: this.assetContractName,
-        method: "ReadAsset",
-        args: [assetType, assetId],
-      });
-      return readResult.includes(assetId);
-    } catch (ex) {
-      this.log.debug(ex);
-      if (ex.message.includes("does not exist")) {
-        return false;
-      }
-      // unexpected error case
-      throw ex;
-    }
-    return false;
-  }
-
-  public async addNonFungibleAsset(
-    assetType: string,
-    assetId: string,
-    assetOwner: string,
-    assetOwnerOrg: string,
-  ) {
-    const item = {
-      assetType: assetType,
-      id: assetId,
-      owner: assetOwner,
-      issuer: "treasury",
-      facevalue: "500",
-      maturitydate: "01 Jan 45 00:00 MST",
-    };
-
-    const userCert = await this.getCertificateString(assetOwnerOrg, assetOwner);
-    const transaction = await this.getTransactionContext(
-      assetOwnerOrg,
-      this.networkAdminName,
-    );
-
-    await transaction.invoke({
-      contract: this.assetContractName,
-      method: "CreateAsset",
-      args: [
-        item.assetType,
-        item.id,
-        userCert,
-        item.issuer,
-        item.facevalue,
-        item.maturitydate,
-      ],
-    });
-  }
-
   public async tearDown() {}
 
   public async getRemoteTransactionContext(
@@ -183,6 +123,24 @@ export class CopmWeaverFabricTestnet {
       userId,
       this.getRemoteNetworkConfig(remoteNetwork),
       this.interopContractName,
+      this.log,
+    );
+  }
+
+  public assetManager() {
+    const testnet = this;
+    return new TestAssetManager(
+      this.assetContractName,
+      this.networkAdminName,
+      async function (
+        organization: string,
+        userId: string,
+      ): Promise<DLTransactionContext> {
+        return await testnet.getTransactionContext(organization, userId);
+      },
+      async function (organization: string, userId: string): Promise<string> {
+        return await testnet.getCertificateString(organization, userId);
+      },
       this.log,
     );
   }

@@ -19,9 +19,6 @@ import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
 import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
   ClaimLockedAssetV1Request,
-  ClaimPledgedAssetV1Request,
-  PledgeAssetV1Request,
-  ProvestateV1Request,
   LockAssetV1Request,
 } from "../../../main/typescript/generated/services/default_service_pb";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
@@ -38,13 +35,12 @@ const log: Logger = LoggerProvider.getOrCreate({
 
 describe("PluginCopmFabric", () => {
   let fabricTestnet: CopmWeaverFabricTestnet;
-  let networkNames: string[];
   let httpServer: http.Server;
   let DLTransactionContextFactory: DLTransactionContextFactory;
   let apiServer: ApiServer;
   let addressInfoHttp: AddressInfo;
   let apiHttpHost: string;
-  let hashSecret: string = "mysecret123";
+  const hashSecret: string = "my_secret_123";
   const lockAssetName: string = "lockasset" + new Date().getTime().toString();
 
   beforeAll(async () => {
@@ -69,21 +65,8 @@ describe("PluginCopmFabric", () => {
     apiSrvOpts.crpcPort = 0;
     const cfg = await cfgSrv.newExampleConfigConvict(apiSrvOpts);
 
-    log.info("setting up fabric test network");
-
     fabricTestnet = new CopmWeaverFabricTestnet(log, "simpleasset");
-
-    log.info("creating plugin");
-
-    networkNames = fabricTestnet.networkNames();
-
-    log.info(
-      `setting up network users for ${networkNames[0]}, ${networkNames[1]}`,
-    );
-
     DLTransactionContextFactory = await fabricTestnet.setup();
-
-    log.info("done setting up users");
 
     const compFabricPlugin = new PluginCopmFabric({
       instanceId: uuidV4(),
@@ -125,33 +108,32 @@ describe("PluginCopmFabric", () => {
       httpVersion: "1.1",
     });
 
-    await fabricTestnet.addNonFungibleAsset(
-      "bond",
+    const net1 = fabricTestnet.networkNames()[0];
+    const [user1, user2] = fabricTestnet.userNames();
+    const assetManager = fabricTestnet.assetManager();
+    const assetType = "bond";
+
+    await assetManager.addNonFungibleAsset(
+      assetType,
       lockAssetName,
-      "alice",
-      networkNames[0],
+      user1,
+      net1,
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(
-      networkNames[0],
-      "alice",
-    );
-    const dest_cert = await fabricTestnet.getCertificateString(
-      networkNames[0],
-      "bob",
-    );
+    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
+    const dest_cert = await fabricTestnet.getCertificateString(net1, user2);
 
     const res1 = await client.lockAssetV1(
       new LockAssetV1Request({
         assetLockV1PB: {
           asset: {
-            assetType: "bond",
+            assetType: assetType,
             assetId: lockAssetName,
           },
           owner: {
-            network: networkNames[0],
-            userId: "alice",
+            network: net1,
+            userId: user1,
           },
           hashInfo: {
             secret: hashSecret,
@@ -169,16 +151,16 @@ describe("PluginCopmFabric", () => {
       new ClaimLockedAssetV1Request({
         assetLockClaimV1PB: {
           asset: {
-            assetType: "bond",
+            assetType: assetType,
             assetId: lockAssetName,
           },
           source: {
-            network: networkNames[0],
-            userId: "alice",
+            network: net1,
+            userId: user1,
           },
           destination: {
-            network: networkNames[0],
-            userId: "bob",
+            network: net1,
+            userId: user2,
           },
           sourceCertificate: source_cert,
           destCertificate: dest_cert,
@@ -189,7 +171,5 @@ describe("PluginCopmFabric", () => {
       }),
     );
     expect(res3).toBeTruthy();
-
-
   });
 });

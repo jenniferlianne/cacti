@@ -1,6 +1,7 @@
 import { ClaimPledgedAssetV1Request } from "../generated/services/default_service_pb.js";
 import { Logger } from "@hyperledger/cactus-common";
 import { DLTransactionContextFactory } from "../lib/dl-context-factory";
+import { TransferrableAsset } from "../lib/transferrable-asset.js";
 
 export async function claimPledgedAssetV1Impl(
   req: ClaimPledgedAssetV1Request,
@@ -31,12 +32,10 @@ export async function claimPledgedAssetV1Impl(
     ? req.assetPledgeClaimV1PB?.destCertificate
     : "";
 
-  let ccId: string = "unknown-asset";
-  if (req.assetPledgeClaimV1PB?.asset?.assetId) {
-    ccId = req.assetPledgeClaimV1PB.asset.assetId;
-  } else if (req.assetPledgeClaimV1PB?.asset?.assetQuantity) {
-    ccId = req.assetPledgeClaimV1PB?.asset?.assetQuantity.toString();
-  }
+  const asset = new TransferrableAsset(
+    req.assetPledgeClaimV1PB?.asset?.assetId,
+    req.assetPledgeClaimV1PB?.asset?.assetQuantity,
+  );
 
   const interop_context =
     await DLTransactionContextFactory.getRemoteTransactionContext(
@@ -53,8 +52,15 @@ export async function claimPledgedAssetV1Impl(
     },
     {
       contract: contractName,
-      method: "ClaimRemoteAsset",
-      args: [pledgeId, ccType, ccId, sourceCert, sourceNetwork, ""],
+      method: asset.isNFT() ? "ClaimRemoteAsset" : "ClaimRemoteTokenAsset",
+      args: [
+        pledgeId,
+        ccType,
+        asset.idOrQuantity(),
+        sourceCert,
+        sourceNetwork,
+        "",
+      ],
     },
   );
 

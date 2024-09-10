@@ -106,7 +106,7 @@ describe("PluginCopmFabric", () => {
     }
   });
 
-  test("fabric-fabric asset pledge and claim", async () => {
+  test("fabric-fabric asset nft pledge and claim", async () => {
     const transport = createConnectTransport({
       baseUrl: apiHttpHost,
       httpVersion: "1.1",
@@ -114,8 +114,9 @@ describe("PluginCopmFabric", () => {
 
     const [net1, net2] = fabricTestnet.networkNames();
     const [user1, user2] = fabricTestnet.userNames();
+    const assetManager = fabricTestnet.assetManager();
 
-    await fabricTestnet.addNonFungibleAsset(
+    await assetManager.addNonFungibleAsset(
       "bond",
       pledgeAssetName,
       user1,
@@ -126,7 +127,7 @@ describe("PluginCopmFabric", () => {
     const source_cert = await fabricTestnet.getCertificateString(net1, user1);
     const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
 
-    const pledgeResult = await client.pledgeAssetV1(
+    const pledgeNFTResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
         assetPledgeV1PB: {
           asset: {
@@ -147,13 +148,13 @@ describe("PluginCopmFabric", () => {
       }),
     );
 
-    expect(pledgeResult).toBeTruthy();
-    expect(pledgeResult.pledgeId).toBeString();
+    expect(pledgeNFTResult).toBeTruthy();
+    expect(pledgeNFTResult.pledgeId).toBeString();
 
-    const res4 = await client.claimPledgedAssetV1(
+    const claimNFTResult = await client.claimPledgedAssetV1(
       new ClaimPledgedAssetV1Request({
         assetPledgeClaimV1PB: {
-          pledgeId: pledgeResult.pledgeId,
+          pledgeId: pledgeNFTResult.pledgeId,
           asset: {
             assetType: "bond",
             assetId: pledgeAssetName,
@@ -171,11 +172,11 @@ describe("PluginCopmFabric", () => {
         },
       }),
     );
-    expect(res4).toBeTruthy();
+    expect(claimNFTResult).toBeTruthy();
 
     // Check that the asset changed networks.
     expect(
-      await fabricTestnet.userOwnsNonFungibleAsset(
+      await assetManager.userOwnsNonFungibleAsset(
         "bond",
         pledgeAssetName,
         net1,
@@ -184,12 +185,101 @@ describe("PluginCopmFabric", () => {
     ).toBeFalse();
 
     expect(
-      await fabricTestnet.userOwnsNonFungibleAsset(
+      await assetManager.userOwnsNonFungibleAsset(
         "bond",
         pledgeAssetName,
         net2,
         user2,
       ),
     ).toBeTrue();
+  });
+
+  test("fabric-fabric asset token pledge and claim", async () => {
+    const transport = createConnectTransport({
+      baseUrl: apiHttpHost,
+      httpVersion: "1.1",
+    });
+
+    const [net1, net2] = fabricTestnet.networkNames();
+    const [user1, user2] = fabricTestnet.userNames();
+    const assetManager = fabricTestnet.assetManager();
+
+    const assetType = "token1";
+    const exchangeQuantity = 10;
+
+    await assetManager.addToken(assetType, exchangeQuantity, user1, net1);
+    await assetManager.addToken(assetType, exchangeQuantity, user2, net2);
+
+    const user1originalbalance = await assetManager.tokenBalance(
+      assetType,
+      user1,
+      net1,
+    );
+    const user2originalbalance = await assetManager.tokenBalance(
+      assetType,
+      user2,
+      net2,
+    );
+
+
+    const client = createPromiseClient(DefaultService, transport);
+    const source_cert = await fabricTestnet.getCertificateString(net1, user1);
+    const dest_cert = await fabricTestnet.getCertificateString(net2, user2);
+
+    const pledgeResult = await client.pledgeAssetV1(
+      new PledgeAssetV1Request({
+        assetPledgeV1PB: {
+          asset: {
+            assetType: assetType,
+            assetQuantity: exchangeQuantity,
+          },
+          source: {
+            network: net1,
+            userId: user1,
+          },
+          destination: {
+            network: net2,
+            userId: user2,
+          },
+          expirySecs: BigInt(45),
+          destinationCertificate: dest_cert,
+        },
+      }),
+    );
+
+    expect(pledgeResult).toBeTruthy();
+    expect(pledgeResult.pledgeId).toBeString();
+
+    const claimResult = await client.claimPledgedAssetV1(
+      new ClaimPledgedAssetV1Request({
+        assetPledgeClaimV1PB: {
+          pledgeId: pledgeResult.pledgeId,
+          asset: {
+            assetType: assetType,
+            assetQuantity: exchangeQuantity,
+          },
+          source: {
+            network: net1,
+            userId: user1,
+          },
+          destination: {
+            network: net2,
+            userId: user2,
+          },
+          sourceCertificate: source_cert,
+          destCertificate: dest_cert,
+        },
+      }),
+    );
+    expect(claimResult).toBeTruthy();
+
+    // Check that the tokens changed networks.
+    expect(await assetManager.tokenBalance(assetType, user1, net1)).toEqual(
+      user1originalbalance - exchangeQuantity,
+    );
+
+    expect(await assetManager.tokenBalance(assetType, user2, net2)).toEqual(
+      user2originalbalance + exchangeQuantity,
+    );
   });
 });

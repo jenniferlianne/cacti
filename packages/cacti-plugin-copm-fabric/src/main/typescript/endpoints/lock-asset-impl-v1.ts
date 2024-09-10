@@ -4,6 +4,7 @@ import {
   AssetManager,
   HashFunctions,
 } from "@hyperledger/cacti-weaver-sdk-fabric";
+import { TransferrableAsset } from "../lib/transferrable-asset.js";
 import { DLTransactionContextFactory } from "../lib/dl-context-factory";
 
 export async function lockAssetV1Impl(
@@ -16,14 +17,13 @@ export async function lockAssetV1Impl(
 
   const ownerNetwork = req.assetLockV1PB?.owner?.network
     ? req.assetLockV1PB.owner.network
-    : "unknown-network";
+    : "";
   const ownerId = req.assetLockV1PB?.owner?.userId
     ? req.assetLockV1PB.owner.userId
-    : "unknown-user";
+    : "";
   const ccType = req.assetLockV1PB?.asset?.assetType
     ? req.assetLockV1PB.asset.assetType
-    : "unknown-asset-type";
-  let ccId: string = "unknown-asset";
+    : "";
   const hashSecret = req.assetLockV1PB?.hashInfo?.secret
     ? req.assetLockV1PB.hashInfo.secret
     : "";
@@ -37,11 +37,10 @@ export async function lockAssetV1Impl(
     ? Number(req.assetLockV1PB.expirySecs)
     : 60;
 
-  if (req.assetLockV1PB?.asset?.assetId) {
-    ccId = req.assetLockV1PB.asset.assetId;
-  } else if (req.assetLockV1PB?.asset?.assetQuantity) {
-    ccId = req.assetLockV1PB?.asset?.assetQuantity.toString();
-  }
+  const transferrableAsset = new TransferrableAsset(
+    req.assetLockV1PB?.asset?.assetId,
+    req.assetLockV1PB?.asset?.assetQuantity,
+  );
 
   let hash: HashFunctions.Hash;
   if (req.assetLockV1PB?.hashInfo?.hashFcn == "SHA512") {
@@ -60,7 +59,7 @@ export async function lockAssetV1Impl(
   const assetExchangeAgreementStr =
     AssetManager.createAssetExchangeAgreementSerialized(
       ccType,
-      ccId,
+      transferrableAsset.idOrQuantity(),
       destCert,
       sourceCert,
     );
