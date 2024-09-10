@@ -43,11 +43,9 @@ describe("PluginCopmFabric", () => {
   let apiServer: ApiServer;
   let addressInfoHttp: AddressInfo;
   let apiHttpHost: string;
-  let sourceAccount: DLAccount, destAccount: DLAccount;
-  let sourceCert: string, destCert: string;
-  let sourceAccountPB: AssetAccountV1PB, destAccountPB: AssetAccountV1PB;
   let assetManager: TestAssetManager;
   let client: any;
+  let user1: string, net1: string, user2: string, net2: string;
 
   const hashSecret: string = "my_secret_123";
   const lockAssetName: string = "lockasset" + new Date().getTime().toString();
@@ -102,24 +100,8 @@ describe("PluginCopmFabric", () => {
 
     expect(apiServer).toBeTruthy();
 
-    const net1 = fabricTestnet.networkNames()[0];
-    const [user1, user2] = fabricTestnet.userNames();
-    sourceAccount = {
-      organization: net1,
-      userId: user1,
-    };
-    destAccount = {
-      organization: net1,
-      userId: user2,
-    };
-    sourceAccountPB = AssetAccountV1PB.fromJson({
-      network: net1,
-      userId: user1,
-    });
-    destAccountPB = AssetAccountV1PB.fromJson({ network: net1, userId: user2 });
-    sourceCert = await fabricTestnet.getCertificateString(sourceAccount);
-    destCert = await fabricTestnet.getCertificateString(destAccount);
-
+    [net1, net2] = fabricTestnet.networkNames();
+    [user1, user2] = fabricTestnet.userNames();
     assetManager = fabricTestnet.assetManager();
 
     const transport = createConnectTransport({
@@ -139,11 +121,19 @@ describe("PluginCopmFabric", () => {
   test("fabric-fabric can lock/claim nft on same network", async () => {
     const assetType = "bond";
 
-    await assetManager.addNonFungibleAsset(
-      assetType,
-      lockAssetName,
-      sourceAccount,
-    );
+    const sourceCert = await fabricTestnet.getCertificateString({
+      organization: net1,
+      userId: user1,
+    });
+    const destCert = await fabricTestnet.getCertificateString({
+      organization: net1,
+      userId: user2,
+    });
+
+    await assetManager.addNonFungibleAsset(assetType, lockAssetName, {
+      organization: net1,
+      userId: user1,
+    });
 
     const lockResult = await client.lockAssetV1(
       new LockAssetV1Request({
@@ -152,7 +142,10 @@ describe("PluginCopmFabric", () => {
             assetType: assetType,
             assetId: lockAssetName,
           },
-          owner: sourceAccountPB,
+          owner: {
+            network: net1,
+            userId: user1,
+          },
           hashInfo: {
             secret: hashSecret,
           },
@@ -172,8 +165,14 @@ describe("PluginCopmFabric", () => {
             assetType: assetType,
             assetId: lockAssetName,
           },
-          source: sourceAccountPB,
-          destination: destAccountPB,
+          source: {
+            network: net1,
+            userId: user1,
+          },
+          destination: {
+            network: net1,
+            userId: user2,
+          },
           sourceCertificate: sourceCert,
           destCertificate: destCert,
           hashInfo: {
@@ -189,7 +188,19 @@ describe("PluginCopmFabric", () => {
     const assetType = "token1";
     const assetQuantity = 10;
 
-    await assetManager.addToken(assetType, assetQuantity, sourceAccount);
+    await assetManager.addToken(assetType, assetQuantity, {
+      organization: net2,
+      userId: user2,
+    });
+
+    const srcCert = await fabricTestnet.getCertificateString({
+      organization: net2,
+      userId: user2,
+    });
+    const destCert = await fabricTestnet.getCertificateString({
+      organization: net2,
+      userId: user1,
+    });
 
     const lockResult = await client.lockAssetV1(
       new LockAssetV1Request({
@@ -198,29 +209,38 @@ describe("PluginCopmFabric", () => {
             assetType: assetType,
             assetQuantity: assetQuantity,
           },
-          owner: sourceAccountPB,
+          owner: { network: net2, userId: user2 },
           hashInfo: {
             secret: hashSecret,
           },
           expirySecs: BigInt(45),
-          sourceCertificate: sourceCert,
+          sourceCertificate: srcCert,
           destinationCertificate: destCert,
         },
       }),
     );
 
     expect(lockResult).toBeTruthy();
+    expect(lockResult.pledgeId).toBeString();
+    log.debug(lockResult.pledgeId);
 
     const claimResult = await client.claimLockedAssetV1(
       new ClaimLockedAssetV1Request({
         assetLockClaimV1PB: {
+          lockId: lockResult.pledgeId,
           asset: {
             assetType: assetType,
             assetQuantity: assetQuantity,
           },
-          source: sourceAccountPB,
-          destination: destAccountPB,
-          sourceCertificate: sourceCert,
+          source: {
+            network: net2,
+            userId: user2,
+          },
+          destination: {
+            network: net2,
+            userId: user1,
+          },
+          sourceCertificate: srcCert,
           destCertificate: destCert,
           hashInfo: {
             secret: hashSecret,

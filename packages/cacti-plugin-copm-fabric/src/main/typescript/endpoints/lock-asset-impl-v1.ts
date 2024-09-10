@@ -56,13 +56,16 @@ export async function lockAssetV1Impl(
       userId: ownerId,
     });
 
-  const assetExchangeAgreementStr =
-    AssetManager.createAssetExchangeAgreementSerialized(
-      ccType,
-      transferrableAsset.idOrQuantity(),
-      destCert,
-      sourceCert,
-    );
+  const serializeAgreementFunc = transferrableAsset.isNFT()
+    ? AssetManager.createAssetExchangeAgreementSerialized
+    : AssetManager.createFungibleAssetExchangeAgreementSerialized;
+
+  const agreementStr = serializeAgreementFunc(
+    ccType,
+    transferrableAsset.idOrQuantity(),
+    destCert,
+    sourceCert,
+  );
 
   const lockInfoStr = AssetManager.createAssetLockInfoSerialized(
     hash,
@@ -71,8 +74,8 @@ export async function lockAssetV1Impl(
 
   const claimId = await transactionContext.invoke({
     contract: contractName,
-    method: "LockAsset",
-    args: [assetExchangeAgreementStr, lockInfoStr],
+    method: transferrableAsset.isNFT() ? "LockAsset" : "LockFungibleAsset",
+    args: [agreementStr, lockInfoStr],
   });
   return claimId;
 }

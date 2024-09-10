@@ -137,8 +137,11 @@
       },
       "AssetLockClaimV1": {
         "description": "Asset Claim per https://github.com/hyperledger/cacti/blob/main/weaver/rfcs/protocols/asset-transfer/generic.md#protocol-units-or-building-blocks",
-        "required": ["pledge_id","source","destination","asset","source_certificate", "hash_info"],
+        "required": ["lock_id","source","destination","asset","source_certificate", "hash_info"],
         "properties": {
+          "lock_id" : {
+            "type": "string"
+          },
           "source": {
             "$ref": "#/components/schemas/AssetAccountV1"
           },

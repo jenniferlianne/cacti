@@ -23,6 +23,11 @@ import { HashInfoV1PB } from "./hash_info_v1_pb_pb.js";
  */
 export class AssetLockClaimV1PB extends Message<AssetLockClaimV1PB> {
   /**
+   * @generated from field: string lock_id = 338696367;
+   */
+  lockId = "";
+
+  /**
    * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.AssetAccountV1PB source = 359634918;
    */
   source?: AssetAccountV1PB;
@@ -60,6 +65,7 @@ export class AssetLockClaimV1PB extends Message<AssetLockClaimV1PB> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.AssetLockClaimV1PB";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 338696367, name: "lock_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 359634918, name: "source", kind: "message", T: AssetAccountV1PB },
     { no: 356105204, name: "destination", kind: "message", T: AssetAccountV1PB },
     { no: 93121264, name: "asset", kind: "message", T: TransferrableAssetV1PB },

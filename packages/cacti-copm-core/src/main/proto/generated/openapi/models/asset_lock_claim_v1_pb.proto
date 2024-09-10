@@ -20,6 +20,8 @@ import "models/transferrable_asset_v1_pb.proto";
 
 message AssetLockClaimV1PB {
 
+  string lock_id = 338696367;
+
   AssetAccountV1PB source = 359634918;
 
   AssetAccountV1PB destination = 356105204;

@@ -15,12 +15,12 @@ package org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric;
 import "google/protobuf/any.proto";
 
 import "models/asset_account_v1_pb.proto";
-import "models/view_address_v1_pb.proto";
+import "models/view_v1_pb.proto";
 
 message StateProofV1PB {
 
-  AssetAccountV1PB user = 3599307;
+  AssetAccountV1PB account = 103577045;
 
-  ViewAddressV1PB view_address = 312477787;
+  ViewV1PB view = 3619493;
 
 }

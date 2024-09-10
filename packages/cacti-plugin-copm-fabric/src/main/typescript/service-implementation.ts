@@ -109,7 +109,7 @@ export class CopmFabricImpl
 
   public async lockAssetV1(
     req: LockAssetV1Request,
-  ): Promise<ClaimAssetV1200ResponsePB> {
+  ): Promise<PledgeAssetV1200ResponsePB> {
     this.log.debug("lockAssetV1 ENTRY req=%o", req);
     try {
       const claimId = await lockAssetV1Impl(
@@ -118,7 +118,7 @@ export class CopmFabricImpl
         this.DLTransactionContextFactory,
         this.contractNames.lockContract,
       );
-      const res = new ClaimAssetV1200ResponsePB({ claimId: claimId });
+      const res = new PledgeAssetV1200ResponsePB({ pledgeId: claimId });
       return res;
     } catch (error) {
       this.log.error(error);

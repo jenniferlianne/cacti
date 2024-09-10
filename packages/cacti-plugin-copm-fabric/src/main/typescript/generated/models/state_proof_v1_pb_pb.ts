@@ -15,21 +15,21 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { AssetAccountV1PB } from "./asset_account_v1_pb_pb.js";
-import { ViewAddressV1PB } from "./view_address_v1_pb_pb.js";
+import { ViewV1PB } from "./view_v1_pb_pb.js";
 
 /**
  * @generated from message org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.StateProofV1PB
  */
 export class StateProofV1PB extends Message<StateProofV1PB> {
   /**
-   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.AssetAccountV1PB user = 3599307;
+   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.AssetAccountV1PB account = 103577045;
    */
-  user?: AssetAccountV1PB;
+  account?: AssetAccountV1PB;
 
   /**
-   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.ViewAddressV1PB view_address = 312477787;
+   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.ViewV1PB view = 3619493;
    */
-  viewAddress?: ViewAddressV1PB;
+  view?: ViewV1PB;
 
   constructor(data?: PartialMessage<StateProofV1PB>) {
     super();
@@ -39,8 +39,8 @@ export class StateProofV1PB extends Message<StateProofV1PB> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.StateProofV1PB";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 3599307, name: "user", kind: "message", T: AssetAccountV1PB },
-    { no: 312477787, name: "view_address", kind: "message", T: ViewAddressV1PB },
+    { no: 103577045, name: "account", kind: "message", T: AssetAccountV1PB },
+    { no: 3619493, name: "view", kind: "message", T: ViewV1PB },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): StateProofV1PB {

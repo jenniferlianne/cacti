@@ -7,23 +7,23 @@ export async function proveStateV1Impl(
   contextFactory: DLTransactionContextFactory,
   log: Logger,
 ): Promise<boolean> {
-  const localOrg = req.stateProofV1PB?.user?.network
-    ? req.stateProofV1PB.user.network
+  const localOrg = req.stateProofV1PB?.account?.network
+    ? req.stateProofV1PB.account.network
     : "";
-  const user = req.stateProofV1PB?.user?.userId
-    ? req.stateProofV1PB.user.userId
+  const user = req.stateProofV1PB?.account?.userId
+    ? req.stateProofV1PB.account.userId
     : "";
-  const remoteNetwork = req.stateProofV1PB?.viewAddress?.network
-    ? req.stateProofV1PB.viewAddress.network
+  const remoteNetwork = req.stateProofV1PB?.view?.network
+    ? req.stateProofV1PB.view.network
     : "";
-  const contractId = req.stateProofV1PB?.viewAddress?.view?.contractId
-    ? req.stateProofV1PB.viewAddress.view.contractId
+  const contractId = req.stateProofV1PB?.view?.viewAddress?.contractId
+    ? req.stateProofV1PB.view.viewAddress.contractId
     : "";
-  const func = req.stateProofV1PB?.viewAddress?.view?.function
-    ? req.stateProofV1PB.viewAddress.view.function
+  const func = req.stateProofV1PB?.view?.viewAddress?.function
+    ? req.stateProofV1PB.view.viewAddress.function
     : "";
-  const args = req.stateProofV1PB?.viewAddress?.view?.input
-    ? req.stateProofV1PB.viewAddress.view.input
+  const args = req.stateProofV1PB?.view?.viewAddress?.input
+    ? req.stateProofV1PB.view.viewAddress.input
     : [];
 
   const remoteContext = await contextFactory.getRemoteTransactionContext(

@@ -14,26 +14,25 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { ViewV1PB } from "./view_v1_pb_pb.js";
 
 /**
  * @generated from message org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.ViewAddressV1PB
  */
 export class ViewAddressV1PB extends Message<ViewAddressV1PB> {
   /**
-   * @generated from field: string gateway = 189118908;
+   * @generated from field: string contract_id = 512823451;
    */
-  gateway = "";
+  contractId = "";
 
   /**
-   * @generated from field: string network = 232872497;
+   * @generated from field: string function = 307196890;
    */
-  network = "";
+  function = "";
 
   /**
-   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.ViewV1PB view = 3619493;
+   * @generated from field: repeated string input = 100358090;
    */
-  view?: ViewV1PB;
+  input: string[] = [];
 
   constructor(data?: PartialMessage<ViewAddressV1PB>) {
     super();
@@ -43,9 +42,9 @@ export class ViewAddressV1PB extends Message<ViewAddressV1PB> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "org.hyperledger.cacti.plugin.cacti.plugin.copm.fabric.ViewAddressV1PB";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 189118908, name: "gateway", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 232872497, name: "network", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3619493, name: "view", kind: "message", T: ViewV1PB },
+    { no: 512823451, name: "contract_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 307196890, name: "function", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 100358090, name: "input", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ViewAddressV1PB {

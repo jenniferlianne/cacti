@@ -5,6 +5,7 @@ import {
   AssetManager,
   HashFunctions,
 } from "@hyperledger/cacti-weaver-sdk-fabric";
+import { TransferrableAsset } from "../lib/transferrable-asset.js";
 
 export async function claimLockedAssetV1Impl(
   req: ClaimLockedAssetV1Request,
@@ -13,6 +14,9 @@ export async function claimLockedAssetV1Impl(
   contractName: string,
 ): Promise<string> {
   log.debug("parsing data");
+  const lockId = req.assetLockClaimV1PB?.lockId
+    ? req.assetLockClaimV1PB.lockId
+    : "unknown";
   const destNetwork = req.assetLockClaimV1PB?.destination?.network
     ? req.assetLockClaimV1PB?.destination.network
     : "unknown-network";
@@ -32,20 +36,12 @@ export async function claimLockedAssetV1Impl(
     ? req.assetLockClaimV1PB.hashInfo.secret
     : "";
 
-  let ccId: string = "unknown-asset";
-  if (req.assetLockClaimV1PB?.asset?.assetId) {
-    ccId = req.assetLockClaimV1PB.asset.assetId;
-  } else if (req.assetLockClaimV1PB?.asset?.assetQuantity) {
-    ccId = req.assetLockClaimV1PB?.asset?.assetQuantity.toString();
-  }
+  const asset = new TransferrableAsset(
+    req.assetLockClaimV1PB?.asset?.assetId,
+    req.assetLockClaimV1PB?.asset?.assetQuantity,
+  );
 
-  const assetExchangeAgreementStr =
-    AssetManager.createAssetExchangeAgreementSerialized(
-      ccType,
-      ccId,
-      destCert,
-      sourceCert,
-    );
+  log.debug(`the asset is NFT ${asset.isNFT()}`);
 
   let hash: HashFunctions.Hash;
   if (req.assetLockClaimV1PB?.hashInfo?.hashFcn == "SHA512") {
@@ -57,6 +53,17 @@ export async function claimLockedAssetV1Impl(
 
   const claimInfoStr = AssetManager.createAssetClaimInfoSerialized(hash);
 
+  const serializeAgreementFunc = asset.isNFT()
+    ? AssetManager.createAssetExchangeAgreementSerialized
+    : AssetManager.createFungibleAssetExchangeAgreementSerialized;
+
+  const agreementStr = serializeAgreementFunc(
+    ccType,
+    asset.idOrQuantity(),
+    destCert,
+    sourceCert,
+  );
+
   const transactionContext =
     await DLTransactionContextFactory.getTransactionContext({
       organization: destNetwork,
@@ -65,8 +72,8 @@ export async function claimLockedAssetV1Impl(
 
   const claimId = await transactionContext.invoke({
     contract: contractName,
-    method: "ClaimAsset",
-    args: [assetExchangeAgreementStr, claimInfoStr],
+    method: asset.isNFT() ? "ClaimAsset" : "ClaimFungibleAsset",
+    args: asset.isNFT() ? [agreementStr, claimInfoStr] : [lockId, claimInfoStr],
   });
   return claimId;
 }
