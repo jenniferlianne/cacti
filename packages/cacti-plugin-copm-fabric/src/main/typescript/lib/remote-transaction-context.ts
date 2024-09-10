@@ -42,7 +42,7 @@ export class RemoteTransactionContext {
     localTransactionParams: DLTransactionParams,
   ): Promise<string> {
     const contract = await this.connect();
-    const keyCert = await this.getKeyAndCertForRemoteRequestbyUserName(
+    const keyCert = await this.getKeyAndCertForRemoteRequestByUserName(
       this.localContext.wallet,
       this.account.userId,
     );
@@ -110,7 +110,7 @@ export class RemoteTransactionContext {
 
   public async invoke(transactionParams: DLTransactionParams): Promise<string> {
     const contract = await this.connect();
-    const keyCert = await this.getKeyAndCertForRemoteRequestbyUserName(
+    const keyCert = await this.getKeyAndCertForRemoteRequestByUserName(
       this.localContext.wallet,
       this.account.userId,
     );
@@ -195,9 +195,11 @@ export class RemoteTransactionContext {
     return network.getContract(this.interopContractName);
   }
 
-  private async getKeyAndCertForRemoteRequestbyUserName(
+  private async getKeyAndCertForRemoteRequestByUserName(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     wallet: any,
     username: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<{ key: ICryptoKey; cert: any }> {
     if (!wallet) {
       throw new Error("No wallet passed");

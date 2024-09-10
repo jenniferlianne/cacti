@@ -43,12 +43,9 @@ describe("PluginCopmFabric", () => {
   let apiServer: ApiServer;
   let addressInfoHttp: AddressInfo;
   let apiHttpHost: string;
-  let sourceAccount: DLAccount;
-  let sourceCert: string;
-  let destCert: string;
-  let sourceAccountPB: AssetAccountV1PB;
-  let destAccount: DLAccount;
-  let destAccountPB: AssetAccountV1PB;
+  let sourceAccount: DLAccount, destAccount: DLAccount;
+  let sourceCert: string, destCert: string;
+  let sourceAccountPB: AssetAccountV1PB, destAccountPB: AssetAccountV1PB;
   let assetManager: TestAssetManager;
   const contractName: string = "simpleassettransfer";
   const pledgeAssetName: string =

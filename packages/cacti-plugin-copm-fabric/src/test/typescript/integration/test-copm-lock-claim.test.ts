@@ -21,8 +21,11 @@ import {
   ClaimLockedAssetV1Request,
   LockAssetV1Request,
 } from "../../../main/typescript/generated/services/default_service_pb";
+import { AssetAccountV1PB } from "../../../main/typescript/generated/models/asset_account_v1_pb_pb";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
+import { DLAccount } from "../../../main/typescript/lib/types";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
+import { TestAssetManager } from "../lib/test-asset-manager";
 import * as path from "path";
 import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -40,6 +43,11 @@ describe("PluginCopmFabric", () => {
   let apiServer: ApiServer;
   let addressInfoHttp: AddressInfo;
   let apiHttpHost: string;
+  let sourceAccount: DLAccount, destAccount: DLAccount;
+  let sourceCert: string, destCert: string;
+  let sourceAccountPB: AssetAccountV1PB, destAccountPB: AssetAccountV1PB;
+  let assetManager: TestAssetManager;
+
   const hashSecret: string = "my_secret_123";
   const lockAssetName: string = "lockasset" + new Date().getTime().toString();
 
@@ -92,7 +100,26 @@ describe("PluginCopmFabric", () => {
     log.info("CRPC AddressInfo=%o", addressInfoCrpc);
 
     expect(apiServer).toBeTruthy();
-    log.info("contract deployed");
+
+    const net1 = fabricTestnet.networkNames()[0];
+    const [user1, user2] = fabricTestnet.userNames();
+    sourceAccount = {
+      organization: net1,
+      userId: user1,
+    };
+    destAccount = {
+      organization: net1,
+      userId: user2,
+    };
+    sourceAccountPB = AssetAccountV1PB.fromJson({
+      network: net1,
+      userId: user1,
+    });
+    destAccountPB = AssetAccountV1PB.fromJson({ network: net1, userId: user2 });
+    sourceCert = await fabricTestnet.getCertificateString(sourceAccount);
+    destCert = await fabricTestnet.getCertificateString(destAccount);
+
+    assetManager = fabricTestnet.assetManager();
   });
 
   afterAll(async () => {
@@ -102,23 +129,12 @@ describe("PluginCopmFabric", () => {
     }
   });
 
-  test("fabric-fabric can lock/claim asset on same network", async () => {
+  test("fabric-fabric can lock/claim nft on same network", async () => {
     const transport = createConnectTransport({
       baseUrl: apiHttpHost,
       httpVersion: "1.1",
     });
 
-    const net1 = fabricTestnet.networkNames()[0];
-    const [user1, user2] = fabricTestnet.userNames();
-    const sourceAccount = {
-      organization: net1,
-      userId: user1,
-    };
-    const destAccount = {
-      organization: net1,
-      userId: user2,
-    };
-    const assetManager = fabricTestnet.assetManager();
     const assetType = "bond";
 
     await assetManager.addNonFungibleAsset(
@@ -128,55 +144,44 @@ describe("PluginCopmFabric", () => {
     );
 
     const client = createPromiseClient(DefaultService, transport);
-    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
-    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
 
-    const res1 = await client.lockAssetV1(
+    const lockResult = await client.lockAssetV1(
       new LockAssetV1Request({
         assetLockV1PB: {
           asset: {
             assetType: assetType,
             assetId: lockAssetName,
           },
-          owner: {
-            network: net1,
-            userId: user1,
-          },
+          owner: sourceAccountPB,
           hashInfo: {
             secret: hashSecret,
           },
           expirySecs: BigInt(45),
-          sourceCertificate: source_cert,
-          destinationCertificate: dest_cert,
+          sourceCertificate: sourceCert,
+          destinationCertificate: destCert,
         },
       }),
     );
 
-    expect(res1).toBeTruthy();
+    expect(lockResult).toBeTruthy();
 
-    const res3 = await client.claimLockedAssetV1(
+    const claimResult = await client.claimLockedAssetV1(
       new ClaimLockedAssetV1Request({
         assetLockClaimV1PB: {
           asset: {
             assetType: assetType,
             assetId: lockAssetName,
           },
-          source: {
-            network: net1,
-            userId: user1,
-          },
-          destination: {
-            network: net1,
-            userId: user2,
-          },
-          sourceCertificate: source_cert,
-          destCertificate: dest_cert,
+          source: sourceAccountPB,
+          destination: destAccountPB,
+          sourceCertificate: sourceCert,
+          destCertificate: destCert,
           hashInfo: {
             secret: hashSecret,
           },
         },
       }),
     );
-    expect(res3).toBeTruthy();
+    expect(claimResult).toBeTruthy();
   });
 });
