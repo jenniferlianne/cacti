@@ -200,10 +200,10 @@ export class CopmWeaverFabricTestnet {
   ): Promise<DLContractContext> {
     const weaverConfig = this.getWeaverNetworkConfig(orgName);
     if (!weaverConfig.mspId) {
-      throw Error(`no mspic defined for ${orgName}`);
+      throw Error(`no mspId defined for ${orgName}`);
     }
     if (!weaverConfig.channelName) {
-      throw Error(`no mspic defined for ${orgName}`);
+      throw Error(`no channel name defined for ${orgName}`);
     }
     return {
       mspId: weaverConfig.mspId,
@@ -215,7 +215,7 @@ export class CopmWeaverFabricTestnet {
     };
   }
 
-  private getConnectionProfile(orgName: string): any {
+  private getConnectionProfile(orgName: string): object {
     const netConfig = this.getWeaverNetworkConfig(orgName);
     const ccp = JSON.parse(fs.readFileSync(netConfig.connProfilePath, "utf8"));
     return ccp;

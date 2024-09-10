@@ -18,7 +18,6 @@ import { ConfigService } from "@hyperledger/cactus-cmd-api-server";
 import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
 import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
-  ClaimPledgedAssetV1Request,
   PledgeAssetV1Request,
   ProvestateV1Request,
 } from "../../../main/typescript/generated/services/default_service_pb";
@@ -36,7 +35,6 @@ const log: Logger = LoggerProvider.getOrCreate({
 
 describe("PluginCopmFabric", () => {
   let fabricTestnet: CopmWeaverFabricTestnet;
-  let networkNames: string[];
   let httpServer: http.Server;
   let DLTransactionContextFactory: DLTransactionContextFactory;
   let apiServer: ApiServer;

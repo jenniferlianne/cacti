@@ -101,7 +101,7 @@
           },
           "secret" : {
             "type" : "string",
-            "example" : "mysecret"
+            "example" : "my_secret"
           }
         }
       },
