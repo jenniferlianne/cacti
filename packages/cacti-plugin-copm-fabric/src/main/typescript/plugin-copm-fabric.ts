@@ -5,7 +5,7 @@ import {
   IPluginCrpcService,
 } from "@hyperledger/cactus-core-api";
 import { ServiceType } from "@bufbuild/protobuf";
-import { DefaultService } from "./generated/services/default_service_connect";
+import { DefaultService } from "@hyperledger/cacti-copm-core";
 import { CopmFabricImpl } from "./service-implementation";
 import { DLTransactionContextFactory } from "./lib/dl-context-factory";
 import { CopmContractNames } from "./lib/types";

@@ -15,13 +15,13 @@ import {
 import { ApiServer } from "@hyperledger/cactus-cmd-api-server";
 import { AuthorizationProtocol } from "@hyperledger/cactus-cmd-api-server";
 import { ConfigService } from "@hyperledger/cactus-cmd-api-server";
-import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
-import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
+  DefaultService,
   ClaimPledgedAssetV1Request,
   PledgeAssetV1Request,
-} from "../../../main/typescript/generated/services/default_service_pb";
-import { AssetAccountV1PB } from "../../../main/typescript/generated/models/asset_account_v1_pb_pb";
+  AssetAccountV1PB,
+} from "@hyperledger/cacti-copm-core";
+import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
 import { DLAccount } from "../../../main/typescript/lib/types";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";

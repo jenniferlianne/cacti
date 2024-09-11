@@ -5,17 +5,17 @@ import {
 } from "@hyperledger/cactus-common";
 import { ServiceImpl } from "@connectrpc/connect";
 import type { ServiceType } from "@bufbuild/protobuf";
-import { DefaultService } from "./generated/services/default_service_connect";
 import {
-  ClaimLockedAssetV1Request,
+  DefaultService,
+  PledgeAssetV1Request,
+  PledgeAssetV1200ResponsePB,
   ClaimPledgedAssetV1Request,
   LockAssetV1Request,
-  PledgeAssetV1Request,
   ProvestateV1Request,
-} from "./generated/services/default_service_pb.js";
-import { ClaimAssetV1200ResponsePB } from "./generated//models/claim_asset_v1200_response_pb_pb";
-import { PledgeAssetV1200ResponsePB } from "./generated/models/pledge_asset_v1200_response_pb_pb";
-import { LockAssetV1200ResponsePB } from "./generated/models/lock_asset_v1200_response_pb_pb";
+  LockAssetV1200ResponsePB,
+  ClaimLockedAssetV1Request,
+  ClaimPledgedAssetV1200ResponsePB,
+} from "@hyperledger/cacti-copm-core";
 import { pledgeAssetV1Impl } from "./endpoints/pledge-asset-impl-v1";
 import { claimLockedAssetV1Impl } from "./endpoints/claim-locked-asset-v1";
 import { claimPledgedAssetV1Impl } from "./endpoints/claim-pledged-asset-v1";
@@ -77,7 +77,7 @@ export class CopmFabricImpl
 
   public async claimLockedAssetV1(
     req: ClaimLockedAssetV1Request,
-  ): Promise<ClaimAssetV1200ResponsePB> {
+  ): Promise<ClaimPledgedAssetV1200ResponsePB> {
     try {
       this.log.debug("claimAssetV1 ENTRY req=%o", req);
       const claimId = await claimLockedAssetV1Impl(
@@ -86,7 +86,7 @@ export class CopmFabricImpl
         this.DLTransactionContextFactory,
         this.contractNames.lockContract,
       );
-      const res = new ClaimAssetV1200ResponsePB({ claimId: claimId });
+      const res = new ClaimPledgedAssetV1200ResponsePB({ claimId: claimId });
       return res;
     } catch (ex) {
       this.log.error(ex.message);
@@ -96,7 +96,7 @@ export class CopmFabricImpl
 
   public async claimPledgedAssetV1(
     req: ClaimPledgedAssetV1Request,
-  ): Promise<ClaimAssetV1200ResponsePB> {
+  ): Promise<ClaimPledgedAssetV1200ResponsePB> {
     this.log.debug("claimAssetV1 ENTRY req=%o", req);
     const claimId = await claimPledgedAssetV1Impl(
       req,
@@ -104,7 +104,7 @@ export class CopmFabricImpl
       this.DLTransactionContextFactory,
       this.contractNames.pledgeContract,
     );
-    const res = new ClaimAssetV1200ResponsePB({ claimId: claimId });
+    const res = new ClaimPledgedAssetV1200ResponsePB({ claimId: claimId });
     return res;
   }
 

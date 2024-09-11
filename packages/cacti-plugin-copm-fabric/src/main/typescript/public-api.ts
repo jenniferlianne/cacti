@@ -6,5 +6,3 @@ export async function createPluginFactory(
 ): Promise<PluginFactoryCopmFabric> {
   return new PluginFactoryCopmFabric(pluginFactoryOptions);
 }
-
-export { DefaultService } from "./generated/services/default_service_connect";

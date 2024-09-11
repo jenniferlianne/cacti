@@ -18,11 +18,11 @@ import {
   ApiServer,
 } from "@hyperledger/cactus-cmd-api-server";
 import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
-import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
+  DefaultService,
   ClaimLockedAssetV1Request,
   LockAssetV1Request,
-} from "../../../main/typescript/generated/services/default_service_pb";
+} from "@hyperledger/cacti-copm-core";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
 import { TestAssetManager } from "../lib/test-asset-manager";
@@ -47,7 +47,6 @@ describe("PluginCopmFabric", () => {
 
   const hashSecret: string = "my_secret_123";
   const lockAssetName: string = "lockasset" + new Date().getTime().toString();
-  const lockAsset2Name: string = "lockasset2" + new Date().getTime().toString();
 
   beforeAll(async () => {
     httpServer = await Servers.startOnPreferredPort(4050);

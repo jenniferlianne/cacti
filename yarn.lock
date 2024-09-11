@@ -9051,6 +9051,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hyperledger/cacti-copm-core@workspace:packages/cacti-copm-core"
   dependencies:
+    "@bufbuild/buf": "npm:1.30.0"
+    "@bufbuild/protobuf": "npm:1.10.0"
+    "@bufbuild/protoc-gen-es": "npm:1.8.0"
+    "@connectrpc/connect": "npm:^1.4.0"
+    "@connectrpc/connect-node": "npm:^1.4.0"
+    "@connectrpc/protoc-gen-connect-es": "npm:^1.4.0"
     "@openapitools/openapi-generator-cli": "npm:2.13.4"
   languageName: unknown
   linkType: soft

@@ -1,4 +1,4 @@
-import { LockAssetV1Request } from "../generated/services/default_service_pb.js";
+import { LockAssetV1Request } from "@hyperledger/cacti-copm-core";
 import { Logger } from "@hyperledger/cactus-common";
 import {
   AssetManager,

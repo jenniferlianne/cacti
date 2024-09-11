@@ -6,12 +6,7 @@
     "test": "yarn run --top-level test:jest:all ./src/test/typescript/*/*.test.ts",
     "test:lock": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-lock-claim.test.ts",
     "test:provestate": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-provestate.test.ts",
-    "test:pledge": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-pledge-claim.test.ts",
-    "codegen:proto": "yarn run proto:copy; yarn run proto:connectrpc",
-    "proto:copy": "/bin/bash ../cacti-copm-core/export-protos.sh . fabric",
-    "proto:connectrpc": "yarn run buf generate --template=./buf.gen.yaml ./src/main/proto/generated/openapi",
-    "dev:redo_copm": "cd ../cacti-copm-core && yarn run bundleopenapi && yarn run codegen:proto",
-    "proto:weaver": "yarn run buf generate --template=./weaver-buf.gen.yaml ./src/main/proto/weaver-protos"
+    "test:pledge": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-pledge-claim.test.ts"
   },
   "dependencies": {
     "@bufbuild/buf": "1.30.0",

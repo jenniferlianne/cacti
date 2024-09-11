@@ -18,11 +18,11 @@ import {
   ApiServer,
 } from "@hyperledger/cactus-cmd-api-server";
 import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
-import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
   PledgeAssetV1Request,
   ProvestateV1Request,
-} from "../../../main/typescript/generated/services/default_service_pb";
+  DefaultService,
+} from "@hyperledger/cacti-copm-core";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
 import * as path from "path";

@@ -1,4 +1,4 @@
-import { PledgeAssetV1Request } from "../generated/services/default_service_pb.js";
+import { PledgeAssetV1Request } from "@hyperledger/cacti-copm-core";
 import { Logger } from "@hyperledger/cactus-common";
 import { DLTransactionContextFactory } from "../lib/dl-context-factory";
 import { TransferrableAsset } from "../lib/transferrable-asset.js";
