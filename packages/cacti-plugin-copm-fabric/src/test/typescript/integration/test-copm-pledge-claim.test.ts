@@ -3,7 +3,7 @@ import http from "node:http";
 
 import "jest-extended";
 import { v4 as uuidV4 } from "uuid";
-import { createPromiseClient } from "@connectrpc/connect";
+import { createPromiseClient, PromiseClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-node";
 import { PluginRegistry } from "@hyperledger/cactus-core";
 import {
@@ -41,20 +41,20 @@ describe("PluginCopmFabric", () => {
   let httpServer: http.Server;
   let DLTransactionContextFactory: DLTransactionContextFactory;
   let apiServer: ApiServer;
-  let addressInfoHttp: AddressInfo;
-  let apiHttpHost: string;
   let sourceAccount: DLAccount, destAccount: DLAccount;
   let sourceCert: string, destCert: string;
   let sourceAccountPB: AssetAccountV1PB, destAccountPB: AssetAccountV1PB;
   let assetManager: TestAssetManager;
+  let client: PromiseClient<typeof DefaultService>;
+
   const contractName: string = "simpleassettransfer";
   const pledgeAssetName: string =
     "pledgeasset" + new Date().getTime().toString();
 
   beforeAll(async () => {
     httpServer = await Servers.startOnPreferredPort(4050);
-    addressInfoHttp = httpServer.address() as AddressInfo;
-    apiHttpHost = `http://${addressInfoHttp.address}:${addressInfoHttp.port}`;
+    const addressInfoHttp = httpServer.address() as AddressInfo;
+    const apiHttpHost = `http://${addressInfoHttp.address}:${addressInfoHttp.port}`;
     log.debug("HTTP API host: %s", apiHttpHost);
 
     const pluginRegistry = new PluginRegistry({ plugins: [] });
@@ -117,6 +117,12 @@ describe("PluginCopmFabric", () => {
     sourceCert = await fabricTestnet.getCertificateString(sourceAccount);
     destCert = await fabricTestnet.getCertificateString(destAccount);
 
+    const transport = createConnectTransport({
+      baseUrl: apiHttpHost,
+      httpVersion: "1.1",
+    });
+    client = createPromiseClient(DefaultService, transport);
+
     log.info("test setup complete");
   });
 
@@ -126,12 +132,7 @@ describe("PluginCopmFabric", () => {
     }
   });
 
-  test("fabric-fabric asset nft pledge and claim", async () => {
-    const transport = createConnectTransport({
-      baseUrl: apiHttpHost,
-      httpVersion: "1.1",
-    });
-
+  test("fabric-fabric asset nft pledge and claim by asset id", async () => {
     const assetType = "bond01";
 
     await assetManager.addNonFungibleAsset(
@@ -139,8 +140,6 @@ describe("PluginCopmFabric", () => {
       pledgeAssetName,
       sourceAccount,
     );
-
-    const client = createPromiseClient(DefaultService, transport);
 
     const pledgeNFTResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
@@ -199,28 +198,21 @@ describe("PluginCopmFabric", () => {
   });
 
   test("fabric-fabric asset token pledge and claim", async () => {
-    const transport = createConnectTransport({
-      baseUrl: apiHttpHost,
-      httpVersion: "1.1",
-    });
-
     const assetType = "token1";
     const exchangeQuantity = 10;
 
-    // ensure initial account balance
-    await assetManager.addToken(assetType, exchangeQuantity, sourceAccount);
-    await assetManager.addToken(assetType, exchangeQuantity, destAccount);
+    // ensure initial account balance - user will not have a wallet if 0 tokens
+    await assetManager.addToken(assetType, 1 + exchangeQuantity, sourceAccount);
+    await assetManager.addToken(assetType, 1, destAccount);
 
-    const user1originalbalance = await assetManager.tokenBalance(
+    const user1StartBalance = await assetManager.tokenBalance(
       assetType,
       sourceAccount,
     );
-    const user2originalbalance = await assetManager.tokenBalance(
+    const user2StartBalance = await assetManager.tokenBalance(
       assetType,
       destAccount,
     );
-
-    const client = createPromiseClient(DefaultService, transport);
 
     const pledgeResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({
@@ -259,11 +251,11 @@ describe("PluginCopmFabric", () => {
 
     // Check that the tokens changed networks.
     expect(await assetManager.tokenBalance(assetType, sourceAccount)).toEqual(
-      user1originalbalance - exchangeQuantity,
+      user1StartBalance - exchangeQuantity,
     );
 
     expect(await assetManager.tokenBalance(assetType, destAccount)).toEqual(
-      user2originalbalance + exchangeQuantity,
+      user2StartBalance + exchangeQuantity,
     );
   });
 });

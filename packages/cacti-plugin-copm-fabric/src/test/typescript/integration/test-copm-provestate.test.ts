@@ -3,7 +3,7 @@ import http from "node:http";
 
 import "jest-extended";
 import { v4 as uuidV4 } from "uuid";
-import { createPromiseClient } from "@connectrpc/connect";
+import { createPromiseClient, PromiseClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-node";
 import { PluginRegistry } from "@hyperledger/cactus-core";
 import {
@@ -12,9 +12,11 @@ import {
   LoggerProvider,
   Servers,
 } from "@hyperledger/cactus-common";
-import { ApiServer } from "@hyperledger/cactus-cmd-api-server";
-import { AuthorizationProtocol } from "@hyperledger/cactus-cmd-api-server";
-import { ConfigService } from "@hyperledger/cactus-cmd-api-server";
+import {
+  AuthorizationProtocol,
+  ConfigService,
+  ApiServer,
+} from "@hyperledger/cactus-cmd-api-server";
 import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
 import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
@@ -25,6 +27,7 @@ import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-con
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
 import * as path from "path";
 import * as dotenv from "dotenv";
+import { TestAssetManager } from "../lib/test-asset-manager";
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const logLevel: LogLevelDesc = "DEBUG";
@@ -38,15 +41,17 @@ describe("PluginCopmFabric", () => {
   let httpServer: http.Server;
   let DLTransactionContextFactory: DLTransactionContextFactory;
   let apiServer: ApiServer;
-  let addressInfoHttp: AddressInfo;
-  let apiHttpHost: string;
+  let assetManager: TestAssetManager;
+  let net1: string, net2: string, user1: string, user2: string;
+  let source_cert: string, dest_cert: string;
+  let client: PromiseClient<typeof DefaultService>;
   const contractName: string = "simpleassettransfer";
   const proveAssetName: string = "proveasset" + new Date().getTime().toString();
 
   beforeAll(async () => {
     httpServer = await Servers.startOnPreferredPort(4050);
-    addressInfoHttp = httpServer.address() as AddressInfo;
-    apiHttpHost = `http://${addressInfoHttp.address}:${addressInfoHttp.port}`;
+    const addressInfoHttp = httpServer.address() as AddressInfo;
+    const apiHttpHost = `http://${addressInfoHttp.address}:${addressInfoHttp.port}`;
     log.debug("HTTP API host: %s", apiHttpHost);
 
     const pluginRegistry = new PluginRegistry({ plugins: [] });
@@ -95,6 +100,27 @@ describe("PluginCopmFabric", () => {
     log.info("CRPC AddressInfo=%o", addressInfoCrpc);
 
     expect(apiServer).toBeTruthy();
+
+    const transport = createConnectTransport({
+      baseUrl: apiHttpHost,
+      httpVersion: "1.1",
+    });
+    client = createPromiseClient(DefaultService, transport);
+
+    [net1, net2] = fabricTestnet.networkNames();
+    [user1, user2] = fabricTestnet.userNames();
+    assetManager = fabricTestnet.assetManager();
+
+    source_cert = await fabricTestnet.getCertificateString({
+      organization: net1,
+      userId: user1,
+    });
+
+    dest_cert = await fabricTestnet.getCertificateString({
+      organization: net2,
+      userId: user2,
+    });
+
     log.info("test setup complete");
   });
 
@@ -105,27 +131,10 @@ describe("PluginCopmFabric", () => {
   });
 
   test("fabric-fabric prove state", async () => {
-    const transport = createConnectTransport({
-      baseUrl: apiHttpHost,
-      httpVersion: "1.1",
+    await assetManager.addNonFungibleAsset("bond", proveAssetName, {
+      organization: net1,
+      userId: user1,
     });
-
-    const [net1, net2] = fabricTestnet.networkNames();
-    const [user1, user2] = fabricTestnet.userNames();
-    const sourceAccount = { organization: net1, userId: user1 };
-    const destAccount = { organization: net2, userId: user2 };
-    const assetManager = fabricTestnet.assetManager();
-
-    await assetManager.addNonFungibleAsset(
-      "bond",
-      proveAssetName,
-      sourceAccount,
-    );
-
-    const source_cert = await fabricTestnet.getCertificateString(sourceAccount);
-    const dest_cert = await fabricTestnet.getCertificateString(destAccount);
-
-    const client = createPromiseClient(DefaultService, transport);
 
     const pledgeResult = await client.pledgeAssetV1(
       new PledgeAssetV1Request({

@@ -6,6 +6,7 @@ import {
   HashFunctions,
 } from "@hyperledger/cacti-weaver-sdk-fabric";
 import { TransferrableAsset } from "../lib/transferrable-asset.js";
+import { DLTransactionParams } from "../lib/types.js";
 
 export async function claimLockedAssetV1Impl(
   req: ClaimLockedAssetV1Request,
@@ -16,16 +17,16 @@ export async function claimLockedAssetV1Impl(
   log.debug("parsing data");
   const lockId = req.assetLockClaimV1PB?.lockId
     ? req.assetLockClaimV1PB.lockId
-    : "unknown";
+    : "";
   const destNetwork = req.assetLockClaimV1PB?.destination?.network
     ? req.assetLockClaimV1PB?.destination.network
-    : "unknown-network";
+    : "";
   const destUser = req.assetLockClaimV1PB?.destination?.userId
     ? req.assetLockClaimV1PB.destination.userId
-    : "unknown-user";
+    : "";
   const ccType = req.assetLockClaimV1PB?.asset?.assetType
     ? req.assetLockClaimV1PB.asset.assetType
-    : "unknown-asset-type";
+    : "";
   const sourceCert = req.assetLockClaimV1PB?.sourceCertificate
     ? req.assetLockClaimV1PB?.sourceCertificate
     : "";
@@ -53,16 +54,27 @@ export async function claimLockedAssetV1Impl(
 
   const claimInfoStr = AssetManager.createAssetClaimInfoSerialized(hash);
 
-  const serializeAgreementFunc = asset.isNFT()
-    ? AssetManager.createAssetExchangeAgreementSerialized
-    : AssetManager.createFungibleAssetExchangeAgreementSerialized;
-
-  const agreementStr = serializeAgreementFunc(
-    ccType,
-    asset.idOrQuantity(),
-    destCert,
-    sourceCert,
-  );
+  let transactionParams: DLTransactionParams;
+  if (asset.isNFT()) {
+    const agreementStr = AssetManager.createAssetExchangeAgreementSerialized(
+      ccType,
+      asset.idOrQuantity(),
+      destCert,
+      sourceCert,
+    );
+    transactionParams = {
+      contract: contractName,
+      method: "ClaimAsset",
+      args: [agreementStr, claimInfoStr],
+    };
+  } else {
+    // NOTE: lock_id is required for tokens
+    transactionParams = {
+      contract: contractName,
+      method: "ClaimFungibleAsset",
+      args: [lockId, claimInfoStr],
+    };
+  }
 
   const transactionContext =
     await DLTransactionContextFactory.getTransactionContext({
@@ -70,10 +82,6 @@ export async function claimLockedAssetV1Impl(
       userId: destUser,
     });
 
-  const claimId = await transactionContext.invoke({
-    contract: contractName,
-    method: asset.isNFT() ? "ClaimAsset" : "ClaimFungibleAsset",
-    args: asset.isNFT() ? [agreementStr, claimInfoStr] : [lockId, claimInfoStr],
-  });
+  const claimId = await transactionContext.invoke(transactionParams);
   return claimId;
 }

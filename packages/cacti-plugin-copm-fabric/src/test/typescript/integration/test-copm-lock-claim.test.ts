@@ -3,7 +3,7 @@ import http from "node:http";
 
 import "jest-extended";
 import { v4 as uuidV4 } from "uuid";
-import { createPromiseClient } from "@connectrpc/connect";
+import { createPromiseClient, PromiseClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-node";
 import { PluginRegistry } from "@hyperledger/cactus-core";
 import {
@@ -12,9 +12,11 @@ import {
   LoggerProvider,
   Servers,
 } from "@hyperledger/cactus-common";
-import { ApiServer } from "@hyperledger/cactus-cmd-api-server";
-import { AuthorizationProtocol } from "@hyperledger/cactus-cmd-api-server";
-import { ConfigService } from "@hyperledger/cactus-cmd-api-server";
+import {
+  AuthorizationProtocol,
+  ConfigService,
+  ApiServer,
+} from "@hyperledger/cactus-cmd-api-server";
 import { PluginCopmFabric } from "../../../main/typescript/plugin-copm-fabric";
 import { DefaultService } from "../../../main/typescript/generated/services/default_service_connect";
 import {
@@ -24,7 +26,6 @@ import {
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
 import { TestAssetManager } from "../lib/test-asset-manager";
-import { PromiseClient } from "@connectrpc/connect";
 import * as path from "path";
 import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -40,19 +41,18 @@ describe("PluginCopmFabric", () => {
   let httpServer: http.Server;
   let DLTransactionContextFactory: DLTransactionContextFactory;
   let apiServer: ApiServer;
-  let addressInfoHttp: AddressInfo;
-  let apiHttpHost: string;
   let assetManager: TestAssetManager;
   let client: PromiseClient<typeof DefaultService>;
   let user1: string, net1: string, user2: string, net2: string;
 
   const hashSecret: string = "my_secret_123";
   const lockAssetName: string = "lockasset" + new Date().getTime().toString();
+  const lockAsset2Name: string = "lockasset2" + new Date().getTime().toString();
 
   beforeAll(async () => {
     httpServer = await Servers.startOnPreferredPort(4050);
-    addressInfoHttp = httpServer.address() as AddressInfo;
-    apiHttpHost = `http://${addressInfoHttp.address}:${addressInfoHttp.port}`;
+    const addressInfoHttp = httpServer.address() as AddressInfo;
+    const apiHttpHost = `http://${addressInfoHttp.address}:${addressInfoHttp.port}`;
     log.debug("HTTP API host: %s", apiHttpHost);
 
     const pluginRegistry = new PluginRegistry({ plugins: [] });
@@ -117,7 +117,7 @@ describe("PluginCopmFabric", () => {
     }
   });
 
-  test("fabric-fabric can lock/claim nft on same network", async () => {
+  test("fabric-fabric can lock/claim nft on same network by asset agreement", async () => {
     const assetType = "bond";
 
     const sourceCert = await fabricTestnet.getCertificateString({
