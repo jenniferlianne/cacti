@@ -4,5 +4,6 @@ node_modules/
 coverage/
 package-lock.json
 old/
+protos-js/
 build/
 docs/

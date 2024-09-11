@@ -20,6 +20,7 @@ build-local:
 	(cp package.json package-remote.json && \
 		cp package-local.json package.json && \
 		npm install --workspaces=false && \
+		mkdir -p build && \
 		cp -r protos-js build/) || \
 		(mv package-remote.json package.json && exit 1)	# Runs if failure
 	mv package-remote.json package.json	                # Runs if success
