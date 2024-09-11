@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 import { IPluginFactoryOptions } from "@hyperledger/cactus-core-api";
 import { PluginFactory } from "@hyperledger/cactus-core-api";
 

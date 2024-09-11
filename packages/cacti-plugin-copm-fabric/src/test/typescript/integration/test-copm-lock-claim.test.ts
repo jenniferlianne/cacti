@@ -21,11 +21,10 @@ import {
   ClaimLockedAssetV1Request,
   LockAssetV1Request,
 } from "../../../main/typescript/generated/services/default_service_pb";
-import { AssetAccountV1PB } from "../../../main/typescript/generated/models/asset_account_v1_pb_pb";
 import { DLTransactionContextFactory } from "../../../main/typescript/lib/dl-context-factory";
-import { DLAccount } from "../../../main/typescript/lib/types";
 import { CopmWeaverFabricTestnet } from "../lib/copm-weaver-fabric-testnet";
 import { TestAssetManager } from "../lib/test-asset-manager";
+import { PromiseClient } from "@connectrpc/connect";
 import * as path from "path";
 import * as dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -44,7 +43,7 @@ describe("PluginCopmFabric", () => {
   let addressInfoHttp: AddressInfo;
   let apiHttpHost: string;
   let assetManager: TestAssetManager;
-  let client: any;
+  let client: PromiseClient<typeof DefaultService>;
   let user1: string, net1: string, user2: string, net2: string;
 
   const hashSecret: string = "my_secret_123";
