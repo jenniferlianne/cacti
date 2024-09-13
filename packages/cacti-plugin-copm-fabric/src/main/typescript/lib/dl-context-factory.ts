@@ -1,5 +1,5 @@
 import { DLTransactionContext } from "./dl-transaction-context";
-import { RemoteTransactionContext } from "./remote-transaction-context";
+import { DLRemoteTransactionContext } from "./dl-remote-transaction-context";
 import { DLAccount } from "./types";
 
 export interface TransactionContextFactoryFunc {
@@ -10,7 +10,7 @@ export interface RemoteTransactionContextFactoryFunc {
   (
     account: DLAccount,
     remoteNetwork: string,
-  ): Promise<RemoteTransactionContext>;
+  ): Promise<DLRemoteTransactionContext>;
 }
 
 export interface DLTransactionContextFactory {

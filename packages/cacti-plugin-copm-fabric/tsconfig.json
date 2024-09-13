@@ -17,6 +17,9 @@
   ],
   "references": [
     {
+      "path": "../cacti-copm-core/tsconfig.json"
+    },
+    {
       "path": "../cactus-common/tsconfig.json"
     },
     {

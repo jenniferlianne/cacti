@@ -13,10 +13,10 @@ export async function claimPledgedAssetV1Impl(
   const sourceNetwork = req.assetPledgeClaimV1PB?.source?.network
     ? req.assetPledgeClaimV1PB.source.network
     : "";
-  const destNetwork = req.assetPledgeClaimV1PB?.destination?.network
+  const localNetwork = req.assetPledgeClaimV1PB?.destination?.network
     ? req.assetPledgeClaimV1PB?.destination.network
     : "";
-  const destUser = req.assetPledgeClaimV1PB?.destination?.userId
+  const localUser = req.assetPledgeClaimV1PB?.destination?.userId
     ? req.assetPledgeClaimV1PB.destination.userId
     : "";
   const ccType = req.assetPledgeClaimV1PB?.asset?.assetType
@@ -32,14 +32,14 @@ export async function claimPledgedAssetV1Impl(
     ? req.assetPledgeClaimV1PB?.destCertificate
     : "";
 
-  const asset = new TransferrableAsset(
-    req.assetPledgeClaimV1PB?.asset?.assetId,
-    req.assetPledgeClaimV1PB?.asset?.assetQuantity,
-  );
+  if (!req.assetPledgeClaimV1PB?.asset) {
+    throw Error("asset is undefined");
+  }
+  const asset = new TransferrableAsset(req.assetPledgeClaimV1PB.asset);
 
   const interop_context =
     await DLTransactionContextFactory.getRemoteTransactionContext(
-      { organization: destNetwork, userId: destUser },
+      { organization: localNetwork, userId: localUser },
       sourceNetwork,
     );
 
@@ -47,7 +47,7 @@ export async function claimPledgedAssetV1Impl(
     {
       contract: contractName,
       method: "GetAssetPledgeStatus",
-      args: [pledgeId, sourceCert, destNetwork, destCert],
+      args: [pledgeId, sourceCert, localNetwork, destCert],
     },
     {
       contract: contractName,

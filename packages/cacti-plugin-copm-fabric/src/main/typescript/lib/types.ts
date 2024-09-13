@@ -1,14 +1,3 @@
-import { DiscoveryOptions, Wallet } from "fabric-network";
-
-export type DLContractContext = {
-  channelName: string;
-  mspId: string;
-  networkName: string;
-  discoveryOptions: DiscoveryOptions;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  connectionProfile: any;
-  wallet: Wallet;
-};
 
 export type DLTransactionParams = {
   contract: string;

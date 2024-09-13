@@ -1,0 +1,88 @@
+import { ClaimPledgedAssetV1Request } from "../generated/services/default_service_pb.js";
+import { Logger } from "@hyperledger/cactus-common";
+import { DLTransactionContextFactory } from "../lib/dl-context-factory";
+import { TransferrableAsset } from "../lib/transferrable-asset.js";
+import { DLAccount } from "../lib/types.js";
+import {
+  validateAssetAccount,
+  validateTransferrableAsset,
+} from "../lib/validators.js";
+import { ConnectError, Code } from "@connectrpc/connect";
+
+export async function claimPledgedAssetV1Impl(
+  req: ClaimPledgedAssetV1Request,
+  log: Logger,
+  DLTransactionContextFactory: DLTransactionContextFactory,
+  contractName: string,
+): Promise<string> {
+  const data = validate(req);
+
+  const interop_context =
+    await DLTransactionContextFactory.getRemoteTransactionContext(
+      data.destAccount,
+      data.sourceNetwork,
+    );
+
+  const claimId = await interop_context.invokeFlow(
+    {
+      contract: contractName,
+      method: "GetAssetPledgeStatus",
+      args: [
+        data.pledgeId,
+        data.sourceCert,
+        data.destAccount.organization,
+        data.destCert,
+      ],
+    },
+    {
+      contract: contractName,
+      method: data.asset.isNFT() ? "ClaimRemoteAsset" : "ClaimRemoteTokenAsset",
+      args: [
+        data.pledgeId,
+        data.asset.assetType,
+        data.asset.idOrQuantity(),
+        data.sourceCert,
+        data.sourceNetwork,
+        "",
+      ],
+    },
+  );
+
+  return claimId;
+}
+
+function validate(req: ClaimPledgedAssetV1Request): {
+  asset: TransferrableAsset;
+  sourceCert: string;
+  destCert: string;
+  destAccount: DLAccount;
+  sourceNetwork: string;
+  pledgeId: string;
+} {
+  if (!req.assetPledgeClaimV1PB) {
+    throw new ConnectError("request data required", Code.InvalidArgument);
+  }
+  if (!req.assetPledgeClaimV1PB.destCertificate) {
+    throw new ConnectError("destCertificate required", Code.InvalidArgument);
+  }
+  if (!req.assetPledgeClaimV1PB.sourceCertificate) {
+    throw new ConnectError("sourceCertificate required", Code.InvalidArgument);
+  }
+  if (!req.assetPledgeClaimV1PB.source?.network) {
+    throw new ConnectError("source.network required", Code.InvalidArgument);
+  }
+  if (!req.assetPledgeClaimV1PB.pledgeId) {
+    throw new ConnectError("pledgeId required", Code.InvalidArgument);
+  }
+  return {
+    destAccount: validateAssetAccount(
+      req.assetPledgeClaimV1PB.destination,
+      "destination",
+    ),
+    asset: validateTransferrableAsset(req.assetPledgeClaimV1PB.asset, "asset"),
+    pledgeId: req.assetPledgeClaimV1PB.pledgeId,
+    sourceNetwork: req.assetPledgeClaimV1PB.source.network,
+    sourceCert: req.assetPledgeClaimV1PB.sourceCertificate,
+    destCert: req.assetPledgeClaimV1PB.destCertificate,
+  };
+}

@@ -1,16 +1,15 @@
-import { Code, ConnectError } from "@connectrpc/connect";
-
+import { TransferrableAssetV1PB } from "../generated/models/transferrable_asset_v1_pb_pb";
 export class TransferrableAsset {
-  private assetId: string | undefined;
-  private assetQuantity: number | undefined;
+  private asset: TransferrableAssetV1PB;
+  public assetType: string;
 
-  constructor(assetId: string | undefined, assetQuantity: number | undefined) {
-    this.assetId = assetId;
-    this.assetQuantity = assetQuantity;
+  constructor(asset: TransferrableAssetV1PB) {
+    this.asset = asset;
+    this.assetType = asset.assetType || "";
   }
 
   public isNFT(): boolean {
-    if (this.assetId) {
+    if (this.asset.assetId) {
       return true;
     } else {
       return false;
@@ -18,15 +17,10 @@ export class TransferrableAsset {
   }
 
   public idOrQuantity(): string {
-    if (this.assetId) {
-      return this.assetId;
-    } else if (this.assetQuantity) {
-      return this.assetQuantity.toString();
+    if (this.asset.assetQuantity) {
+      return this.asset.assetQuantity.toString();
     } else {
-      throw new ConnectError(
-        "Either assetQuantity or assetId must be supplied",
-        Code.InvalidArgument,
-      );
+      return this.asset.assetId || "";
     }
   }
 }

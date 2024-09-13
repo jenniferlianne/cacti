@@ -6,7 +6,13 @@ import {
   HashFunctions,
 } from "@hyperledger/cacti-weaver-sdk-fabric";
 import { TransferrableAsset } from "../lib/transferrable-asset.js";
-import { DLTransactionParams } from "../lib/types.js";
+import { DLAccount, DLTransactionParams } from "../lib/types.js";
+import {
+  validateAssetAccount,
+  validateHashInfo,
+  validateTransferrableAsset,
+} from "../lib/validators.js";
+import { ConnectError, Code } from "@connectrpc/connect";
 
 export async function claimLockedAssetV1Impl(
   req: ClaimLockedAssetV1Request,
@@ -14,53 +20,19 @@ export async function claimLockedAssetV1Impl(
   DLTransactionContextFactory: DLTransactionContextFactory,
   contractName: string,
 ): Promise<string> {
-  log.debug("parsing data");
-  const lockId = req.assetLockClaimV1PB?.lockId
-    ? req.assetLockClaimV1PB.lockId
-    : "";
-  const destNetwork = req.assetLockClaimV1PB?.destination?.network
-    ? req.assetLockClaimV1PB?.destination.network
-    : "";
-  const destUser = req.assetLockClaimV1PB?.destination?.userId
-    ? req.assetLockClaimV1PB.destination.userId
-    : "";
-  const ccType = req.assetLockClaimV1PB?.asset?.assetType
-    ? req.assetLockClaimV1PB.asset.assetType
-    : "";
-  const sourceCert = req.assetLockClaimV1PB?.sourceCertificate
-    ? req.assetLockClaimV1PB?.sourceCertificate
-    : "";
-  const destCert = req.assetLockClaimV1PB?.destCertificate
-    ? req.assetLockClaimV1PB?.destCertificate
-    : "";
-  const hashSecret = req.assetLockClaimV1PB?.hashInfo?.secret
-    ? req.assetLockClaimV1PB.hashInfo.secret
-    : "";
-
-  const asset = new TransferrableAsset(
-    req.assetLockClaimV1PB?.asset?.assetId,
-    req.assetLockClaimV1PB?.asset?.assetQuantity,
+  let transactionParams: DLTransactionParams;
+  const params = validate(req);
+  const claimInfoStr = AssetManager.createAssetClaimInfoSerialized(
+    params.hashInfo,
   );
 
-  log.debug(`the asset is NFT ${asset.isNFT()}`);
-
-  let hash: HashFunctions.Hash;
-  if (req.assetLockClaimV1PB?.hashInfo?.hashFcn == "SHA512") {
-    hash = new HashFunctions.SHA512();
-  } else {
-    hash = new HashFunctions.SHA256();
-  }
-  hash.setPreimage(hashSecret);
-
-  const claimInfoStr = AssetManager.createAssetClaimInfoSerialized(hash);
-
-  let transactionParams: DLTransactionParams;
-  if (asset.isNFT()) {
+  if (params.asset.isNFT()) {
+    const nftParams = validateNFTParams(req);
     const agreementStr = AssetManager.createAssetExchangeAgreementSerialized(
-      ccType,
-      asset.idOrQuantity(),
-      destCert,
-      sourceCert,
+      params.asset.assetType,
+      params.asset.idOrQuantity(),
+      nftParams.destCertificate,
+      nftParams.sourceCertificate,
     );
     transactionParams = {
       contract: contractName,
@@ -68,20 +40,67 @@ export async function claimLockedAssetV1Impl(
       args: [agreementStr, claimInfoStr],
     };
   } else {
-    // NOTE: lock_id is required for tokens
+    // NOTE: can not currently claim NFTs with only a lock id
     transactionParams = {
       contract: contractName,
       method: "ClaimFungibleAsset",
-      args: [lockId, claimInfoStr],
+      args: [params.lockId, claimInfoStr],
     };
   }
 
   const transactionContext =
-    await DLTransactionContextFactory.getTransactionContext({
-      organization: destNetwork,
-      userId: destUser,
-    });
-
+    await DLTransactionContextFactory.getTransactionContext(params.destination);
   const claimId = await transactionContext.invoke(transactionParams);
+
+  log.debug("claim complete");
   return claimId;
+}
+
+function validate(req: ClaimLockedAssetV1Request): {
+  asset: TransferrableAsset;
+  destination: DLAccount;
+  hashInfo: HashFunctions.Hash;
+  lockId: string;
+} {
+  if (!req.assetLockClaimV1PB) {
+    throw new ConnectError(`request data is required`, Code.InvalidArgument);
+  }
+  if (
+    !req.assetLockClaimV1PB?.asset?.assetId &&
+    !req.assetLockClaimV1PB?.lockId
+  ) {
+    throw new ConnectError(
+      "either lockId or asset.assetId is required",
+      Code.InvalidArgument,
+    );
+  }
+
+  return {
+    asset: validateTransferrableAsset(req.assetLockClaimV1PB.asset, "asset"),
+    hashInfo: validateHashInfo(req.assetLockClaimV1PB.hashInfo, "hashInfo"),
+    destination: validateAssetAccount(
+      req.assetLockClaimV1PB.destination,
+      "destination",
+    ),
+    lockId: req.assetLockClaimV1PB.lockId || "",
+  };
+}
+
+function validateNFTParams(req: ClaimLockedAssetV1Request): {
+  sourceCertificate: string;
+  destCertificate: string;
+} {
+  if (!req.assetLockClaimV1PB?.destCertificate) {
+    throw new ConnectError(
+      "destinationCertificate required",
+      Code.InvalidArgument,
+    );
+  }
+  if (!req.assetLockClaimV1PB?.sourceCertificate) {
+    throw new ConnectError("sourceCertificate required", Code.InvalidArgument);
+  }
+  return {
+    destCertificate: req.assetLockClaimV1PB.destCertificate,
+    sourceCertificate: req.assetLockClaimV1PB.sourceCertificate,
+  };
 }

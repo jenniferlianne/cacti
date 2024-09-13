@@ -6,6 +6,13 @@ import {
 } from "@hyperledger/cacti-weaver-sdk-fabric";
 import { TransferrableAsset } from "../lib/transferrable-asset.js";
 import { DLTransactionContextFactory } from "../lib/dl-context-factory";
+import { ConnectError, Code } from "@connectrpc/connect";
+import {
+  validateAssetAccount,
+  validateHashInfo,
+  validateTransferrableAsset,
+} from "../lib/validators.js";
+import { DLAccount } from "../lib/types.js";
 
 export async function lockAssetV1Impl(
   req: LockAssetV1Request,
@@ -13,69 +20,63 @@ export async function lockAssetV1Impl(
   DLTransactionContextFactory: DLTransactionContextFactory,
   contractName: string,
 ): Promise<string> {
-  log.debug("parsing data");
-
-  const ownerNetwork = req.assetLockV1PB?.owner?.network
-    ? req.assetLockV1PB.owner.network
-    : "";
-  const ownerId = req.assetLockV1PB?.owner?.userId
-    ? req.assetLockV1PB.owner.userId
-    : "";
-  const ccType = req.assetLockV1PB?.asset?.assetType
-    ? req.assetLockV1PB.asset.assetType
-    : "";
-  const hashSecret = req.assetLockV1PB?.hashInfo?.secret
-    ? req.assetLockV1PB.hashInfo.secret
-    : "";
-  const destCert = req.assetLockV1PB?.destinationCertificate
-    ? req.assetLockV1PB?.destinationCertificate
-    : "";
-  const sourceCert = req.assetLockV1PB?.sourceCertificate
-    ? req.assetLockV1PB?.sourceCertificate
-    : "";
-  const expirySecs = req.assetLockV1PB?.expirySecs
-    ? Number(req.assetLockV1PB.expirySecs)
-    : 60;
-
-  const transferrableAsset = new TransferrableAsset(
-    req.assetLockV1PB?.asset?.assetId,
-    req.assetLockV1PB?.asset?.assetQuantity,
-  );
-
-  let hash: HashFunctions.Hash;
-  if (req.assetLockV1PB?.hashInfo?.hashFcn == "SHA512") {
-    hash = new HashFunctions.SHA512();
-  } else {
-    hash = new HashFunctions.SHA256();
-  }
-  hash.setPreimage(hashSecret);
+  const params = validate(req);
 
   const transactionContext =
-    await DLTransactionContextFactory.getTransactionContext({
-      organization: ownerNetwork,
-      userId: ownerId,
-    });
+    await DLTransactionContextFactory.getTransactionContext(params.owner);
 
-  const serializeAgreementFunc = transferrableAsset.isNFT()
+  const serializeAgreementFunc = params.asset.isNFT()
     ? AssetManager.createAssetExchangeAgreementSerialized
     : AssetManager.createFungibleAssetExchangeAgreementSerialized;
 
   const agreementStr = serializeAgreementFunc(
-    ccType,
-    transferrableAsset.idOrQuantity(),
-    destCert,
-    sourceCert,
+    params.asset.assetType,
+    params.asset.idOrQuantity(),
+    params.destinationCertificate,
+    params.sourceCertificate,
   );
 
   const lockInfoStr = AssetManager.createAssetLockInfoSerialized(
-    hash,
-    Math.floor(Date.now() / 1000) + expirySecs,
+    params.hashInfo,
+    Math.floor(Date.now() / 1000) + params.expirySecs,
   );
 
   const claimId = await transactionContext.invoke({
     contract: contractName,
-    method: transferrableAsset.isNFT() ? "LockAsset" : "LockFungibleAsset",
+    method: params.asset.isNFT() ? "LockAsset" : "LockFungibleAsset",
     args: [agreementStr, lockInfoStr],
   });
   return claimId;
+}
+
+function validate(request: LockAssetV1Request): {
+  owner: DLAccount;
+  hashInfo: HashFunctions.Hash;
+  sourceCertificate: string;
+  destinationCertificate: string;
+  asset: TransferrableAsset;
+  expirySecs: number;
+} {
+  if (!request.assetLockV1PB) {
+    throw new ConnectError("data required", Code.InvalidArgument);
+  }
+  if (!request.assetLockV1PB.destinationCertificate) {
+    throw new ConnectError(
+      "destinationCertificate required",
+      Code.InvalidArgument,
+    );
+  }
+  if (!request.assetLockV1PB.sourceCertificate) {
+    throw new ConnectError("sourceCertificate required", Code.InvalidArgument);
+  }
+  return {
+    owner: validateAssetAccount(request.assetLockV1PB.owner, "owner"),
+    hashInfo: validateHashInfo(request.assetLockV1PB.hashInfo, "hashInfo"),
+    asset: validateTransferrableAsset(request.assetLockV1PB.asset, "asset"),
+    sourceCertificate: request.assetLockV1PB.sourceCertificate,
+    destinationCertificate: request.assetLockV1PB.destinationCertificate,
+    expirySecs: request.assetLockV1PB.expirySecs
+      ? Number(request.assetLockV1PB.expirySecs)
+      : 60,
+  };
 }

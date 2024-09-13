@@ -1,18 +1,21 @@
 import { Logger } from "@hyperledger/cactus-common";
 import {
-  DLContractContext,
   RemoteNetworkConfig,
   LocalRelayConfig,
   DLAccount,
   DLTransactionParams,
 } from "./types";
+import { FabricContractContext } from "./fabric-types";
 import { InteroperableHelper } from "@hyperledger/cacti-weaver-sdk-fabric";
 import { Gateway, Contract } from "fabric-network";
 import { ViewAddress } from "./view-address";
+import { DLRemoteTransactionContext } from "./dl-remote-transaction-context";
 import { ICryptoKey, Utils } from "fabric-common";
 
-export class RemoteTransactionContext {
-  private localContext: DLContractContext;
+export class FabricRemoteTransactionContext
+  implements DLRemoteTransactionContext
+{
+  private localContext: FabricContractContext;
   private localRelayConfig: LocalRelayConfig;
   private account: DLAccount;
   private interopContractName: string;
@@ -21,10 +24,11 @@ export class RemoteTransactionContext {
   private log: Logger;
 
   constructor(
-    localContext: DLContractContext,
+    localContext: FabricContractContext,
     localRelayConfig: LocalRelayConfig,
     account: DLAccount,
     remoteNetworkConfig: RemoteNetworkConfig,
+
     interopContractName: string,
     log: Logger,
   ) {
@@ -56,7 +60,9 @@ export class RemoteTransactionContext {
       (element) => element == "",
     );
     let interopFlowResponse;
-    this.log.info(`calling flow on relay ${this.localRelayConfig.endpoint}`);
+    this.log.debug(
+      `calling flow on relay on network ${this.localContext.networkName} relay: ${this.localRelayConfig.endpoint}`,
+    );
     try {
       interopFlowResponse = await InteroperableHelper.interopFlow(
         contract,
