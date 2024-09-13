@@ -71,6 +71,7 @@ export class CopmWeaverFabricTestnet {
   }
 
   public assetManager() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const testnet = this;
     return new TestAssetManager(
       this.assetContractName,
