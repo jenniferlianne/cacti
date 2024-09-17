@@ -1,5 +1,6 @@
 package org.hyperledger.cactus.plugin.ledger.connector.corda.server.api
 
+import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.AddContractJarsV1Request
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.ClearMonitorTransactionsV1Request
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.ClearMonitorTransactionsV1Response
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.DeployContractJarsBadRequestV1Response
@@ -28,6 +29,16 @@ import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.StopMon
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.VaultQueryV1Request
 
 interface ApiPluginLedgerConnectorCordaService {
+
+    /**
+     * POST /api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/add-contract-jars : Adds a set of jarfiles to the connector that have already been deployed to the ledger.
+     *
+     * @param addContractJarsV1Request  (required)
+     * @return OK (status code 200)
+     *         or Bad Request (status code 400)
+     * @see ApiPluginLedgerConnectorCorda#addContractJarsV1
+     */
+    fun addContractJarsV1(addContractJarsV1Request: AddContractJarsV1Request): DeployContractJarsSuccessV1Response
 
     /**
      * DELETE /api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/clear-monitor-transactions : Clear transactions from internal store so they&#39;ll not be available by GetMonitorTransactionsV1 anymore.

@@ -88,12 +88,18 @@ export class CopmFabricImpl
     req: ClaimPledgedAssetV1Request,
   ): Promise<ClaimPledgedAssetV1200ResponsePB> {
     this.log.debug("claimAssetV1 ENTRY req=%o", req);
-    const claimId = await Endpoints.claimPledgedAssetV1Impl(
-      req,
-      this.log,
-      this.contextFactory,
-      this.contractNames.pledgeContract,
-    );
+    let claimId;
+    try {
+      claimId = await Endpoints.claimPledgedAssetV1Impl(
+        req,
+        this.log,
+        this.contextFactory,
+        this.contractNames.pledgeContract,
+      );
+    } catch (ex) {
+      this.log.error(ex);
+      throw ex;
+    }
     const res = new ClaimPledgedAssetV1200ResponsePB({ claimId: claimId });
     return res;
   }

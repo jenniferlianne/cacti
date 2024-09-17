@@ -23,14 +23,15 @@
     "@bufbuild/protobuf": "1.10.0",
     "@connectrpc/connect": "1.4.0",
     "@hyperledger/cacti-copm-core": "workspace:^",
+    "@hyperledger/cacti-copm-test-tooling": "workspace:^",
     "@hyperledger/cacti-weaver-protos-js": "2.0.0",
-    "@hyperledger/cacti-weaver-sdk-fabric": "2.0.0",
+    "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^",
     "@hyperledger/cactus-common": "2.0.0",
     "@hyperledger/cactus-core": "2.0.0",
     "@hyperledger/cactus-core-api": "2.0.0",
-    "fabric-ca-client": "2.2.20",
-    "fabric-common": "2.2.20",
-    "fabric-network": "2.2.20"
+    "fabric-ca-client": "^2.2.20",
+    "fabric-common": "^2.2.20",
+    "fabric-network": "^2.2.20"
   },
   "devDependencies": {
     "@bufbuild/protoc-gen-es": "1.8.0",

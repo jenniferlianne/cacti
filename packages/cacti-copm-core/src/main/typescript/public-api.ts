@@ -21,5 +21,7 @@ export {
   DLTransactionParams,
 } from "./lib/types";
 export { ViewAddress } from "./lib/view-address";
+export { InteropFlow } from "./lib/interop-flow";
+export { TransferrableAsset } from "./lib/transferrable-asset";
 export * as Interfaces from "./interfaces";
 export * as Validators from "./validators";

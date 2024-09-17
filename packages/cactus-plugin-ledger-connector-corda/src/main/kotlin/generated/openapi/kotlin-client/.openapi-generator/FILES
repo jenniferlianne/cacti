@@ -21,6 +21,7 @@ src/main/kotlin/org/openapitools/client/infrastructure/ResponseExtensions.kt
 src/main/kotlin/org/openapitools/client/infrastructure/Serializer.kt
 src/main/kotlin/org/openapitools/client/infrastructure/URIAdapter.kt
 src/main/kotlin/org/openapitools/client/infrastructure/UUIDAdapter.kt
+src/main/kotlin/org/openapitools/client/models/AddContractJarsV1Request.kt
 src/main/kotlin/org/openapitools/client/models/CPIIDV1.kt
 src/main/kotlin/org/openapitools/client/models/ClearMonitorTransactionsV1Request.kt
 src/main/kotlin/org/openapitools/client/models/ClearMonitorTransactionsV1Response.kt

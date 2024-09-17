@@ -1,0 +1,187 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Copm Corda API",
+    "description": "invoke transactions on a corda ledger",
+    "version": "2.0.0-rc.7",
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "components": {
+    "schemas": {
+      "FlowInvocationType": {
+        "type": "string",
+        "nullable": false,
+        "enum": ["TRACKED_FLOW_DYNAMIC", "FLOW_DYNAMIC"],
+        "description": "Determines which flow starting method will be used on the back-end when invoking the flow. Based on the value here the plugin back-end might invoke the rpc.startFlowDynamic() method or the rpc.startTrackedFlowDynamic() method. Streamed responses are aggregated and returned in a single response to HTTP callers who are not equipped to handle streams like WebSocket/gRPC/etc. do."
+      },
+      "JvmType": {
+        "type": "object",
+        "description": "Represents a reference to a JVM type (such as a Java class)",
+        "required": ["fqClassName"],
+        "properties": {
+          "fqClassName": {
+            "type": "string",
+            "nullable": false,
+            "minLength": 1,
+            "maxLength": 65535
+          },
+          "constructorName": {
+            "type": "string",
+            "nullable": false,
+            "description": "This parameter is used to specify that the function used to construct this JvmType is not a constructor function but instead is a factory function. Setting this parameter will cause the plugin to look up methods of the class denoted by fqClassName instead of its constructors.",
+            "minLength": 1,
+            "maxLength": 65535
+          },
+          "invocationTarget": {
+            "$ref": "#/components/schemas/JvmObject"
+          }
+        }
+      },
+      "JvmTypeKind": {
+        "type": "string",
+        "nullable": false,
+        "enum": ["PRIMITIVE", "REFERENCE"]
+      },
+      "JvmObject": {
+        "description": "Can represent JVM primitive and reference types as well. The jvmTypeKind field indicates which one is being stored. If the jvmTypeKind field is set to REFERENCE then the jvmCtorArgs array is expected to be filled, otherwise (e.g. PRIMITIVE jvmTypeKind) it is expected that the primitiveValue property is filled with a primitive data type supported by the JSON standard such as strings, booleans, numbers, etc.",
+        "type": "object",
+        "required": ["jvmType", "jvmTypeKind"],
+        "properties": {
+          "jvmTypeKind": {
+            "$ref": "#/components/schemas/JvmTypeKind"
+          },
+          "primitiveValue": {},
+          "jvmCtorArgs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JvmObject",
+              "nullable": false
+            },
+            "minLength": 0,
+            "maxLength": 1024,
+            "nullable": false,
+            "default": []
+          },
+          "jvmType": {
+            "$ref": "#/components/schemas/JvmType"
+          }
+        }
+      },
+      "InvokeContractV1Request": {
+        "type": "object",
+        "required": [
+          "flowFullClassName",
+          "flowInvocationType",
+          "params",
+          "signingCredential"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "flowFullClassName": {
+            "description": "The fully qualified name of the Corda flow to invoke",
+            "example": "net.corda.samples.obligation.flows.IOUIssueFlow",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "nullable": false
+          },
+          "flowInvocationType": {
+            "$ref": "#/components/schemas/FlowInvocationType"
+          },
+          "params": {
+            "description": "The list of arguments to pass in to the contract method being invoked.",
+            "type": "array",
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/JvmObject",
+              "nullable": false
+            },
+            "nullable": false
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "description": "The amount of milliseconds to wait for a transaction receipt beforegiving up and crashing.",
+            "minimum": 0,
+            "default": 60000,
+            "nullable": false
+          }
+        }
+      },
+      "InvokeContractV1Response": {
+        "type": "object",
+        "required": ["success", "callOutput", "flowId"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "nullable": false
+          },
+          "callOutput": {
+            "type": "object",
+            "description": "Data returned from the JVM when no transaction is running"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "The net.corda.core.flows.StateMachineRunId value returned by the flow execution.",
+            "minLength": 1,
+            "maxLength": 1024,
+            "nullable": false
+          },
+          "progress": {
+            "type": "array",
+            "description": "An array of strings representing the aggregated stream of progress updates provided by a *tracked* flow invocation. If the flow invocation was not tracked, this array is still returned, but as empty.",
+            "items": {
+              "type": "string",
+              "minItems": 0,
+              "maxItems": 10000000
+            },
+            "default": []
+          },
+          "flowId": {
+            "type": "string",
+            "description": "The id for the flow handle"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/invoke-contract": {
+      "post": {
+        "operationId": "invokeContractV1",
+        "x-hyperledger-cacti": {
+          "http": {
+            "path": "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/invoke-contract",
+            "verbLowerCase": "post"
+          }
+        },
+        "summary": "Invokes a contract on a Corda ledger (e.g. a flow)",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvokeContractV1Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvokeContractV1Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

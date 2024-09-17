@@ -1,5 +1,6 @@
 package org.hyperledger.cactus.plugin.ledger.connector.corda.server.api
 
+import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.AddContractJarsV1Request
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.ClearMonitorTransactionsV1Request
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.ClearMonitorTransactionsV1Response
 import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.DeployContractJarsBadRequestV1Response
@@ -52,6 +53,17 @@ import kotlin.collections.Map
 @Validated
 @RequestMapping("\${api.base-path:}")
 open class ApiPluginLedgerConnectorCordaController(@Autowired(required = true) val service: ApiPluginLedgerConnectorCordaService) {
+
+
+    @RequestMapping(
+        method = [RequestMethod.POST],
+        value = ["/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/add-contract-jars"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    open fun addContractJarsV1( @Valid @RequestBody addContractJarsV1Request: AddContractJarsV1Request): ResponseEntity<DeployContractJarsSuccessV1Response> {
+        return ResponseEntity(service.addContractJarsV1(addContractJarsV1Request), HttpStatus.valueOf(200))
+    }
 
 
     @RequestMapping(
