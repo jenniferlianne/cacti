@@ -27,7 +27,6 @@
             "x-protobuf-index": 1,
             "type": "string",
             "example": "bond"
-            
           },
           "asset_id": {
             "x-protobuf-index": 2,
@@ -69,12 +68,12 @@
         ],
         "properties": {
           "source": {
-            "type" : "object",
+            "type": "object",
             "$ref": "#/components/schemas/AssetAccountV1",
             "x-protobuf-index": 1
           },
           "destination": {
-            "type" : "object",
+            "type": "object",
             "$ref": "#/components/schemas/AssetAccountV1",
             "example": {
               "network": "network2.org",
@@ -83,7 +82,7 @@
             "x-protobuf-index": 2
           },
           "asset": {
-            "type" : "object",
+            "type": "object",
             "$ref": "#/components/schemas/TransferrableAssetV1",
             "example": {
               "type": "bond",
@@ -133,26 +132,31 @@
               "asset_id": "ref203"
             }
           },
-          "owner": {
+          "source": {
             "type": "object",
             "$ref": "#/components/schemas/AssetAccountV1",
             "x-protobuf-index": 2
           },
+          "dest": {
+            "type": "object",
+            "$ref": "#/components/schemas/AssetAccountV1",
+            "x-protobuf-index": 3
+          },
           "hash_info": {
             "type": "object",
             "$ref": "#/components/schemas/HashInfoV1",
-            "x-protobuf-index": 3
+            "x-protobuf-index": 4
           },
           "destination_certificate": {
-            "x-protobuf-index": 4,
-            "type": "string"
-          },
-          "source_certificate": {
             "x-protobuf-index": 5,
             "type": "string"
           },
-          "expiry_secs": {
+          "source_certificate": {
             "x-protobuf-index": 6,
+            "type": "string"
+          },
+          "expiry_secs": {
+            "x-protobuf-index": 7,
             "type": "integer",
             "format": "int64",
             "default": 3600
@@ -302,6 +306,24 @@
     }
   },
   "paths": {
+    "/api/v1/plugins/@hyperledger/cacti-plugin-copm/no-op": {
+      "post": {
+        "x-hyperledger-cacti": {
+          "http": {
+            "path": "/api/v1/plugins/@hyperledger/cacti-plugin-copm/no-op",
+            "verbLowerCase": "post"
+          }
+        },
+        "operationId": "noopV1",
+        "summary": "A no-op operation.  May be used as a heath check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/plugins/@hyperledger/cacti-plugin-copm/pledge-asset": {
       "post": {
         "x-hyperledger-cacti": {
