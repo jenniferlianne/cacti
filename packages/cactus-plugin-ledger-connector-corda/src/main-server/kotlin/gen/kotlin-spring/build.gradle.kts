@@ -9,6 +9,8 @@ val corda_release_version = "4.12"
 val corda_core_release_version = "4.12"
 val spring_boot_version = "3.3.1"
 val jackson_version = "2.16.1"
+val cacti_version = "2.0.0-rc4"
+val kotlin_version = "1.9.24"
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
@@ -22,6 +24,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:3.3.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
+        classpath("net.corda.plugins:cordapp:5.1.1")
     }
 }
 
@@ -29,15 +33,21 @@ repositories {
     maven { url = uri("https://repo1.maven.org/maven2") }
     maven { url = uri("https://download.corda.net/maven/corda-releases") }
     maven { url = uri("https://jitpack.io") }
+
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+    kotlinOptions.javaParameters = true
+    kotlinOptions.freeCompilerArgs +=  listOf(
+                "-java-parameters",
+                "-Xjvm-default=all"
+    )
+
 }
 
 plugins {
-    val kotlinVersion = "1.9.24"
-    id("org.jetbrains.kotlin.jvm") version kotlinVersion
+    id("org.jetbrains.kotlin.jvm") version "1.9.24"
     id("org.springframework.boot") version "3.3.1"
 }
 
@@ -63,8 +73,12 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jackson_version")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
-
     implementation("com.hierynomus:sshj:0.38.0")
+    implementation(files("./protos-java-kt-2.0.0-rc.4.jar"))
+    implementation(files("./interop-workflows-2.0.0-rc.4.jar"))
+    implementation(files("./interop-contracts-2.0.0-rc.4.jar"))
+    implementation(files("./contracts-kotlin-0.4.jar"))
+    implementation(files("./workflows-kotlin-0.4.jar"))
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.boot:spring-boot-starter-validation:$spring_boot_version")
@@ -92,6 +106,7 @@ configurations {
         }
     }
 }
+
 
 repositories {
 	maven { url = uri("https://repo1.maven.org/maven2") }

@@ -30,6 +30,7 @@ export class PluginCopmFabric implements IPluginCrpcService {
   private readonly instanceId: string;
   private readonly logLevel: LogLevelDesc;
   private contextFactory: FabricTransactionContextFactory;
+  private interopConfig: CopmIF.InteropConfiguration;
   private copmContractNames: CopmContractNames;
   private readonly log: Logger;
 
@@ -46,6 +47,7 @@ export class PluginCopmFabric implements IPluginCrpcService {
       this.log,
     );
     this.copmContractNames = opts.contractNames;
+    this.interopConfig = opts.interopConfig;
     this.instanceId = this.opts.instanceId;
   }
 
@@ -57,6 +59,7 @@ export class PluginCopmFabric implements IPluginCrpcService {
     const implementation = new CopmFabricImpl(
       this.log,
       this.contextFactory,
+      this.interopConfig,
       this.copmContractNames,
     );
 

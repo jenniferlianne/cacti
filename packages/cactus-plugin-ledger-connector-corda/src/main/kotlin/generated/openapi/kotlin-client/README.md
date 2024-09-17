@@ -44,6 +44,7 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*DefaultApi* | [**addContractJarsV1**](docs/DefaultApi.md#addcontractjarsv1) | **POST** /api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/add-contract-jars | Adds a set of jarfiles to the connector that have already been deployed to the ledger.
 *DefaultApi* | [**clearMonitorTransactionsV1**](docs/DefaultApi.md#clearmonitortransactionsv1) | **DELETE** /api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/clear-monitor-transactions | Clear transactions from internal store so they'll not be available by GetMonitorTransactionsV1 anymore.
 *DefaultApi* | [**deployContractJarsV1**](docs/DefaultApi.md#deploycontractjarsv1) | **POST** /api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/deploy-contract-jars | Deploys a set of jar files (Cordapps, e.g. the contracts in Corda speak).
 *DefaultApi* | [**diagnoseNodeV1**](docs/DefaultApi.md#diagnosenodev1) | **POST** /api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/diagnose-node | 
@@ -64,6 +65,7 @@ Class | Method | HTTP request | Description
 <a id="documentation-for-models"></a>
 ## Documentation for Models
 
+ - [org.openapitools.client.models.AddContractJarsV1Request](docs/AddContractJarsV1Request.md)
  - [org.openapitools.client.models.CPIIDV1](docs/CPIIDV1.md)
  - [org.openapitools.client.models.ClearMonitorTransactionsV1Request](docs/ClearMonitorTransactionsV1Request.md)
  - [org.openapitools.client.models.ClearMonitorTransactionsV1Response](docs/ClearMonitorTransactionsV1Response.md)

@@ -5710,6 +5710,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@balena/dockerignore@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@balena/dockerignore@npm:1.0.2"
+  checksum: 10/13d654fdd725008577d32e721c720275bdc48f72bce612326363d5bed449febbed856c517a0b23c7c40d87cb531e63432804550b4ecc13e365d26fee38fb6c8a
+  languageName: node
+  linkType: hard
+
 "@bcoe/v8-coverage@npm:^0.2.3":
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
@@ -5790,7 +5797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bufbuild/protobuf@npm:1.10.0":
+"@bufbuild/protobuf@npm:1.10.0, @bufbuild/protobuf@npm:^1.10.0":
   version: 1.10.0
   resolution: "@bufbuild/protobuf@npm:1.10.0"
   checksum: 10/1f120f72bbb40dd3d0f8c73f1474b001cfb9be09c38b7b0292e35fec98c5184a3db380a6feff7626fb3fff108c8a8aa7fc8cfea14904dc0a1174a01c8e637cc6
@@ -5829,6 +5836,17 @@ __metadata:
     "@typescript/vfs": "npm:^1.4.0"
     typescript: "npm:4.5.2"
   checksum: 10/e243f655dd02fe2dc857a48c00846857c4a9fae89565aabe98ae35e3a5d3002727b9e0790bc136e8f358a8e7d42c594b308ff6b47027cd679646273d3a76cb7b
+  languageName: node
+  linkType: hard
+
+"@bufbuild/protoplugin@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "@bufbuild/protoplugin@npm:1.10.0"
+  dependencies:
+    "@bufbuild/protobuf": "npm:1.10.0"
+    "@typescript/vfs": "npm:^1.4.0"
+    typescript: "npm:4.5.2"
+  checksum: 10/829a6d64076a16d7a89e732be39f1988b52b8babee215d91a5f692e0e6ac3e2b58ea4012bd7707c3cef4b6952cfcc36076b646aa09ed68888aedb2fb004d659f
   languageName: node
   linkType: hard
 
@@ -6135,6 +6153,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@connectrpc/connect-node@npm:^1.4.0, @connectrpc/connect-node@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@connectrpc/connect-node@npm:1.6.1"
+  dependencies:
+    undici: "npm:^5.28.4"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.10.0
+    "@connectrpc/connect": 1.6.1
+  checksum: 10/af6fb393c0672334b61015fd69c41131cdf48532904127ccf066aadbab016b200a3e38d3e7e7cd4e1620055f7f64f2f444a2008525ced468c519430d8cf18854
+  languageName: node
+  linkType: hard
+
 "@connectrpc/connect-web@npm:1.4.0":
   version: 1.4.0
   resolution: "@connectrpc/connect-web@npm:1.4.0"
@@ -6171,6 +6201,26 @@ __metadata:
   bin:
     protoc-gen-connect-es: bin/protoc-gen-connect-es
   checksum: 10/41aca6dd648857504595acb063e5061aa058f629b4939bb9941464f292915b4b40d63793e6567745517ec187d069b6110827f6649ecea203b1ca99de5efca4d9
+  languageName: node
+  linkType: hard
+
+"@connectrpc/protoc-gen-connect-es@npm:^1.4.0":
+  version: 1.6.1
+  resolution: "@connectrpc/protoc-gen-connect-es@npm:1.6.1"
+  dependencies:
+    "@bufbuild/protobuf": "npm:^1.10.0"
+    "@bufbuild/protoplugin": "npm:^1.10.0"
+  peerDependencies:
+    "@bufbuild/protoc-gen-es": ^1.10.0
+    "@connectrpc/connect": 1.6.1
+  peerDependenciesMeta:
+    "@bufbuild/protoc-gen-es":
+      optional: true
+    "@connectrpc/connect":
+      optional: true
+  bin:
+    protoc-gen-connect-es: bin/protoc-gen-connect-es
+  checksum: 10/54a4439eefcf9a93f996da03df7e7ff7aa564f9157594f91f0a03429948532d2ede33df75c2a12a8d00158fd28c9585057ff82b21175c3343c6f02c98982c5ac
   languageName: node
   linkType: hard
 
@@ -9003,7 +9053,63 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger-cacti/cacti-plugin-copm-fabric@workspace:packages/cacti-plugin-copm-fabric":
+"@hyperledger-cacti/cacti-copm-test-tooling@workspace:^, @hyperledger-cacti/cacti-copm-test-tooling@workspace:packages/cacti-copm-test-tooling":
+  version: 0.0.0-use.local
+  resolution: "@hyperledger-cacti/cacti-copm-test-tooling@workspace:packages/cacti-copm-test-tooling"
+  dependencies:
+    "@connectrpc/connect": "npm:1.4.0"
+    "@connectrpc/connect-node": "npm:^1.6.1"
+    "@hyperledger-cacti/cacti-copm-core": "workspace:^"
+    "@hyperledger-cacti/cacti-plugin-copm-fabric": "workspace:^"
+    "@hyperledger/cacti-weaver-protos-js": "npm:2.0.0"
+    "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^"
+    "@hyperledger/cactus-cmd-api-server": "workspace:^"
+    "@hyperledger/cactus-common": "npm:2.0.0"
+    "@hyperledger/cactus-core": "npm:2.0.0"
+    "@hyperledger/cactus-core-api": "npm:2.0.0"
+    "@hyperledger/cactus-plugin-ledger-connector-corda": "workspace:^"
+    "@hyperledger/cactus-test-tooling": "workspace:^"
+    dockerode: "npm:^4.0.2"
+    fabric-ca-client: "npm:^2.2.20"
+    fabric-common: "npm:^2.2.20"
+    fabric-network: "npm:^2.2.20"
+  languageName: unknown
+  linkType: soft
+
+"@hyperledger-cacti/cacti-plugin-copm-corda@workspace:packages/cacti-plugin-copm-corda":
+  version: 0.0.0-use.local
+  resolution: "@hyperledger-cacti/cacti-plugin-copm-corda@workspace:packages/cacti-plugin-copm-corda"
+  dependencies:
+    "@bufbuild/buf": "npm:1.30.0"
+    "@bufbuild/protobuf": "npm:1.10.0"
+    "@bufbuild/protoc-gen-es": "npm:1.8.0"
+    "@connectrpc/connect": "npm:1.4.0"
+    "@connectrpc/connect-node": "npm:^1.4.0"
+    "@connectrpc/connect-web": "npm:1.4.0"
+    "@connectrpc/protoc-gen-connect-es": "npm:^1.4.0"
+    "@hyperledger-cacti/cacti-copm-core": "workspace:^"
+    "@hyperledger-cacti/cacti-copm-test-tooling": "workspace:^"
+    "@hyperledger/cacti-weaver-protos-js": "workspace:^"
+    "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^"
+    "@hyperledger/cactus-cmd-api-server": "npm:2.0.0"
+    "@hyperledger/cactus-common": "npm:2.0.0"
+    "@hyperledger/cactus-core": "npm:2.0.0"
+    "@hyperledger/cactus-core-api": "npm:2.0.0"
+    "@hyperledger/cactus-plugin-keychain-memory": "npm:2.0.0"
+    "@hyperledger/cactus-plugin-ledger-connector-corda": "npm:2.0.0"
+    "@hyperledger/cactus-test-tooling": "npm:2.0.0"
+    "@openapitools/openapi-generator-cli": "npm:2.13.4"
+    "@types/convict": "npm:^6"
+    "@types/dockerode": "npm:3.2.7"
+    convict: "npm:^6.2.4"
+    dockerode: "npm:3.3.0"
+    http-errors-enhanced-cjs: "npm:^2.0.1"
+    internal-ip: "npm:6.2.0"
+    jks-js: "npm:^1.1.4"
+  languageName: unknown
+  linkType: soft
+
+"@hyperledger-cacti/cacti-plugin-copm-fabric@workspace:^, @hyperledger-cacti/cacti-plugin-copm-fabric@workspace:packages/cacti-plugin-copm-fabric":
   version: 0.0.0-use.local
   resolution: "@hyperledger-cacti/cacti-plugin-copm-fabric@workspace:packages/cacti-plugin-copm-fabric"
   dependencies:
@@ -9015,7 +9121,7 @@ __metadata:
     "@connectrpc/protoc-gen-connect-es": "npm:1.4.0"
     "@hyperledger-cacti/cacti-copm-core": "workspace:^"
     "@hyperledger/cacti-weaver-protos-js": "npm:2.0.0"
-    "@hyperledger/cacti-weaver-sdk-fabric": "npm:2.0.0"
+    "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^"
     "@hyperledger/cactus-cmd-api-server": "npm:2.0.0"
     "@hyperledger/cactus-common": "npm:2.0.0"
     "@hyperledger/cactus-core": "npm:2.0.0"
@@ -9024,9 +9130,9 @@ __metadata:
     "@hyperledger/cactus-plugin-ledger-connector-fabric": "npm:2.0.0"
     "@hyperledger/cactus-test-tooling": "npm:2.0.0"
     "@openapitools/openapi-generator-cli": "npm:2.13.4"
-    fabric-ca-client: "npm:2.2.20"
-    fabric-common: "npm:2.2.20"
-    fabric-network: "npm:2.2.20"
+    fabric-ca-client: "npm:^2.2.20"
+    fabric-common: "npm:^2.2.20"
+    fabric-network: "npm:^2.2.20"
   languageName: unknown
   linkType: soft
 
@@ -9335,7 +9441,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger/cacti-weaver-protos-js@npm:2.0.0, @hyperledger/cacti-weaver-protos-js@workspace:weaver/common/protos-js":
+"@hyperledger/cacti-weaver-protos-js@npm:2.0.0, @hyperledger/cacti-weaver-protos-js@workspace:^, @hyperledger/cacti-weaver-protos-js@workspace:weaver/common/protos-js":
   version: 0.0.0-use.local
   resolution: "@hyperledger/cacti-weaver-protos-js@workspace:weaver/common/protos-js"
   dependencies:
@@ -9370,7 +9476,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger/cacti-weaver-sdk-fabric@npm:2.0.0, @hyperledger/cacti-weaver-sdk-fabric@workspace:weaver/sdks/fabric/interoperation-node-sdk":
+"@hyperledger/cacti-weaver-sdk-fabric@npm:2.0.0, @hyperledger/cacti-weaver-sdk-fabric@workspace:^, @hyperledger/cacti-weaver-sdk-fabric@workspace:weaver/sdks/fabric/interoperation-node-sdk":
   version: 0.0.0-use.local
   resolution: "@hyperledger/cacti-weaver-sdk-fabric@workspace:weaver/sdks/fabric/interoperation-node-sdk"
   dependencies:
@@ -9422,7 +9528,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger/cactus-cmd-api-server@npm:2.0.0, @hyperledger/cactus-cmd-api-server@workspace:packages/cactus-cmd-api-server":
+"@hyperledger/cactus-cmd-api-server@npm:2.0.0, @hyperledger/cactus-cmd-api-server@workspace:^, @hyperledger/cactus-cmd-api-server@workspace:packages/cactus-cmd-api-server":
   version: 0.0.0-use.local
   resolution: "@hyperledger/cactus-cmd-api-server@workspace:packages/cactus-cmd-api-server"
   dependencies:
@@ -10369,7 +10475,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger/cactus-plugin-ledger-connector-corda@npm:2.0.0, @hyperledger/cactus-plugin-ledger-connector-corda@workspace:packages/cactus-plugin-ledger-connector-corda":
+"@hyperledger/cactus-plugin-ledger-connector-corda@npm:2.0.0, @hyperledger/cactus-plugin-ledger-connector-corda@workspace:^, @hyperledger/cactus-plugin-ledger-connector-corda@workspace:packages/cactus-plugin-ledger-connector-corda":
   version: 0.0.0-use.local
   resolution: "@hyperledger/cactus-plugin-ledger-connector-corda@workspace:packages/cactus-plugin-ledger-connector-corda"
   dependencies:
@@ -10933,7 +11039,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger/cactus-test-tooling@npm:2.0.0, @hyperledger/cactus-test-tooling@workspace:packages/cactus-test-tooling":
+"@hyperledger/cactus-test-tooling@npm:2.0.0, @hyperledger/cactus-test-tooling@workspace:^, @hyperledger/cactus-test-tooling@workspace:packages/cactus-test-tooling":
   version: 0.0.0-use.local
   resolution: "@hyperledger/cactus-test-tooling@workspace:packages/cactus-test-tooling"
   dependencies:
@@ -16727,6 +16833,15 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/ae12146e38a4f9043906c6bc23bfb31c85fa9154d9abd1ca1924c083c5545a1c5fdde8a754966db65ccee76ffab67ef7bbb9a623ec531cc72f8b8c526effcfa6
+  languageName: node
+  linkType: hard
+
+"@types/convict@npm:^6":
+  version: 6.1.6
+  resolution: "@types/convict@npm:6.1.6"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/680e6ec527545d4bf3a4a7368c71510b67a09f131a058c2c4616a3a445e9f2be58b42a21535a8078739439b98b1326130f270fff80940465dc40b83b9bf22f4c
   languageName: node
   linkType: hard
 
@@ -24065,7 +24180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"convict@npm:6.2.4":
+"convict@npm:6.2.4, convict@npm:^6.2.4":
   version: 6.2.4
   resolution: "convict@npm:6.2.4"
   dependencies:
@@ -24359,6 +24474,17 @@ __metadata:
     nan: "npm:^2.14.1"
     node-gyp: "npm:latest"
   checksum: 10/f39e11d1898025f98da7e51945b1095d58e2a16ff0c1835de95ecfb4ca60d3427667b38094ccf021cca8c5df69a05a4bba29aae8344426af3e06daf06ce0bbf4
+  languageName: node
+  linkType: hard
+
+"cpu-features@npm:~0.0.10":
+  version: 0.0.10
+  resolution: "cpu-features@npm:0.0.10"
+  dependencies:
+    buildcheck: "npm:~0.0.6"
+    nan: "npm:^2.19.0"
+    node-gyp: "npm:latest"
+  checksum: 10/941b828ffe77582b2bdc03e894c913e2e2eeb5c6043ccb01338c34446d026f6888dc480ecb85e684809f9c3889d245f3648c7907eb61a92bdfc6aed039fcda8d
   languageName: node
   linkType: hard
 
@@ -26229,6 +26355,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"docker-modem@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "docker-modem@npm:5.0.3"
+  dependencies:
+    debug: "npm:^4.1.1"
+    readable-stream: "npm:^3.5.0"
+    split-ca: "npm:^1.0.1"
+    ssh2: "npm:^1.15.0"
+  checksum: 10/fc4cc09f3aab0e17d32eb5a01974bed845a803e23352937aceab2e35c35bdcd283d1655c154b737063b037f164f57addbd447628d620f564a2da82e036543a5f
+  languageName: node
+  linkType: hard
+
 "dockerode@npm:3.3.0":
   version: 3.3.0
   resolution: "dockerode@npm:3.3.0"
@@ -26246,6 +26384,17 @@ __metadata:
     docker-modem: "npm:^3.0.0"
     tar-fs: "npm:~2.0.1"
   checksum: 10/7bf4c06a2f63b6afaf8000355cca6c89f142a7dbb61a92efb8b0947adc277b9e85e642b9b8ee51d6c2a2d6d8d115088afb852c6055a22562eb39d9f40aabc874
+  languageName: node
+  linkType: hard
+
+"dockerode@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "dockerode@npm:4.0.2"
+  dependencies:
+    "@balena/dockerignore": "npm:^1.0.2"
+    docker-modem: "npm:^5.0.3"
+    tar-fs: "npm:~2.0.1"
+  checksum: 10/859279721553cc07d00f8e7ac55abb3bba3a8a42685c742f3651c46a996755c720005fedc8b6bb7ac0ca5dc9123536164099c93741d691c7779669ecde3bbc3d
   languageName: node
   linkType: hard
 
@@ -29498,7 +29647,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fabric-ca-client@npm:2.2.20":
+"fabric-ca-client@npm:2.2.20, fabric-ca-client@npm:^2.2.20":
   version: 2.2.20
   resolution: "fabric-ca-client@npm:2.2.20"
   dependencies:
@@ -29522,7 +29671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fabric-common@npm:2.2.20":
+"fabric-common@npm:2.2.20, fabric-common@npm:^2.2.20":
   version: 2.2.20
   resolution: "fabric-common@npm:2.2.20"
   dependencies:
@@ -29567,7 +29716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fabric-network@npm:2.2.20":
+"fabric-network@npm:2.2.20, fabric-network@npm:^2.2.20":
   version: 2.2.20
   resolution: "fabric-network@npm:2.2.20"
   dependencies:
@@ -32703,7 +32852,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors-enhanced-cjs@npm:2.0.1":
+"http-errors-enhanced-cjs@npm:2.0.1, http-errors-enhanced-cjs@npm:^2.0.1":
   version: 2.0.1
   resolution: "http-errors-enhanced-cjs@npm:2.0.1"
   checksum: 10/e9fe559b55ac297b4df50fba03053c47efebb1eb3a561c57870c27d14b7b7d8f8034da842d2bd57b14afb085b1ed94ad8d676fd3865c304eb8fbe57ac42ed82a
@@ -36288,6 +36437,17 @@ __metadata:
   bin:
     jiti: bin/jiti.js
   checksum: 10/289b124cea411c130a14ffe88e3d38376ab44b6695616dfa0a1f32176a8f20ec90cdd6d2b9d81450fc6467cfa4d865f04f49b98452bff0f812bc400fd0ae78d6
+  languageName: node
+  linkType: hard
+
+"jks-js@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "jks-js@npm:1.1.4"
+  dependencies:
+    node-forge: "npm:^1.3.1"
+    node-int64: "npm:^0.4.0"
+    node-rsa: "npm:^1.1.1"
+  checksum: 10/7b83e8774fd26650224e62e50135f499d554e66299bf55accebb910082b171c96a160447625689a9889aa3a55acfec02cdb3adb76353fbc8e2640c03a137fc6a
   languageName: node
   linkType: hard
 
@@ -40186,6 +40346,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nan@npm:^2.19.0, nan@npm:^2.20.0":
+  version: 2.22.0
+  resolution: "nan@npm:2.22.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10/ab165ba910e549fcc21fd561a33f534d86e81ae36c97b1019dcfe506b09692ff867c97794a54b49c9a83b8b485f529f0f58d24966c3a11863c97dc70814f4d50
+  languageName: node
+  linkType: hard
+
 "nano-base32@npm:^1.0.1":
   version: 1.0.1
   resolution: "nano-base32@npm:1.0.1"
@@ -40866,6 +41035,15 @@ __metadata:
   version: 2.0.10
   resolution: "node-releases@npm:2.0.10"
   checksum: 10/d784ecde25696a15d449c4433077f5cce620ed30a1656c4abf31282bfc691a70d9618bae6868d247a67914d1be5cc4fde22f65a05f4398cdfb92e0fc83cadfbc
+  languageName: node
+  linkType: hard
+
+"node-rsa@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "node-rsa@npm:1.1.1"
+  dependencies:
+    asn1: "npm:^0.2.4"
+  checksum: 10/310187a9b25952b4c39371313e906894209aee5e7ee3e984b27bef44f867e5b8a78f4171f232edca22f30c3ea80e585e39e160f9912d632d179416852b8b62c1
   languageName: node
   linkType: hard
 
@@ -49245,6 +49423,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ssh2@npm:^1.15.0":
+  version: 1.16.0
+  resolution: "ssh2@npm:1.16.0"
+  dependencies:
+    asn1: "npm:^0.2.6"
+    bcrypt-pbkdf: "npm:^1.0.2"
+    cpu-features: "npm:~0.0.10"
+    nan: "npm:^2.20.0"
+  dependenciesMeta:
+    cpu-features:
+      optional: true
+    nan:
+      optional: true
+  checksum: 10/0951c22d9c5a0e3b89a8e5ae890ebcbce9f1f94dbed37d1490e4e48e26bc8b074fa81f202ee57b708e31b5f33033f4c870b92047f4f02b6bc26c32225b01d84c
+  languageName: node
+  linkType: hard
+
 "ssh2@npm:^1.4.0":
   version: 1.6.0
   resolution: "ssh2@npm:1.6.0"
@@ -52390,7 +52585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.28.3":
+"undici@npm:^5.28.3, undici@npm:^5.28.4":
   version: 5.28.4
   resolution: "undici@npm:5.28.4"
   dependencies:

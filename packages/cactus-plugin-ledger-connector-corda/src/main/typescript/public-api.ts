@@ -29,6 +29,7 @@ export {
 } from "./api-client/corda-api-client";
 
 export { createJvmBoolean } from "./jvm/serde/factory/create-jvm-boolean";
+export { createJvmString } from "./jvm/serde/factory/create-jvm-string";
 
 export {
   ICreateJvmCactiPublicImplKeyOptions,
