@@ -125,7 +125,13 @@
       "path" : "weaver/sdks/fabric/interoperation-node-sdk/tsconfig.cacti.json"
     },
     {
+      "path": "./packages/cacti-copm-test-tooling/tsconfig.json"
+    },
+    {
       "path": "./packages/cacti-plugin-copm-fabric/tsconfig.json"
+    },
+    {
+      "path": "./packages/cacti-plugin-copm-corda/tsconfig.json"
     },
     {
       "path": "./packages/cactus-test-tooling/tsconfig.json"

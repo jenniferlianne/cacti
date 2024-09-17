@@ -4,7 +4,7 @@ import { LogLevelDesc, Logger } from "@hyperledger/cactus-common";
 import { TestAssetManager } from "./test-asset-manager";
 import { TestFabricConfiguration } from "./test-fabric-configuration";
 import { FabricTransactionContextFactory } from "../../../main/typescript/lib/fabric-context-factory";
-import { TestInteropConfiguration } from "./test-interop-configuration";
+import { WeaverInteropConfiguration } from "@hyperledger-cacti/cacti-copm-test-tooling";
 
 type FabricIdentity = Identity & {
   credentials: {
@@ -17,7 +17,7 @@ export class CopmWeaverFabricTestnet {
   logLevel: LogLevelDesc = "INFO";
   log: Logger;
   fabricConfig: TestFabricConfiguration;
-  interopConfig: TestInteropConfiguration;
+  interopConfig: WeaverInteropConfiguration;
   contractNames: CopmContractNames;
 
   private assetContractName: string;
@@ -28,7 +28,7 @@ export class CopmWeaverFabricTestnet {
     this.assetContractName = assetContractName;
     this.networkAdminName = "networkadmin";
     this.fabricConfig = new TestFabricConfiguration(log);
-    this.interopConfig = new TestInteropConfiguration("interop", this.log);
+    this.interopConfig = new WeaverInteropConfiguration("interop", this.log);
     this.contractNames = {
       pledgeContract: "simpleassettransfer",
       lockContract: "simpleasset",

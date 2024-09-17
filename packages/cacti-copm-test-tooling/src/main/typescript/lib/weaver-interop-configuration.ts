@@ -7,9 +7,9 @@ import {
 import path from "path";
 import fs from "fs-extra";
 
-export class TestInteropConfiguration implements CopmIF.InteropConfiguration {
+export class WeaverInteropConfiguration implements CopmIF.InteropConfiguration {
   private log: Logger;
-  private weaverRelativePath = "../../../../../../weaver/";
+  private weaverRelativePath = "../../../../../../../weaver/";
   private weaverNetConfigPath = path.join(
     __dirname,
     this.weaverRelativePath,
