@@ -168,7 +168,11 @@
     },
     {
       "path": "./packages/cactus-plugin-persistence-fabric/tsconfig.json"
+    },
+    {
+      "path": "./weaver/core/drivers/fabric-driver"
     }
+
   ],
   "compilerOptions": {
     "incremental": true,
