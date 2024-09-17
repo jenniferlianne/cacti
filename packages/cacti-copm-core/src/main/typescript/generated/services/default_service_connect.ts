@@ -14,7 +14,7 @@
 
 import { ClaimLockedAssetV1Request, ClaimPledgedAssetV1Request, GetVerifiedViewV1Request, LockAssetV1Request, PledgeAssetV1Request } from "./default_service_pb.js";
 import { ClaimPledgedAssetV1200ResponsePB } from "../models/claim_pledged_asset_v1200_response_pb_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { Empty, MethodKind } from "@bufbuild/protobuf";
 import { GetVerifiedViewV1200ResponsePB } from "../models/get_verified_view_v1200_response_pb_pb.js";
 import { LockAssetV1200ResponsePB } from "../models/lock_asset_v1200_response_pb_pb.js";
 import { PledgeAssetV1200ResponsePB } from "../models/pledge_asset_v1200_response_pb_pb.js";
@@ -59,6 +59,15 @@ export const DefaultService = {
       name: "LockAssetV1",
       I: LockAssetV1Request,
       O: LockAssetV1200ResponsePB,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc org.hyperledger.cacti.plugin.cacti.plugin.copm.core.services.defaultservice.DefaultService.NoopV1
+     */
+    noopV1: {
+      name: "NoopV1",
+      I: Empty,
+      O: Empty,
       kind: MethodKind.Unary,
     },
     /**
