@@ -224,7 +224,21 @@ class JsonJvmObjectDeserializer(
             }
             JvmTypeKind.PRIMITIVE -> {
                 logger.info("Instantiated PRIMITIVE OK {}", jvmObject.primitiveValue)
-                return jvmObject.primitiveValue
+                /*constructor = clazz.constructors.filter { c -> c.parameterCount == 1 }.single { c ->
+                                       c.parameterTypes
+                                        .mapIndexed { index, clazz -> clazz.isAssignableFrom(jvmObject.primitiveValue!!::class) }
+                                        .all { x -> x }
+                logger.info("Constructor=${constructor}")                }
+                return constructor.newInstance(jvmObject.primitiveValue)
+                */ 
+                logger.info("fqClassName is {}", jvmObject.jvmType.fqClassName)
+                if (jvmObject.jvmType.fqClassName == "long") {
+                    val myInt: Int? = jvmObject.primitiveValue as? Int
+                    if(myInt != null) {
+                        return myInt.toLong();
+                    }
+                }
+                return jvmObject.primitiveValue;
             }
             else -> {
                 throw IllegalArgumentException("Unknown jvmObject.jvmTypeKind (${jvmObject.jvmTypeKind})")

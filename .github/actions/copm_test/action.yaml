@@ -29,8 +29,3 @@ runs:
         unzip protoc-3.15.6-linux-x86_64.zip -d protoc
         go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.4.0
-      # PROTOS
-    - name: Build local weaver dependencies
-      run: make setup --trace
-      shell: bash
-      working-directory: packages/cacti-plugin-copm-fabric

@@ -19,6 +19,7 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
+import org.openapitools.client.models.AddContractJarsV1Request
 import org.openapitools.client.models.ClearMonitorTransactionsV1Request
 import org.openapitools.client.models.ClearMonitorTransactionsV1Response
 import org.openapitools.client.models.DeployContractJarsBadRequestV1Response
@@ -68,6 +69,78 @@ class DefaultApi(basePath: kotlin.String = defaultBasePath, client: OkHttpClient
         val defaultBasePath: String by lazy {
             System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost")
         }
+    }
+
+    /**
+     * Adds a set of jarfiles to the connector that have already been deployed to the ledger.
+     * 
+     * @param addContractJarsV1Request 
+     * @return DeployContractJarsSuccessV1Response
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun addContractJarsV1(addContractJarsV1Request: AddContractJarsV1Request) : DeployContractJarsSuccessV1Response {
+        val localVarResponse = addContractJarsV1WithHttpInfo(addContractJarsV1Request = addContractJarsV1Request)
+
+        return when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as DeployContractJarsSuccessV1Response
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * Adds a set of jarfiles to the connector that have already been deployed to the ledger.
+     * 
+     * @param addContractJarsV1Request 
+     * @return ApiResponse<DeployContractJarsSuccessV1Response?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    fun addContractJarsV1WithHttpInfo(addContractJarsV1Request: AddContractJarsV1Request) : ApiResponse<DeployContractJarsSuccessV1Response?> {
+        val localVariableConfig = addContractJarsV1RequestConfig(addContractJarsV1Request = addContractJarsV1Request)
+
+        return request<AddContractJarsV1Request, DeployContractJarsSuccessV1Response>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation addContractJarsV1
+     *
+     * @param addContractJarsV1Request 
+     * @return RequestConfig
+     */
+    fun addContractJarsV1RequestConfig(addContractJarsV1Request: AddContractJarsV1Request) : RequestConfig<AddContractJarsV1Request> {
+        val localVariableBody = addContractJarsV1Request
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json"
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/add-contract-jars",
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
     }
 
     /**

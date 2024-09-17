@@ -69,6 +69,11 @@ class ApiPluginLedgerConnectorCordaServiceImpl(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, reason, ex)
         }
         val params = req.params.map { p -> jsonJvmObjectDeserializer.instantiate(p) }.toTypedArray()
+
+       for (param in params) {
+            logger.info("param type ${param!!::class.simpleName}");    // body of loop
+        }
+        
         logger.info("params={}", params)
 
         val flowHandle = when (req.flowInvocationType) {
@@ -152,6 +157,19 @@ class ApiPluginLedgerConnectorCordaServiceImpl(
         // net.corda.client.jackson.internal.StxJson["wire"]->net.corda.client.jackson.internal.WireTransactionJson["outputs"])]
         // with root cause
         return InvokeContractV1Response(true, callOutput, id.toString(), transactionId, progress)
+    }
+
+    override fun addContractJarsV1(addContractJarsV1Request: AddContractJarsV1Request): DeployContractJarsSuccessV1Response {
+        val decoder = Base64.getDecoder()
+
+        val deployedJarFileNames = addContractJarsV1Request.jarFiles.map {
+            val jarFileInputStream = decoder.decode(it.contentBase64).inputStream()
+            jsonJvmObjectDeserializer.jcl.add(jarFileInputStream)
+            logger.info("Added jar to classpath of Corda Connector Plugin Server: ${it.filename}")
+            it.filename
+        }
+
+        return DeployContractJarsSuccessV1Response(deployedJarFileNames)
     }
 
     // FIXME - make it clear in the documentation that this deployment endpoint is not recommended for production

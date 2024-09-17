@@ -4,7 +4,7 @@ import { LogLevelDesc, Logger } from "@hyperledger/cactus-common";
 import { TestAssetManager } from "./test-asset-manager";
 import { TestFabricConfiguration } from "./test-fabric-configuration";
 import { FabricTransactionContextFactory } from "../../../main/typescript/lib/fabric-context-factory";
-import { TestInteropConfiguration } from "./test-interop-configuration";
+import { TestInteropConfiguration } from "@hyperledger/cacti-copm-test-tooling";
 
 type FabricIdentity = Identity & {
   credentials: {
