@@ -1,7 +1,8 @@
 export type DLTransactionParams = {
   contract: string;
   method: string;
-  args: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args: any[];
 };
 
 export type DLAccount = {
@@ -15,12 +16,11 @@ export type CopmContractNames = {
 };
 
 export type RemoteNetworkConfig = {
-  channelName: string;
+  channelName: string; // fabric-specific
   network: string;
   relayAddr: string;
   e2eConfidentiality: boolean;
   partyEndPoint: string; // corda-specific
-  flowPackage: string; // corda-specific
   networkType: string;
 };
 
