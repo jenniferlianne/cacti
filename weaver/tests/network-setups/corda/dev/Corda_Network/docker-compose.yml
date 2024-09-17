@@ -40,7 +40,7 @@ services:
     user: root
     ports:
       - 10006:10003
-      - 22022
+      - 22022:2222
     image: corda/community:4.12-zulu-openjdk
     container_name: corda_partya_1
   partyb:

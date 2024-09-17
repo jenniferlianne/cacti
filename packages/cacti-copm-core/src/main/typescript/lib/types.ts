@@ -1,8 +1,8 @@
-
 export type DLTransactionParams = {
   contract: string;
   method: string;
-  args: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  args: any[];
 };
 
 export type DLAccount = {

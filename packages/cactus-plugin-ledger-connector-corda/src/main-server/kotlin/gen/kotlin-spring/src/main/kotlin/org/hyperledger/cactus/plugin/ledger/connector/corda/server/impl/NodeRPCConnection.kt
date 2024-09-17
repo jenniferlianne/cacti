@@ -1,31 +1,27 @@
 package org.hyperledger.cactus.plugin.ledger.connector.corda.server.impl
 
+import jakarta.annotation.PostConstruct
+import jakarta.annotation.PreDestroy
 import kotlinx.coroutines.*
-import kotlin.time.toDuration
-import kotlin.time.DurationUnit
-
 import net.corda.client.rpc.CordaRPCClient
-import net.corda.client.rpc.CordaRPCClientConfiguration
 import net.corda.client.rpc.CordaRPCConnection
 import net.corda.client.rpc.GracefulReconnect
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.pendingFlowsCount
 import net.corda.core.utilities.NetworkHostAndPort
+import net.corda.core.serialization.SerializationCustomSerializer
 import net.corda.core.utilities.loggerFor
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component
-import jakarta.annotation.PostConstruct
-import jakarta.annotation.PreDestroy
-import jakarta.validation.Valid
-
-import java.net.InetAddress
-
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.validation.annotation.Validated
 import java.util.concurrent.CountDownLatch
-import jakarta.validation.constraints.NotEmpty
-import jakarta.validation.constraints.NotNull
-
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+import org.hyperledger.cactus.plugin.ledger.connector.corda.server.impl.CustomSerializationWhitelist
+import org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.AssetLockSerializer
+import org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.LockMechanismSerializer
+import arrow.core.Either
 
 private const val CACTUS_CORDA_RPC_USERNAME = "cactus.corda.rpc.username"
 private const val CACTUS_CORDA_RPC_PASSWORD = "cactus.corda.rpc.password"
@@ -51,18 +47,65 @@ open class NodeRPCConnection(
     @Value("\${$CACTUS_CORDA_RPC_PORT}") private val rpcPort: Int
     ): AutoCloseable {
 
+    var serializedWhitelistClasses: MutableList<String> = mutableListOf()
+
     final lateinit var rpcConnection: CordaRPCConnection
         private set
     final lateinit var proxy: CordaRPCOps
         private set
+    final lateinit var jvmSerializer: JsonJvmObjectDeserializer
 
     companion object {
         val logger = loggerFor<NodeRPCConnection>();
     }
 
+    @Autowired 
+    fun JsonJvm(serializer: JsonJvmObjectDeserializer) {
+        this.jvmSerializer = serializer
+    }
+
+
     @PostConstruct
     fun initialiseNodeRPCConnection() {
+        this.loadRpc();
+    }
+
+    fun addSerializer(serializer: String) {
+        this.serializedWhitelistClasses.add(serializer);
+        logger.info("ADDED ${serializer} ${this.serializedWhitelistClasses.size}")
+    }
+
+    fun loadRpc() {
         val rpcAddress = NetworkHostAndPort(host, rpcPort)
+
+        /*  
+        val customSerializers : MutableSet<SerializationCustomSerializer<*, *>> = mutableSetOf(
+            AssetLockSerializer::class.java as SerializationCustomSerializer<*, *>,
+            LockMechanismSerializer::class.java as SerializationCustomSerializer<*, *>
+
+        )
+        
+        logger.info("ADDING ${this.serializedWhitelistClasses.size} classes to whitelist")
+
+        for( className in this.serializedWhitelistClasses) {
+            val clazz = this.jvmSerializer.getOrInferType(className);
+            val toProxyMeth = clazz.methods.filter { c -> c.name == "toProxy" }.first()
+            if( toProxyMeth != null) {
+                logger.info("First toProxy param is ${toProxyMeth.parameterTypes.first()::class.java.name}")
+            } else {
+                logger.error("class does not have toProxy method")
+            }
+            val inst = clazz.kotlin.constructors.find { it.parameters.isEmpty() }?.call()
+            if( inst is SerializationCustomSerializer<*, *>) {
+                whitelistClasses.add(inst);
+                logger.info("ADDED ${this.serializedWhitelistClasses.size} classes to whitelist")
+            } else {
+                logger.error("${className} not a serializer")
+            }
+        }
+
+        logger.info("starting rpc whitelist size ${whitelistClasses.size}")
+        */
         val rpcClient = CordaRPCClient(haAddressPool = listOf(rpcAddress))
 
         var numReconnects = 0
