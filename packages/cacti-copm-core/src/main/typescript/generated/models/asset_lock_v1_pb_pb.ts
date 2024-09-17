@@ -28,9 +28,14 @@ export class AssetLockV1PB extends Message<AssetLockV1PB> {
   asset?: TransferrableAssetV1PB;
 
   /**
-   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetAccountV1PB owner = 106164915;
+   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetAccountV1PB source = 359634918;
    */
-  owner?: AssetAccountV1PB;
+  source?: AssetAccountV1PB;
+
+  /**
+   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetAccountV1PB dest = 3079842;
+   */
+  dest?: AssetAccountV1PB;
 
   /**
    * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.core.HashInfoV1PB hash_info = 309318975;
@@ -38,17 +43,17 @@ export class AssetLockV1PB extends Message<AssetLockV1PB> {
   hashInfo?: HashInfoV1PB;
 
   /**
-   * @generated from field: string destination_certificate = 4;
+   * @generated from field: string destination_certificate = 5;
    */
   destinationCertificate = "";
 
   /**
-   * @generated from field: string source_certificate = 5;
+   * @generated from field: string source_certificate = 6;
    */
   sourceCertificate = "";
 
   /**
-   * @generated from field: int64 expiry_secs = 6;
+   * @generated from field: int64 expiry_secs = 7;
    */
   expirySecs = protoInt64.zero;
 
@@ -61,11 +66,12 @@ export class AssetLockV1PB extends Message<AssetLockV1PB> {
   static readonly typeName = "org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetLockV1PB";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 93121264, name: "asset", kind: "message", T: TransferrableAssetV1PB },
-    { no: 106164915, name: "owner", kind: "message", T: AssetAccountV1PB },
+    { no: 359634918, name: "source", kind: "message", T: AssetAccountV1PB },
+    { no: 3079842, name: "dest", kind: "message", T: AssetAccountV1PB },
     { no: 309318975, name: "hash_info", kind: "message", T: HashInfoV1PB },
-    { no: 4, name: "destination_certificate", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "source_certificate", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "expiry_secs", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 5, name: "destination_certificate", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "source_certificate", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "expiry_secs", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AssetLockV1PB {

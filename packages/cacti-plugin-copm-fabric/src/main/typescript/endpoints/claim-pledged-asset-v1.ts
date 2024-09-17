@@ -9,9 +9,10 @@ export async function claimPledgedAssetV1Impl(
   req: ClaimPledgedAssetV1Request,
   log: Logger,
   contextFactory: CopmIF.DLTransactionContextFactory,
+  interopConfig: CopmIF.InteropConfiguration,
   contractName: string,
 ): Promise<string> {
-  const data = Validators.validateClaimPledgedAssetRequest(req);
+  const data = new Validators.ValidatedClaimPledgedAssetRequest(req);
 
   const interop_context = await contextFactory.getRemoteTransactionContext(
     data.destAccount,
@@ -19,16 +20,7 @@ export async function claimPledgedAssetV1Impl(
   );
 
   const claimId = await interop_context.invokeFlow(
-    {
-      contract: contractName,
-      method: "GetAssetPledgeStatus",
-      args: [
-        data.pledgeId,
-        data.sourceCert,
-        data.destAccount.organization,
-        data.destCert,
-      ],
-    },
+    interopConfig.getRemotePledgeStatusCmd(data.sourceNetwork, data),
     {
       contract: contractName,
       method: data.asset.isNFT() ? "ClaimRemoteAsset" : "ClaimRemoteTokenAsset",

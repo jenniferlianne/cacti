@@ -32,6 +32,8 @@ service DefaultService {
 
   rpc LockAssetV1 (LockAssetV1Request) returns (LockAssetV1200ResponsePB);
 
+  rpc NoopV1 (google.protobuf.Empty) returns (google.protobuf.Empty);
+
   rpc PledgeAssetV1 (PledgeAssetV1Request) returns (PledgeAssetV1200ResponsePB);
 
 }

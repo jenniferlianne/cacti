@@ -78,3 +78,13 @@ export function validateHashInfo(
   hash.setPreimage(hashInfo.secret);
   return hash;
 }
+
+export function validateRequiredString(
+  value: string | undefined,
+  object_prefix: string,
+): string {
+  if (!value) {
+    throw new ConnectError(`${object_prefix} required`, Code.InvalidArgument);
+  }
+  return value;
+}
