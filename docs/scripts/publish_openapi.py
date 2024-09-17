@@ -66,6 +66,7 @@ for package in package_list:
         if not package_group in apis_by_group:
             apis_by_group[package_group] = []
         package_basename = package['name'].replace('@hyperledger/','')
+        package_basename = package['name'].replace('@hyperledger-cacti/','')
         publish_openapi(package_basename, openapi_file)
         print(f"{package_group} : {package_basename}")
         apis_by_group[package_group].append(package_basename)

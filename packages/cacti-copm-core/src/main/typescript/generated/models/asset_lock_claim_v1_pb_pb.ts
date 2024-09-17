@@ -28,11 +28,6 @@ export class AssetLockClaimV1PB extends Message<AssetLockClaimV1PB> {
   lockId = "";
 
   /**
-   * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetAccountV1PB source = 359634918;
-   */
-  source?: AssetAccountV1PB;
-
-  /**
    * @generated from field: org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetAccountV1PB destination = 356105204;
    */
   destination?: AssetAccountV1PB;
@@ -47,16 +42,6 @@ export class AssetLockClaimV1PB extends Message<AssetLockClaimV1PB> {
    */
   hashInfo?: HashInfoV1PB;
 
-  /**
-   * @generated from field: string source_certificate = 6;
-   */
-  sourceCertificate = "";
-
-  /**
-   * @generated from field: string dest_certificate = 7;
-   */
-  destCertificate = "";
-
   constructor(data?: PartialMessage<AssetLockClaimV1PB>) {
     super();
     proto3.util.initPartial(data, this);
@@ -66,12 +51,9 @@ export class AssetLockClaimV1PB extends Message<AssetLockClaimV1PB> {
   static readonly typeName = "org.hyperledger.cacti.plugin.cacti.plugin.copm.core.AssetLockClaimV1PB";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "lock_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 359634918, name: "source", kind: "message", T: AssetAccountV1PB },
     { no: 356105204, name: "destination", kind: "message", T: AssetAccountV1PB },
     { no: 93121264, name: "asset", kind: "message", T: TransferrableAssetV1PB },
     { no: 309318975, name: "hash_info", kind: "message", T: HashInfoV1PB },
-    { no: 6, name: "source_certificate", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "dest_certificate", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AssetLockClaimV1PB {
