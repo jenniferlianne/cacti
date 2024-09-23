@@ -11,7 +11,9 @@ build-local:
 
 build: .npmrc build-local
 
-build-image-local: build-local
+build-image-local: 
+	yarn install --frozen-lockfile
+	yarn run build
 	docker build --build-arg BUILD_TAG="local" --build-arg GIT_URL=$(GIT_URL) -t ${DOCKER_IMAGE_NAME}:$(DOCKER_TAG) -f fabricDriver.dockerfile.local .  
 	docker tag ${DOCKER_IMAGE_NAME}:$(DOCKER_TAG) $(DOCKER_IMAGE_NAME):latest
 
