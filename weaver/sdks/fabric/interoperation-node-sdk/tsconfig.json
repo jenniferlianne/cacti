@@ -7,7 +7,7 @@
         "module": "commonjs",
         "composite": true,
     },
-    "include": ["src/**/*", "index.js"],
+    "include": ["src/**/*", "index.ts"],
     "exclude": ["node_modules", "protos", "scripts", "test", "protos-js", "build"],
     "skipLibCheck": true,        
     "resolveJsonModule": true,

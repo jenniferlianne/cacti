@@ -13,7 +13,7 @@
   },
   "license": "Apache-2.0",
   "author": "V. Ramakrishna",
-  "main": "index.js",
+  "main": "index.ts",
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "tsc",
@@ -24,7 +24,7 @@
   "nyc": {
     "all": true,
     "exclude": [
-      "index.js",
+      "index.ts",
       "coverage/**",
       "lib/impl",
       "lib/msp",
