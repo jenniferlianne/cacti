@@ -4,6 +4,7 @@
 /protos-js
 .env
 /fabric-protos
+server
 package-lock.json
 .npmrc
 driverdbs
