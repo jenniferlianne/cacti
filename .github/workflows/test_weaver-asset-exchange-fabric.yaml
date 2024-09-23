@@ -60,9 +60,6 @@ jobs:
         with:
           node-version: ${{ env.NODEJS_VERSION }}
 
-      - name: build top-level
-        run: npm run configure
-
       # FABRIC NETWORK
       - name: Start Fabric Network
         run: make start-interop CHAINCODE_NAME=simpleasset PROFILE="2-nodes"
@@ -155,6 +152,9 @@ jobs:
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-js
+
+      - name: build top-level
+        run: npm run configure
 
       # Build Dependencies
       - name: Build Fabric Interop SDK
