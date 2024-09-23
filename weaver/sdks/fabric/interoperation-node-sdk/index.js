@@ -12,10 +12,10 @@
 // because jsdoc3 generator seems to not able to find them in the api.js module
 // likely due to that module containing multiple classes
 
-module.exports.RelayHelper = require("./dist/lib/Relay.js");
-module.exports.InteroperableHelper = require("./dist/lib/InteroperableHelper.js");
-module.exports.AssetManager = require("./dist/lib/AssetManager.js");
-module.exports.SatpAssetManager = require("./dist/lib/SatpAssetManager.js");
-module.exports.HashFunctions = require("./dist/lib/HashFunctions.js");
-module.exports.EventsManager = require("./dist/lib/EventsManager.js");
-module.exports.MembershipManager = require("./dist/lib/MembershipManager.js");
+export { RelayHelper } from "./src/Relay";
+export { InteroperableHelper } from "./src/InteroperableHelper";
+export { AssetManager } from "./src/AssetManager";
+export { SatpAssetManager } from "./src/SatpAssetManager";
+export { HashFunctions } from "./src/HashFunctions";
+export { EventsManager } from "./src/EventsManager";
+export { MembershipManager } from "./src/MembershipManager";
