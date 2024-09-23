@@ -177,8 +177,10 @@
     },
     {
       "path": "./weaver/core/identity-management/iin-agent"
+    },
+    {
+      "path": "./weaver/samples/fabric/fabric-cli"
     }
-
   ],
   "compilerOptions": {
     "incremental": true,

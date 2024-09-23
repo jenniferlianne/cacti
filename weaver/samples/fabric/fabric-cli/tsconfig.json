@@ -16,12 +16,21 @@
     "noImplicitThis": true,
     "sourceMap": false,
     "inlineSourceMap": true,
-    "outDir": "build",
+    "outDir": "dist",
     "strict": false,
     "target": "es5",
     "declaration": true,
     "declarationDir": "build/types"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "../../../common/protos-js/tsconfig.json"
+    },
+    {
+      "path": "../../../sdks/fabric/interoperation-node-sdk/tsconfig.json"
+    }
+  ]
+
 }

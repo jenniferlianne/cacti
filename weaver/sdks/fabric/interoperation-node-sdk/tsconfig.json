@@ -4,7 +4,8 @@
         "outDir": "./dist/lib",
         "target": "es5",
         "esModuleInterop": true,
-        "module": "commonjs"
+        "module": "commonjs",
+        "composite": true,
     },
     "include": ["src/**/*", "index.js"],
     "exclude": ["node_modules", "protos", "scripts", "test", "protos-js", "build"],
