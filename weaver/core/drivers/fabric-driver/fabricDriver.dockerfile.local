@@ -5,10 +5,9 @@ FROM node:16 AS builder-local
 
 WORKDIR /driver/fabric
 
-ADD protos-js /driver/fabric/protos-js
-ADD cacti-weaver-sdk-fabric /driver/fabric/cacti-weaver-sdk-fabric
 ADD package.json .
-ADD node_modules . 
+ADD node_modules ./node_modules
+ADD dist/lib ./dist/lib
 ADD server /driver/fabric/server
 ADD constants /driver/fabric/constants
 ADD config.json .
@@ -16,8 +15,6 @@ ADD tsconfig.json .
 
 FROM builder-${BUILD_TAG} AS builder
 
-RUN rm -rf node_modules
-RUN npm ci --only=production
 
 FROM node:16-alpine AS prod
 
@@ -30,12 +27,9 @@ ENV NODE_ENV production
 WORKDIR /driver/fabric
 
 ADD package.json .
-ADD protos-js /driver/fabric/protos-js
-ADD cacti-weaver-sdk-fabric /driver/fabric/cacti-weaver-sdk-fabric
 
-COPY --from=builder /driver/fabric/package-lock.json /driver/fabric/
 COPY --from=builder /driver/fabric/node_modules /driver/fabric/node_modules
-COPY --from=builder /driver/fabric/out /driver/fabric/out
+COPY --from=builder /driver/fabric/dist/lib /driver/fabric/dist/lib
 COPY --from=builder /driver/fabric/constants /driver/fabric/constants
 
 RUN chown -R relay:relay /driver/fabric

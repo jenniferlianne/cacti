@@ -5,22 +5,14 @@ GIT_URL = https://github.com/hyperledger/cacti/cacti/core/drivers/fabric-driver
 NETWORK_NAME ?= network1
 COMPOSE_ARG ?=
 
-build: .npmrc
-	yarn install 
-	yarn run build
-
-
 build-local: 
 	yarn install
 	yarn run build
 
-build-image-local: 
-	yarn install
-	yarn run build
-	(docker build --build-arg BUILD_TAG="local" --build-arg GIT_URL=$(GIT_URL) -t ${DOCKER_IMAGE_NAME}:$(DOCKER_TAG) -f fabricDriver.dockerfile.local . ) || \
-		(mv package-remote.json package.json && exit 1) # Only if fails
-	mv package-remote.json package.json # Only if success
-	rm -rf protos-js cacti-weaver-sdk-fabric
+build: .npmrc build-local
+
+build-image-local: build-local
+	docker build --build-arg BUILD_TAG="local" --build-arg GIT_URL=$(GIT_URL) -t ${DOCKER_IMAGE_NAME}:$(DOCKER_TAG) -f fabricDriver.dockerfile.local .  
 	docker tag ${DOCKER_IMAGE_NAME}:$(DOCKER_TAG) $(DOCKER_IMAGE_NAME):latest
 
 build-image: .npmrc
