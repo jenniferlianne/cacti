@@ -5,13 +5,8 @@ build: .npmrc
 	
 .PHONY: build-local
 build-local:
-	(cp package.json package-remote.json && \
-		cp package-local.json package.json && \
-		yarn install) || \
-		(mv package-remote.json package.json && exit 1)	# Runs if failure
-	mv package-remote.json package.json	                # Runs if success
-	yarn run build
-	
+	yarn install
+	yarn run build	
 
 .PHONE: publish
 publish: .npmrc

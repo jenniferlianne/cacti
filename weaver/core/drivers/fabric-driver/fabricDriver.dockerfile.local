@@ -8,14 +8,11 @@ WORKDIR /driver/fabric
 ADD protos-js /driver/fabric/protos-js
 ADD cacti-weaver-sdk-fabric /driver/fabric/cacti-weaver-sdk-fabric
 ADD package.json .
-RUN npm install --unsafe-perm
-
+ADD node_modules . 
 ADD server /driver/fabric/server
 ADD constants /driver/fabric/constants
 ADD config.json .
 ADD tsconfig.json .
-
-RUN npm run build
 
 FROM builder-${BUILD_TAG} AS builder
 
