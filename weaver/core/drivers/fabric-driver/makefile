@@ -11,16 +11,12 @@ build: .npmrc
 
 
 build-local: 
-	cp package.json package-remote.json
-	cp package-local.json package.json
-	(yarn install) || \
-		(mv package-remote.json package.json && exit 1) # Only if fails	
-	mv package-remote.json package.json # Only if success
+	yarn install
 	yarn run build
-	
+
 build-image-local: 
-	cp package.json package-remote.json
-	cp package-local.json package.json
+	yarn install
+	yarn run build
 	(docker build --build-arg BUILD_TAG="local" --build-arg GIT_URL=$(GIT_URL) -t ${DOCKER_IMAGE_NAME}:$(DOCKER_TAG) -f fabricDriver.dockerfile.local . ) || \
 		(mv package-remote.json package.json && exit 1) # Only if fails
 	mv package-remote.json package.json # Only if success
