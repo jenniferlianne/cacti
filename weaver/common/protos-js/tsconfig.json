@@ -6,6 +6,7 @@
         "esModuleInterop": true,
         "module": "commonjs",
         "composite": true,
+        "strict": false,
     },
     "include": ["common/*","corda/*","driver/*","fabric/*","identity/*","msp/*","networks/*","peer/*","relay/*"],
     "exclude": ["node_modules","build"],
