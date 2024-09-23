@@ -75,9 +75,6 @@ jobs:
           go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
           go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.4.0
 
-      - name: build top-level typescript
-        run: npm run configure
-
       # PROTOS GO
       - name: Build GO Protos
         run: |
@@ -91,6 +88,9 @@ jobs:
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-js
+
+      - name: build top-level typescript
+        run: npm run configure
 
       # Build Dependencies
       - name: Build Fabric Interop SDK

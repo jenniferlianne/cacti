@@ -56,9 +56,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: build top-level typescript
-        run: npm run configure
-  
       - name: Set up Go
         uses: actions/setup-go@v4.0.0
         with:
@@ -914,6 +911,9 @@ jobs:
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-js
+
+      - name: build top-level typescript
+        run: npm run configure
 
       - name: Build Java Protos
         run: make build

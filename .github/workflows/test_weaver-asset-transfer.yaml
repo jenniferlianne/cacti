@@ -737,16 +737,15 @@ jobs:
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-go
-
-      - name: build top-level typescript
-        run: npm run configure
-
       # PROTOS
       - name: Build JS Protos
         run: |
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-js
+
+      - name: build top-level typescript
+        run: npm run configure
 
       - name: Build Java Protos
         run: make build
