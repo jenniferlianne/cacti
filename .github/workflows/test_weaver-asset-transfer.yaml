@@ -84,6 +84,7 @@ jobs:
           cat github.properties
         working-directory: weaver/tests/network-setups/corda
 
+        
       - name: Start Corda Network
         run: make start &> corda-net.out &
         working-directory: weaver/tests/network-setups/corda
@@ -736,6 +737,9 @@ jobs:
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-go
+
+      - name: build top-level typescript
+        run: npm run configure
 
       # PROTOS
       - name: Build JS Protos

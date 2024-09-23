@@ -60,6 +60,9 @@ jobs:
         with:
           node-version: ${{ env.NODEJS_VERSION }}
 
+      - name: build top-level
+        run: npm run configure
+
       # FABRIC NETWORK
       - name: Start Fabric Network
         run: make start-interop CHAINCODE_NAME=simpleasset PROFILE="2-nodes"

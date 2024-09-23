@@ -56,6 +56,9 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: build top-level typescript
+        run: npm run configure
+  
       - name: Set up Go
         uses: actions/setup-go@v4.0.0
         with:
