@@ -9,9 +9,9 @@
  **/
 /** End file docs */
 
-import log4js from "log4js";
-import crypto from "crypto";
-import fabproto6 from "fabric-protos";
+import * as log4js from "log4js";
+import * as crypto from "crypto";
+import * as fabproto6 from "fabric-protos";
 import * as helpers from "./helpers";
 import assetLocksPb from "@hyperledger/cacti-weaver-protos-js/common/asset_locks_pb";
 import { Contract, ContractListener } from "fabric-network";

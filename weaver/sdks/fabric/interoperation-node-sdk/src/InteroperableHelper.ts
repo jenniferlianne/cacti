@@ -9,15 +9,15 @@
  **/
 /** End file docs */
 
-import log4js from "log4js";
-import sshpk from "sshpk";
+import * as log4js from "log4js";
+import * as sshpk from "sshpk";
 import { KEYUTIL as keyutil } from "jsrsasign";
-import FabCommon from "fabric-common";
+import * as FabCommon from "fabric-common";
 //@ts-ignore
 import { Identity } from "fabric-common";
-import fabproto6 from "fabric-protos";
-import crypto from "crypto";
-import eciesCrypto from "./eciesCrypto.js";
+import * as fabproto6 from "fabric-protos";
+import * as crypto from "crypto";
+import * as eciesCrypto from "./eciesCrypto.js";
 import * as helpers from "./helpers";
 import {
   deserializeRemoteProposalResponseBase64,

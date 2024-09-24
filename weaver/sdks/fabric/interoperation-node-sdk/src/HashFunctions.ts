@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import crypto from "crypto";
+import * as crypto from "crypto";
 import { HashMechanism } from "@hyperledger/cacti-weaver-protos-js/common/asset_locks_pb";
 
 /*

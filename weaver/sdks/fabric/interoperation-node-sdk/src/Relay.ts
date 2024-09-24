@@ -8,7 +8,7 @@
  * Relay file includes the class and methods to communicate with a relay over grpc.
  **/
 /** End file docs */
-import fs from "fs";
+import * as fs from "fs";
 import * as grpcJs from "@grpc/grpc-js";
 import networksGrpcPb from "@hyperledger/cacti-weaver-protos-js/networks/networks_grpc_pb";
 import networksPb from "@hyperledger/cacti-weaver-protos-js/networks/networks_pb";

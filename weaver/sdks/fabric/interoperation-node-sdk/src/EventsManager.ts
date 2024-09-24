@@ -9,7 +9,7 @@
  **/
 /** End file docs */
 
-import log4js from "log4js";
+import * as log4js from "log4js";
 import { v4 as uuidv4 } from "uuid";
 import { ICryptoKey } from "fabric-common";
 import { Contract } from "fabric-network";

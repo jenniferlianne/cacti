@@ -6,7 +6,6 @@
 
 import { Gateway, Network } from "fabric-network";
 import { Channel } from "fabric-common";
-import * as path from "path";
 import * as fs from "fs";
 import { credentials } from "@grpc/grpc-js";
 

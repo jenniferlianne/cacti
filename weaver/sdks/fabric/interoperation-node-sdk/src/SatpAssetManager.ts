@@ -9,7 +9,7 @@
  **/
 /** End file docs */
 
-import log4js from "log4js";
+import * as log4js from "log4js";
 import * as helpers from "./helpers";
 import { Contract } from "fabric-network";
 const logger = log4js.getLogger("InteroperableHelper");
