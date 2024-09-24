@@ -10,11 +10,11 @@
 /** End file docs */
 import * as fs from "fs";
 import * as grpcJs from "@grpc/grpc-js";
-import networksGrpcPb from "@hyperledger/cacti-weaver-protos-js/networks/networks_grpc_pb";
-import networksPb from "@hyperledger/cacti-weaver-protos-js/networks/networks_pb";
-import common_ack_pb from "@hyperledger/cacti-weaver-protos-js/common/ack_pb";
-import eventsPb from "@hyperledger/cacti-weaver-protos-js/common/events_pb";
-import statePb from "@hyperledger/cacti-weaver-protos-js/common/state_pb";
+import * as networksGrpcPb from "@hyperledger/cacti-weaver-protos-js/networks/networks_grpc_pb";
+import * as networksPb from "@hyperledger/cacti-weaver-protos-js/networks/networks_pb";
+import * as common_ack_pb from "@hyperledger/cacti-weaver-protos-js/common/ack_pb";
+import * as eventsPb from "@hyperledger/cacti-weaver-protos-js/common/events_pb";
+import * as statePb from "@hyperledger/cacti-weaver-protos-js/common/state_pb";
 import * as helpers from "./helpers";
 /**
  * The Relay class represents a relay in the target blockchain network.

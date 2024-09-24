@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import fs from "fs";
+import * as fs from "fs";
 import { Server, ServerCredentials, credentials } from "@grpc/grpc-js";
-import ack_pb from "@hyperledger/cacti-weaver-protos-js/common/ack_pb";
-import iin_agent_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_pb";
-import iin_agent_pb_grpc from "@hyperledger/cacti-weaver-protos-js/identity/agent_grpc_pb";
+import * as ack_pb from "@hyperledger/cacti-weaver-protos-js/common/ack_pb";
+import * as iin_agent_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_pb";
+import * as iin_agent_pb_grpc from "@hyperledger/cacti-weaver-protos-js/identity/agent_grpc_pb";
 import "dotenv/config";
 import { Certificate } from "@fidm/x509";
 import * as path from "path";
