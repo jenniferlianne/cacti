@@ -9,27 +9,27 @@
  **/
 /** End file docs */
 
-import log4js from "log4js";
-import sshpk from "sshpk";
+import * as log4js from "log4js";
+import * as sshpk from "sshpk";
 import { KEYUTIL as keyutil } from "jsrsasign";
-import FabCommon from "fabric-common";
+import * as FabCommon from "fabric-common";
 //@ts-ignore
 import { Identity } from "fabric-common";
-import fabproto6 from "fabric-protos";
-import crypto from "crypto";
-import eciesCrypto from "./eciesCrypto.js";
+import * as fabproto6 from "fabric-protos";
+import * as crypto from "crypto";
+import * as eciesCrypto from "./eciesCrypto.js";
 import * as helpers from "./helpers";
 import {
   deserializeRemoteProposalResponseBase64,
   serializeRemoteProposalResponse,
 } from "./decoders";
-import statePb from "@hyperledger/cacti-weaver-protos-js/common/state_pb";
-import fabricViewPb from "@hyperledger/cacti-weaver-protos-js/fabric/view_data_pb";
-import cordaViewPb from "@hyperledger/cacti-weaver-protos-js/corda/view_data_pb";
-import interopPayloadPb from "@hyperledger/cacti-weaver-protos-js/common/interop_payload_pb";
-import proposalPb from "@hyperledger/cacti-weaver-protos-js/peer/proposal_pb";
-import proposalResponsePb from "@hyperledger/cacti-weaver-protos-js/peer/proposal_response_pb";
-import identitiesPb from "@hyperledger/cacti-weaver-protos-js/msp/identities_pb";
+import * as statePb from "@hyperledger/cacti-weaver-protos-js/common/state_pb";
+import * as fabricViewPb from "@hyperledger/cacti-weaver-protos-js/fabric/view_data_pb";
+import * as cordaViewPb from "@hyperledger/cacti-weaver-protos-js/corda/view_data_pb";
+import * as interopPayloadPb from "@hyperledger/cacti-weaver-protos-js/common/interop_payload_pb";
+import * as proposalPb from "@hyperledger/cacti-weaver-protos-js/peer/proposal_pb";
+import * as proposalResponsePb from "@hyperledger/cacti-weaver-protos-js/peer/proposal_response_pb";
+import * as identitiesPb from "@hyperledger/cacti-weaver-protos-js/msp/identities_pb";
 import { Relay } from "./Relay";
 import { Gateway, Contract } from "fabric-network";
 import { v4 as uuidv4 } from "uuid";

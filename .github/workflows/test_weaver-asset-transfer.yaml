@@ -84,6 +84,7 @@ jobs:
           cat github.properties
         working-directory: weaver/tests/network-setups/corda
 
+        
       - name: Start Corda Network
         run: make start &> corda-net.out &
         working-directory: weaver/tests/network-setups/corda
@@ -690,6 +691,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Delete unnecessary tools folder to free space
+        run: rm -rf /opt/hostedtoolcache
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4.1.7
 
@@ -736,13 +740,15 @@ jobs:
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-go
-
       # PROTOS
       - name: Build JS Protos
         run: |
           export PATH="$PATH:${GITHUB_WORKSPACE}/protoc/bin"
           make build
         working-directory: weaver/common/protos-js
+
+      - name: build top-level typescript
+        run: npm run configure
 
       - name: Build Java Protos
         run: make build

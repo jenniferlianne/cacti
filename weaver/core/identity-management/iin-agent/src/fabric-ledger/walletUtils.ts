@@ -6,7 +6,6 @@
 
 import { Wallets } from "fabric-network";
 import FabricCAServices from "fabric-ca-client";
-import * as path from "path";
 import * as fs from "fs";
 
 const getWallet = async (walletPath: string) => {

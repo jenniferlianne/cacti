@@ -6,14 +6,13 @@
 
 import { Gateway, Network } from "fabric-network";
 import { Channel } from "fabric-common";
-import * as path from "path";
 import * as fs from "fs";
 import { credentials } from "@grpc/grpc-js";
 
-import membership_pb from "@hyperledger/cacti-weaver-protos-js/common/membership_pb";
-import agent_grpc_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_grpc_pb";
-import agent_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_pb";
-import common_ack_pb from "@hyperledger/cacti-weaver-protos-js/common/ack_pb";
+import * as membership_pb from "@hyperledger/cacti-weaver-protos-js/common/membership_pb";
+import * as agent_grpc_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_grpc_pb";
+import * as agent_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_pb";
+import * as common_ack_pb from "@hyperledger/cacti-weaver-protos-js/common/ack_pb";
 
 import { handlePromise, promisifyAll } from "./helpers";
 

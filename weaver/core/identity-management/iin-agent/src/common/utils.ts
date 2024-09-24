@@ -8,13 +8,13 @@
 import * as path from "path";
 import * as fs from "fs";
 import { credentials } from "@grpc/grpc-js";
-import crypto from "crypto";
+import * as crypto from "crypto";
 const { X509Certificate } = require("crypto");
 
 // Weaver Packages
-import agent_grpc_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_grpc_pb";
-import agent_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_pb";
-import membership_pb from "@hyperledger/cacti-weaver-protos-js/common/membership_pb";
+import * as agent_grpc_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_grpc_pb";
+import * as agent_pb from "@hyperledger/cacti-weaver-protos-js/identity/agent_pb";
+import * as membership_pb from "@hyperledger/cacti-weaver-protos-js/common/membership_pb";
 import { InteroperableHelper } from "@hyperledger/cacti-weaver-sdk-fabric";
 
 // Local modules

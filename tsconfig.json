@@ -168,6 +168,18 @@
     },
     {
       "path": "./packages/cactus-plugin-persistence-fabric/tsconfig.json"
+    },
+    {
+      "path": "./weaver/sdks/fabric/interoperation-node-sdk"
+    },
+    {
+      "path": "./weaver/core/drivers/fabric-driver"
+    },
+    {
+      "path": "./weaver/core/identity-management/iin-agent"
+    },
+    {
+      "path": "./weaver/samples/fabric/fabric-cli"
     }
   ],
   "compilerOptions": {

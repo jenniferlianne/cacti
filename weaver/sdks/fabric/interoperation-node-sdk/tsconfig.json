@@ -1,13 +1,21 @@
 {
     "compilerOptions": {
-        "outDir": "./build",
         "allowJs": true,
+        "outDir": "./dist/lib",
         "target": "es5",
         "esModuleInterop": true,
-        "module": "commonjs"
+        "module": "commonjs",
+        "composite": true,
     },
-    "include": ["src/**/*", "index.js"],
+    "include": ["src/**/*", "index.ts"],
     "exclude": ["node_modules", "protos", "scripts", "test", "protos-js", "build"],
     "skipLibCheck": true,        
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "references": [
+        {
+          "path": "../../../common/protos-js/tsconfig.json"
+        },
+      ]
+    
+
 }
