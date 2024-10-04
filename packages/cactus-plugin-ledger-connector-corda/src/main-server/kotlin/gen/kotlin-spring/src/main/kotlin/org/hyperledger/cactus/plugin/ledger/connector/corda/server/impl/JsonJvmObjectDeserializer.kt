@@ -11,9 +11,11 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import java.util.*
 import kotlin.collections.ArrayList
+import org.springframework.stereotype.Component
 
 // FIXME: Make it so that this has a memory, remembering the .jar files that were added before (file-system?) or
 // maybe use the keychain to save it there and then it can pre-populate at boot?
+@Component
 class JsonJvmObjectDeserializer(
     val jcl: JarClassLoader = JarClassLoader(JsonJvmObjectDeserializer::class.java.classLoader)
 ) {
@@ -47,17 +49,20 @@ class JsonJvmObjectDeserializer(
 
     fun getOrInferType(fqClassName: String): Class<*> {
         Objects.requireNonNull(fqClassName, "fqClassName must not be null for its type to be inferred.")
-
+        logger.info("getOrInferType ${fqClassName}")
+        
         return if (exoticTypes.containsKey(fqClassName)) {
             exoticTypes.getOrElse(
                 fqClassName,
                 { throw IllegalStateException("Could not locate Class<*> for $fqClassName Exotic JVM types map must have been modified on a concurrent threat.") })
         } else {
+            return Class.forName(fqClassName); /* 
             try {
                 jcl.loadClass(fqClassName, true)
             } catch (ex: ClassNotFoundException) {
                 Class.forName(fqClassName)
             }
+            */
         }
     }
 
@@ -166,11 +171,11 @@ class JsonJvmObjectDeserializer(
                             factoryMethod = factoryClass.methods
                                 .filter { c -> c.name == jvmObject.jvmType.constructorName }
                                 .filter { c -> c.parameterCount == methodArgTypes.size }
-                                .single { c ->
+                                .filter { c ->
                                     c.parameterTypes
                                         .mapIndexed { index, clazz -> clazz.isAssignableFrom(methodArgTypes[index]) }
                                         .all { x -> x }
-                                }
+                                }.first()
                         } catch (ex: NoSuchElementException) {
                             val argTypes = jvmObject.jvmCtorArgs.joinToString(",") { x -> x.jvmType.fqClassName }
                             val className = factoryClass.name

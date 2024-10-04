@@ -65,6 +65,10 @@ export const WEAVER_CORDAPP_DATA = Object.freeze({
   cordappDirNotary: "-",
   jars: [
     {
+      jarRelativePath: "cordapps/protos-java-kt-2.0.0-rc.4.jar",
+      fileName: "_protos-java-kt-2.0.0-rc.4.jar",
+    },
+    {
       jarRelativePath: "cordapps/contracts-kotlin-0.4.jar",
       fileName: "_contracts-kotlin-0.4.jar",
     },
@@ -75,10 +79,6 @@ export const WEAVER_CORDAPP_DATA = Object.freeze({
     {
       jarRelativePath: "cordapps/interop-workflows-2.0.0-rc.4.jar",
       fileName: "_interop-workflows-2.0.0-rc.4.jar",
-    },
-    {
-      jarRelativePath: "cordapps/protos-java-kt-2.0.0-rc.4.jar",
-      fileName: "_protos-java-kt-2.0.0-rc.4.jar",
     },
     {
       jarRelativePath: "cordapps/workflows-kotlin-0.4.jar",
@@ -155,15 +155,15 @@ export class TestCordaConnector {
     await this.connector.logDebugPorts();
     const apiUrl = await this.connector.getApiLocalhostUrl();
     const config = new Configuration({ basePath: apiUrl });
-
+    /*
     const jars = await pullCordappJars(
       WEAVER_CORDAPP_DATA.jars,
       WEAVER_CORDAPP_DATA.rootDir,
       "flow-database-access",
     );
-
+    */
     const api = new CordaApi(config);
-    await api.addContractJarsV1({ jarFiles: jars });
+    //await api.addContractJarsV1({ jarFiles: jars });
     return api;
   }
 }

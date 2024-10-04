@@ -12,12 +12,12 @@ fabric-dl:
 
 corda-pledge-dl:
 	cd $(WORKSPACE)/weaver/tests/network-setups/corda && \
-	./scripts/get-cordapps.sh && \
+	./scripts/get-cordapps.sh simple local && \
 	make start-local
 
 corda-lock-dl:
 	cd $(WORKSPACE)/weaver/tests/network-setups/corda && \
-	./scripts/get-cordapps.sh && \
+	./scripts/get-cordapps.sh  simple local  && \
 	make start-network1-local PROFILE=3-nodes
 
 # DRIVERS -----------------------------------------------------
@@ -161,13 +161,13 @@ fabric-setup:
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
 
 corda-setup:
+	# also need to build the fabric interop helper as it is used in the copm impl
+	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
+	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
 	cd $(WORKSPACE)/weaver/common/protos-java-kt && make build
 	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
-	# also need to build the fabric interop helper as it is used in the copm impl
-	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
-	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
 
 
 define stop_docker

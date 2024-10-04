@@ -24,44 +24,57 @@ export class CommandData implements JvmSerializable {
     };
   }
 }
-export class SerializedPB implements JvmSerializable {
+export class CordaSerializablePB implements JvmSerializable {
   clazz: string;
   data: Uint8Array;
   serializer: string | undefined;
 
-  constructor(clazz: string, data: Uint8Array, serializer: string | undefined) {
+  constructor(data: Uint8Array, clazz: string, serializer: string | undefined) {
     this.clazz = clazz;
     this.data = data;
     this.serializer = serializer;
   }
 
   public toJvmObject(): JvmObject {
-    if (this.serializer) {
-      return {
-        jvmTypeKind: "REFERENCE",
-        jvmType: {
-          fqClassName: this.serializer,
-          constructorName: "toProxy",
-        },
-        jvmCtorArgs: [this.mainClass()],
-      };
-    } else {
-      return this.mainClass();
-    }
+    //if (this.serializer) {
+    //  return this.serializerObj();
+    //} else {
+      return this.mainClassObj();
+    //}
   }
 
-  private mainClass(): JvmObject {
+  private serializerObj(): JvmObject {
+    if (!this.serializer) {
+      throw Error("no serializer defined");
+    }
+    return {
+      jvmTypeKind: "REFERENCE",
+      jvmType: {
+        fqClassName: this.serializer + "$Proxy",
+        constructorName: "toProxy",
+        invocationTarget: {
+          jvmTypeKind: "REFERENCE",
+          jvmType: {
+            fqClassName: this.serializer,
+          },
+        },
+      },
+      jvmCtorArgs: [this.mainClassObj()],
+    };
+  }
+
+  private mainClassObj(): JvmObject {
     return {
       jvmTypeKind: "REFERENCE",
       jvmType: {
         fqClassName: this.clazz,
         constructorName: "parseFrom",
       },
-      jvmCtorArgs: [this.byteString()],
+      jvmCtorArgs: [this.byteStringObj()],
     };
   }
 
-  private byteString(): JvmObject {
+  private byteStringObj(): JvmObject {
     return {
       jvmTypeKind: "REFERENCE",
       jvmType: {

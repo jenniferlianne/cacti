@@ -6,7 +6,10 @@ import {
 import { HashFunctions } from "@hyperledger/cacti-weaver-sdk-fabric";
 import { Logger } from "@hyperledger/cactus-common";
 import { CordaConfiguration } from "../lib/corda-configuration";
-import { SerializedPB } from "../lib/corda_types";
+import {
+  WeaverAssetLockPB,
+  WeaverFungibleAssetExchangePB,
+} from "../lib/weaver-pb";
 import * as assetLocksPb from "@hyperledger/cacti-weaver-protos-js/common/asset_locks_pb";
 
 export async function lockAssetV1Impl(
@@ -46,7 +49,9 @@ export async function lockAssetV1Impl(
   return claimId;
 }
 
-function fungibleAssetAgreement(req: LockAssetV1Request): SerializedPB {
+function fungibleAssetAgreement(
+  req: LockAssetV1Request,
+): WeaverFungibleAssetExchangePB {
   const params = Validators.validateLockAssetRequest(req);
   const assetExchangeAgreement =
     new assetLocksPb.FungibleAssetExchangeAgreement();
@@ -54,17 +59,15 @@ function fungibleAssetAgreement(req: LockAssetV1Request): SerializedPB {
   assetExchangeAgreement.setNumunits(params.asset.quantity());
   assetExchangeAgreement.setRecipient(params.destinationCertificate);
   assetExchangeAgreement.setLocker(params.sourceCertificate);
-  return new SerializedPB(
-    "org.hyperledger.cacti.weaver.protos.common.asset_locks.AssetLocks$FungibleAssetExchangeAgreement",
+  return new WeaverFungibleAssetExchangePB(
     assetExchangeAgreement.serializeBinary(),
-    "org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.FungibleAssetExchangeAgreementSerializer",
   );
 }
 
 function lockInfo(
   hash: HashFunctions.Hash,
   expiryTimeSecs: number,
-): SerializedPB {
+): WeaverAssetLockPB {
   const lockInfoHTLC = new assetLocksPb.AssetLockHTLC();
   lockInfoHTLC.setHashmechanism(hash.HASH_MECHANISM);
   lockInfoHTLC.setHashbase64(Buffer.from(hash.getSerializedHashBase64()));
@@ -74,9 +77,5 @@ function lockInfo(
   const lockInfo = new assetLocksPb.AssetLock();
   lockInfo.setLockmechanism(assetLocksPb.LockMechanism.HTLC);
   lockInfo.setLockinfo(lockInfoHTLCSerialized);
-  return new SerializedPB(
-    "org.hyperledger.cacti.weaver.protos.common.asset_locks.AssetLocks$AssetLock",
-    lockInfo.serializeBinary(),
-    "org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.AssetLockSerializer",
-  );
+  return new WeaverAssetLockPB(lockInfo.serializeBinary());
 }
