@@ -7,7 +7,8 @@ import {
   PledgeAssetV1200ResponsePB,
   ClaimPledgedAssetV1Request,
   LockAssetV1Request,
-  ProvestateV1Request,
+  GetVerifiedViewV1Request,
+  GetVerifiedViewV1200ResponsePB,
   LockAssetV1200ResponsePB,
   ClaimLockedAssetV1Request,
   ClaimPledgedAssetV1200ResponsePB,
@@ -50,7 +51,7 @@ export class CopmCordaImpl
   }
 
   public async pledgeAssetV1(
-    req: PledgeAssetV1Request,
+    _req: PledgeAssetV1Request,
   ): Promise<PledgeAssetV1200ResponsePB> {
     throw Error("not implemented");
     /*
@@ -128,11 +129,11 @@ export class CopmCordaImpl
     }
   }
 
-  public async provestateV1(req: ProvestateV1Request): Promise<void> {
+  public async getVerifiedViewV1(
+    req: GetVerifiedViewV1Request,
+  ): Promise<GetVerifiedViewV1200ResponsePB> {
     throw Error("not implemented");
-    /*
     this.log.debug("provestateV1 ENTRY req=%o", req);
-    await Endpoints.proveStateV1Impl(req, this.contextFactory, this.log);
-    */
+    return new GetVerifiedViewV1200ResponsePB({ data: "hi" });
   }
 }
