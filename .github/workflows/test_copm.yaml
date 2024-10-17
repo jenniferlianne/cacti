@@ -42,6 +42,8 @@ jobs:
         - name: Make the corda network
           run: |
             make setup; make lock-network
+            yarn run build
+            yarn run server&
           working-directory: packages/cacti-plugin-copm-corda
         - name: show the running network
           run: docker container ls
