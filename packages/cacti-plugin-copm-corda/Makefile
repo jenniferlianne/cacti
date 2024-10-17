@@ -4,6 +4,8 @@ pledge%: chaincode = simpleassettransfer
 lock%: chaincode = simpleasset
 
 setup:
+	cd $(WORKSPACE)/packages/cacti-plugin-copm-corda/protos-kt && \
+	./gradlew build && \
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
 	make corda-setup
 
