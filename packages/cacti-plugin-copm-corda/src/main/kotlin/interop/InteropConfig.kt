@@ -12,6 +12,8 @@ import java.io.File
 @Component
 class InteropConfig {
 
+    val copmContractName : String = "org.hyperledger.cacti.weaver.imodule.corda.flows"
+
     fun getRelayConfig(localNetwork: String): RelayConfig {
         val netConfigJson = remoteNetworkJson(localNetwork)
         val localRelayEndpoint: String = netConfigJson.getString("relayEndpoint")

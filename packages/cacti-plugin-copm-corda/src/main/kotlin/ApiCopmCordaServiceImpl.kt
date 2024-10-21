@@ -1,29 +1,29 @@
 package com.copmCorda
 
 import arrow.core.Either
-import arrow.core.right
 import com.copmCorda.interop.InteropConfig
 import com.copmCorda.interop.RemoteTransaction
+import com.copmCorda.corda.CordaConfiguration
+import com.copmCorda.corda.LocalTransaction
 import com.copmCorda.server.validators.validateAccount
 import com.copmCorda.server.validators.validateAsset
 import com.copmCorda.server.validators.validateHash
 import com.copmCorda.server.validators.validateViewRequest
-import com.cordaSimpleApplication.contract.AssetContract
-import com.cordaSimpleApplication.flow.IssueAssetState
-import com.cordaSimpleApplication.state.AssetState
-
+import com.copmCorda.validators.ValidatedLockAssetV1Request
 import io.grpc.Status
-import net.corda.core.identity.Party
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.corda.core.CordaRuntimeException
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.messaging.startFlow
 import net.corda.core.utilities.loggerFor
+import com.cordaSimpleApplication.contract.AssetContract
+import com.cordaSimpleApplication.flow.IssueAssetState
+import com.cordaSimpleApplication.state.AssetState
+
 import net.devh.boot.grpc.server.advice.GrpcAdvice
 import net.devh.boot.grpc.server.advice.GrpcExceptionHandler
 import net.devh.boot.grpc.server.service.GrpcService
-import org.hyperledger.cacti.weaver.sdk.corda.HashFunctions
 import org.hyperledger.cacti.plugin.cacti.plugin.copm.core.ClaimPledgedAssetV1200ResponsePb
 import org.hyperledger.cacti.plugin.cacti.plugin.copm.core.GetVerifiedViewV1200ResponsePb
 import org.hyperledger.cacti.plugin.cacti.plugin.copm.core.LockAssetV1200ResponsePb
@@ -33,10 +33,12 @@ import org.hyperledger.cacti.plugin.cacti.plugin.copm.core.services.defaultservi
 import org.hyperledger.cacti.weaver.imodule.corda.flows.ClaimAsset
 import org.hyperledger.cacti.weaver.imodule.corda.flows.LockAsset
 import org.hyperledger.cacti.weaver.imodule.corda.flows.LockFungibleAsset
+import org.hyperledger.cacti.weaver.protos.common.asset_locks.AssetLocks
 import org.hyperledger.cacti.weaver.sdk.corda.AssetManager
 import org.hyperledger.cacti.weaver.sdk.corda.AssetTransferSDK
 import org.hyperledger.cacti.weaver.sdk.corda.InteroperableHelper
 import org.springframework.beans.factory.annotation.Autowired
+import kotlin.reflect.full.companionObject
 
 
 @GrpcService
@@ -62,7 +64,7 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
     override suspend fun claimLockedAssetV1(request: DefaultServiceOuterClass.ClaimLockedAssetV1Request): ClaimPledgedAssetV1200ResponsePb.ClaimPledgedAssetV1200ResponsePB {
         logger.info("start claimLockedAssetV1")
         val asset = validateAsset(request.assetLockClaimV1PB.asset, "asset")
-        val assetCommands = cordaConfig.assetCommands(asset)
+        val assetCommands = cordaConfig.assetInfo(asset)
         val contractId = request.assetLockClaimV1PB.lockId
         val recipient = validateAccount(request.assetLockClaimV1PB.destination, "destination")
 
@@ -79,7 +81,7 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
                     AssetManager.createAssetClaimInfo(hash),
                     assetCommands.assetIssue,
                     assetCommands.updateAssetOwnerRef,
-                    cordaConfig.getIssuer(recipient),
+                    cordaConfig.getIssuer(recipient).toCordaParam(rpc),
                     cordaConfig.getObservers(recipient)
                 ).returnValue.get()
             }
@@ -101,7 +103,7 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
     override suspend fun claimPledgedAssetV1(request: DefaultServiceOuterClass.ClaimPledgedAssetV1Request): ClaimPledgedAssetV1200ResponsePb.ClaimPledgedAssetV1200ResponsePB {
         logger.info("start claimPledgedAssetV1")
         val asset = validateAsset(request.assetPledgeClaimV1PB.asset,"asset")
-        val assetCommands = this.cordaConfig.assetCommands(asset)
+        val assetCommands = this.cordaConfig.assetInfo(asset)
         val destinationAccount = validateAccount(request.assetPledgeClaimV1PB.destination, "destination")
         val sourceAccount = validateAccount(request.assetPledgeClaimV1PB.source,"source")
         val pledgeId = request.assetPledgeClaimV1PB.pledgeId
@@ -183,70 +185,75 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
     override suspend fun lockAssetV1(request: DefaultServiceOuterClass.LockAssetV1Request): LockAssetV1200ResponsePb.LockAssetV1200ResponsePB
     {
         logger.info("start lockAssetV1")
-
-        val owner = validateAccount(request.assetLockV1PB.owner,"owner")
-        val hash = validateHash(request.assetLockV1PB.hashInfo,"hashInfo")
-        val asset = validateAsset(request.assetLockV1PB.asset, "asset")
-        val recipient = request.assetLockV1PB.destinationCertificate ?: ""
-        //val recipient = "O=PartyA,L=London,C=GB"
-
-
-        val expiryTime = request.assetLockV1PB.expirySecs
-        val assetCommands = this.cordaConfig.assetCommands(asset)
-        val issuer = this.cordaConfig.getIssuer(owner)
-        val lockInfo = AssetManager.createAssetLockInfo(hash, 1, expiryTime)
-        val observers = this.cordaConfig.getObservers(owner)
-        logger.info("asset is nft ${asset.isNFT}")
+        val data = ValidatedLockAssetV1Request(request)
+        val assetInfo = this.cordaConfig.assetInfo(data.asset)
+        val lockInfo = AssetManager.createAssetLockInfo(data.hash,data.expiryTimeFmt, data.expiryTime)
+        val flow = if (data.asset.isNFT) "LockAsset" else "LockFungibleAsset"
+        val agreement = if (data.asset.isNFT) AssetManager.createAssetExchangeAgreement(data.asset.assetType,data.asset.assetId, data.destCert,"")
+        else AssetManager.createFungibleAssetExchangeAgreement(data.asset.assetType,data.asset.assetQuantity,data.destCert, "")
         try {
-            val rpc = this.cordaConfig.getRPC(owner)
-            logger.info("connecting to corda on ${rpc.rpcPort}")
-            if( asset.isNFT ) {
-                val assetAgreement = AssetManager.createAssetExchangeAgreement(asset.assetType, asset.assetId, recipient, "")
-                val id = withContext(Dispatchers.IO) {
-                    rpc.proxy.startFlow(
-                        ::LockAsset,
-                        lockInfo,
-                        assetAgreement,
-                        assetCommands.getStateAndRef,
-                        assetCommands.assetBurn,
-                        issuer,
-                        observers
-                    ).returnValue.get()
+            if( ! data.asset.isNFT ) {
+                val rpc = this.cordaConfig.getRPC(data.owner)
+                logger.info("issuing tokens")
+                rpc.proxy.startFlow(::IssueAssetState, data.asset.assetQuantity, data.asset.assetType)
+                .returnValue.get().tx.outputStates.first() as AssetState
+            }
+            val transaction = LocalTransaction(data.owner, this.cordaConfig)
+            val result = transaction.invoke( DLTransactionParams(
+                    assetInfo.copmContract,
+                    flow,
+                    listOf(lockInfo,
+                        agreement,
+                        assetInfo.getStateAndRef,
+                        assetInfo.assetBurn,
+                        this.cordaConfig.getIssuer(data.owner),
+                        this.cordaConfig.getObservers(data.owner))
+                    ))
+            return LockAssetV1200ResponsePb.LockAssetV1200ResponsePB
+                .newBuilder()
+                .setLockId(result.toString())
+                .build()
+
+            /*
+            val issuer = this.cordaConfig.getIssuer(data.owner).toCordaParam(rpc)
+            val result = if( data.asset.isNFT ) AssetManager.createHTLC(
+                rpc.proxy,
+                data.asset.assetType,
+                data.asset.assetId,
+                data.destCert,
+                data.hash,
+                data.expiryTime,
+                data.expiryTimeFmt,
+                assetInfo.getStateAndRef,
+                assetInfo.assetBurn,
+                issuer,
+                observers
+            ) else AssetManager.createFungibleHTLC(
+                rpc.proxy,
+                data.asset.assetType,
+                data.asset.assetQuantity,
+                data.destCert,
+                data.hash,
+                data.expiryTime,
+                data.expiryTimeFmt,
+                assetInfo.getStateAndRef,
+                assetInfo.assetBurn,
+                issuer,
+                observers
+            )
+            when (result) {
+                is Either.Left -> {
+                    throw IllegalStateException("Corda Network Error: Error running LockAsset flow: ${result.a.message}\n")
                 }
-                if(id.isRight()) {
-                    return LockAssetV1200ResponsePb.LockAssetV1200ResponsePB.newBuilder()
-                        .setLockId(id.right().toString())
+                is Either.Right -> {
+                    return LockAssetV1200ResponsePb.LockAssetV1200ResponsePB
+                        .newBuilder()
+                        .setLockId(result.b.toString())
                         .build()
                 }
-                throw IllegalStateException(id.toString())
-            } else {
-                logger.info("issuing tokens")
-                rpc.proxy.startFlow(::IssueAssetState, asset.assetQuantity, asset.assetType)
-                .returnValue.get().tx.outputStates.first() as AssetState
-
-                val assetAgreement = AssetManager.createFungibleAssetExchangeAgreement(asset.assetType, asset.assetQuantity, recipient, "")
-                logger.info("asset ${asset.assetType} ${asset.assetQuantity}")
-                val id = rpc.proxy.startFlow(
-                        ::LockFungibleAsset,
-                        lockInfo,
-                        assetAgreement,
-                        assetCommands.getStateAndRef,
-                        assetCommands.assetBurn,
-                        issuer,
-                        observers
-                    ).returnValue.get()
-                when (id) {
-                    is Either.Left -> {
-                        throw IllegalStateException("Corda Network Error: Error running LockAsset flow: ${id.a.message}\n")
-                    }
-                    is Either.Right -> {
-                        return LockAssetV1200ResponsePb.LockAssetV1200ResponsePB
-                            .newBuilder()
-                            .setLockId(id.b.toString())
-                            .build()
-                    }
-                }
             }
+
+             */
         } catch (e: CordaRuntimeException) {
             logger.error(e.message)
             throw IllegalStateException(e.message)
@@ -257,7 +264,7 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
         // Obtain the recipient certificate from the name of the recipient
         val recipientCert: String = request.assetPledgeV1PB.destinationCertificate
         val asset = validateAsset(request.assetPledgeV1PB.asset, "asset")
-        val assetCmds = this.cordaConfig.assetCommands(asset)
+        val assetCmds = this.cordaConfig.assetInfo(asset)
         val sourceAccount = validateAccount(request.assetPledgeV1PB.source, "source")
         val destinationAccount = validateAccount(request.assetPledgeV1PB.destination, "destination")
         val rpc = this.cordaConfig.getRPC(sourceAccount)
@@ -274,7 +281,7 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
                 timeout,
                 assetCmds.getStateAndRef,
                 assetCmds.assetBurn,
-                this.cordaConfig.getIssuer(sourceAccount),
+                this.cordaConfig.getIssuer(sourceAccount).toCordaParam(rpc),
                 this.cordaConfig.getObservers(sourceAccount)
             )
         else AssetTransferSDK.createAssetPledge(
@@ -287,7 +294,7 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
             timeout,
             assetCmds.getStateAndRef,
             assetCmds.assetBurn,
-            this.cordaConfig.getIssuer(sourceAccount),
+            this.cordaConfig.getIssuer(sourceAccount).toCordaParam(rpc),
             this.cordaConfig.getObservers(sourceAccount)
         )
         when (result) {
@@ -329,18 +336,4 @@ class GlobalExceptionHandler {
         logger.error(e.message)
         return Status.INTERNAL.withDescription(e.message)
     }
-
-    /*
-        @GrpcExceptionHandler(CordaRuntimeException::class )
-        fun handleMyCustomException(e: CordaRuntimeException): Status {
-            logger.error(e.message)
-            return Status.INTERNAL.withDescription(e.message)
-        }
-
-        @GrpcExceptionHandler(Error::class)
-        fun handleMyCustomException(e: Error): Status {
-            logger.error(e.message)
-            return Status.INTERNAL.withDescription(e.message)
-        }
-    */
 }

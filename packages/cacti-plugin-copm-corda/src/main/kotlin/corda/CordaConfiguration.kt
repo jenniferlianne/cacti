@@ -1,40 +1,36 @@
-package com.copmCorda
+package com.copmCorda.corda
 
-import net.corda.core.contracts.CommandData
-import net.corda.core.identity.CordaX500Name
 import net.corda.core.identity.Party
-
 import org.springframework.stereotype.Component
 import com.cordaSimpleApplication.contract.AssetContract
 import com.cordaSimpleApplication.contract.BondAssetContract
 
 import com.copmCorda.DLAccount
+import com.copmCorda.DLAsset
+import com.copmCorda.NodeRPCConnection
 import net.corda.core.utilities.loggerFor
-
-class AssetCommands(val getStateAndRef: String,
-                    val getStateAndContractId: String,
-                    val updateAssetOwnerRef: String,
-                    val assetIssue: CommandData,
-                    val assetBurn: CommandData) {
-}
 
 @Component
 class CordaConfiguration {
 
-    private val host = "192.168.0.148";
+    private val host = "192.168.0.148"
     private val username = "clientUser1"
     private val password = "test"
 
     companion object {
-        val logger = loggerFor<ApiCopmCordaServiceImpl>()
-        private val nftCommandSet = AssetCommands(
+        val logger = loggerFor<CordaConfiguration>()
+        private val exampleNFTAssetInfo = CordaAssetInfo(
+            "com.cordaSimpleApplication.contract.BondAssetContract",
+            "org.hyperledger.cacti.weaver.imodule.corda.flows",
             "com.cordaSimpleApplication.flow.RetrieveBondAssetStateAndRef",
             "com.cordaSimpleApplication.flow.GetBondAssetStateAndContractId",
             "com.cordaSimpleApplication.flow.UpdateBondAssetOwnerFromPointer",
             BondAssetContract.Commands.Issue(),
             BondAssetContract.Commands.Delete()
         )
-        private val fungibleCommandSet = AssetCommands(
+        private val exampleFungibleAssetInfo = CordaAssetInfo(
+            "com.cordaSimpleApplication.contract.AssetContract",
+            "org.hyperledger.cacti.weaver.imodule.corda.flows",
             "com.cordaSimpleApplication.flow.RetrieveStateAndRef",
             "com.cordaSimpleApplication.flow.GetAssetStateAndContractId",
             "com.cordaSimpleApplication.flow.UpdateAssetOwnerFromPointer",
@@ -43,16 +39,13 @@ class CordaConfiguration {
         )
     }
 
-    fun assetCommands(asset: DLAsset) : AssetCommands {
-        return if (asset.isNFT) nftCommandSet else fungibleCommandSet;
+    fun assetInfo(asset: DLAsset) : CordaAssetInfo {
+        return if (asset.isNFT) exampleNFTAssetInfo else exampleFungibleAssetInfo;
     }
 
 
-    fun getIssuer(account: DLAccount) : Party {
-        val rpc = this.getRPC(account);
-        val party = rpc.proxy.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))!!
-        rpc.close()
-        return party
+    fun getIssuer(account: DLAccount) : CordaParty {
+        return CordaParty("O=PartyA,L=London,C=GB")
     }
 
     fun getRPC(account: DLAccount) : NodeRPCConnection {
