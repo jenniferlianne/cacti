@@ -340,6 +340,22 @@
           }
         }
       },
+      "AddContractJarsV1Request": {
+        "type": "object",
+        "required": ["jarFiles", "cordappDeploymentConfigs"],
+        "additionalProperties": false,
+        "properties": {
+          "jarFiles": {
+            "type": "array",
+            "nullable": false,
+            "items": {
+              "minLength": 1,
+              "maxLength": 1024,
+              "$ref": "#/components/schemas/JarFile"
+            }
+          }
+        }
+      },
       "DeployContractJarsV1Request": {
         "type": "object",
         "required": ["jarFiles", "cordappDeploymentConfigs"],
@@ -1282,6 +1298,51 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DeployContractJarsV1Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeployContractJarsSuccessV1Response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeployContractJarsBadRequestV1Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/add-contract-jars": {
+      "post": {
+        "operationId": "addContractJarsV1",
+        "x-hyperledger-cacti": {
+          "http": {
+            "path": "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-corda/add-contract-jars",
+            "verbLowerCase": "post"
+          }
+        },
+        "summary": "Adds a set of jarfiles to the connector that have already been deployed to the ledger.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddContractJarsV1Request"
               }
             }
           }

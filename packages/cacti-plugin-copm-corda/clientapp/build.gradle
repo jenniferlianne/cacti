@@ -1,0 +1,133 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+//    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id "java"
+    id "idea"
+    id "application"
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
+    id "org.jetbrains.kotlin.plugin.jpa" version "$kotlin_version"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlin_version"
+    id "org.springframework.boot" version "3.0.2"
+    id "io.spring.dependency-management" version "1.0.14.RELEASE"
+
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir rootProject.file("config/dev")
+        }
+        java.srcDirs += './src/main/kotlin/'
+        kotlin.srcDirs += './src/main/kotlin/'
+    }
+}
+
+Properties constants = new Properties()
+
+repositories {
+    google()
+    mavenCentral()
+    mavenLocal()
+    maven { url "https://download.corda.net/maven/corda-dependencies" } // access to the patched Quasar and Caffeine version
+
+    flatDir {
+        dirs '../../fungible-house-token/source/contracts/build/libs'
+        dirs '../../fungible-house-token/source/workflows/build/libs'
+    }
+    if (file("$projectDir/../github.properties").exists()) {
+        file("$projectDir/../github.properties").withInputStream { constants.load(it) }
+        maven {
+            url constants.url
+            credentials {
+                username constants.username
+                password constants.password
+            }
+        }
+    }
+    else {
+        flatDir {
+            dirs '../../../../core/network/corda-interop-app/interop-contracts/build/libs'
+            dirs '../../../../core/network/corda-interop-app/interop-workflows/build/libs'
+            dirs '../../../../sdks/corda/build/libs'
+            dirs '../../../../common/protos-java-kt/build/libs'
+        }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Corda dependencies.
+    implementation "$corda_core_release_group:corda-core:$corda_core_release_version"
+    implementation "$corda_release_group:corda-node-api:$corda_release_version"
+    implementation "$corda_release_group:corda:$corda_release_version"
+    implementation "$corda_release_group:corda-rpc:$corda_release_version"
+    
+    implementation "io.arrow-kt:arrow-core:$arrow_version"
+    implementation "io.arrow-kt:arrow-fx:$arrow_version"
+    implementation "io.arrow-kt:arrow-syntax:$arrow_version"
+
+    // gRPC and protobuf dependencies
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "io.grpc:grpc-kotlin-stub:$grpc_kotlin_version"
+    implementation "io.grpc:grpc-netty-shaded:$grpc_version"
+    implementation "io.grpc:grpc-stub:$grpc_version"
+    implementation "io.grpc:grpc-okhttp:$grpc_version"
+    implementation "io.grpc:grpc-protobuf:$grpc_version"
+    implementation group: 'org.json', name: 'json', version: '20190722'
+
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.1.0.RELEASE')
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin" 
+    implementation "jakarta.validation:jakarta.validation-api"
+    implementation "jakarta.annotation:jakarta.annotation-api:2.1.0" 
+
+
+    implementation files("./../../weaver/common/protos-java-kt/build/libs/protos-java-kt-2.0.0-rc.7.jar")
+    implementation files("./../../weaver/sdks/corda/build/libs/weaver-sdk-corda-2.0.0-rc.7.jar")
+    implementation files("./../../weaver/core/network/corda-interop-app/interop-workflows/build/libs/interop-workflows-2.0.0-rc.7.jar")
+    implementation files("./../../weaver/core/network/corda-interop-app/interop-contracts/build/libs/interop-contracts-2.0.0-rc.7.jar")
+    implementation files("./../../weaver/samples/corda/corda-simple-application/contracts-kotlin/build/libs/contracts-kotlin-0.4.jar")
+    implementation files("./../../weaver/samples/corda/corda-simple-application/workflows-kotlin/build/libs/workflows-kotlin-0.4.jar")
+    //// Logger dependencies
+    implementation "org.slf4j:slf4j-simple:1.6.1"
+
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
+jar {
+    // This makes the JAR's SHA-256 hash repeatable.
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': "com.copmCorda.MainClassKt"
+        )
+    }
+}
+
+application {
+    mainClass = 'com.copmCorda.MainClassKt'
+}

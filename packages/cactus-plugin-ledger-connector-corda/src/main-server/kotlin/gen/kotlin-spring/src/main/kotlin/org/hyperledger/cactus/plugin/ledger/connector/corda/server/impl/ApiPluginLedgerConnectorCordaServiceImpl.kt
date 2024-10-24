@@ -26,6 +26,7 @@ import org.hyperledger.cactus.plugin.ledger.connector.corda.server.model.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Service
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.HtmlUtils.htmlEscape
 import java.io.IOException
@@ -42,9 +43,12 @@ class ApiPluginLedgerConnectorCordaServiceImpl(
     // to be hardcoded like this. Not even sure if these magic strings here actually get used at all or if spring just
     // overwrites the bean property with whatever it constructed internally based on the configuration.
     // Either way, these magic strings gotta go.
-    val rpc: NodeRPCConnection,
     val monitorManager: StateMonitorSessionsManager
 ) : ApiPluginLedgerConnectorCordaService {
+
+    final lateinit var jsonJvmObjectDeserializer: JsonJvmObjectDeserializer
+
+    final lateinit var rpc: NodeRPCConnection
 
     companion object {
         val logger = loggerFor<ApiPluginLedgerConnectorCordaServiceImpl>()
@@ -56,8 +60,16 @@ class ApiPluginLedgerConnectorCordaServiceImpl(
             // .registerModule(JavaTimeModule())
 
         val writer: ObjectWriter = mapper.writer()
+    }
 
-        val jsonJvmObjectDeserializer = JsonJvmObjectDeserializer()
+    @Autowired 
+    fun SetupJsonJvm(serializer: JsonJvmObjectDeserializer) {
+        this.jsonJvmObjectDeserializer = serializer
+    }
+
+    @Autowired 
+    fun SetupNodeRpc(rpc: NodeRPCConnection) {
+        this.rpc = rpc
     }
 
     private fun dynamicInvoke(rpc: CordaRPCOps, req: InvokeContractV1Request): InvokeContractV1Response {
@@ -66,9 +78,15 @@ class ApiPluginLedgerConnectorCordaServiceImpl(
             jsonJvmObjectDeserializer.getOrInferType(req.flowFullClassName) as Class<out FlowLogic<*>>
         } catch (ex: ClassNotFoundException) {
             val reason = "flowFullClassName ${req.flowFullClassName} could not be loaded. Are you sure you have installed the correct .jar file(s)?"
+            logger.error(reason);
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, reason, ex)
         }
         val params = req.params.map { p -> jsonJvmObjectDeserializer.instantiate(p) }.toTypedArray()
+
+       for (param in params) {
+            logger.info("param type ${param!!::class.simpleName}");    // body of loop
+        }
+        
         logger.info("params={}", params)
 
         val flowHandle = when (req.flowInvocationType) {
@@ -152,6 +170,27 @@ class ApiPluginLedgerConnectorCordaServiceImpl(
         // net.corda.client.jackson.internal.StxJson["wire"]->net.corda.client.jackson.internal.WireTransactionJson["outputs"])]
         // with root cause
         return InvokeContractV1Response(true, callOutput, id.toString(), transactionId, progress)
+    }
+
+    override fun addContractJarsV1(addContractJarsV1Request: AddContractJarsV1Request): DeployContractJarsSuccessV1Response {
+        val decoder = Base64.getDecoder()
+
+        val deployedJarFileNames = addContractJarsV1Request.jarFiles.map {
+            val jarFileInputStream = decoder.decode(it.contentBase64).inputStream()
+            jsonJvmObjectDeserializer.jcl.add(jarFileInputStream)
+            logger.info("Added jar to classpath of Corda Connector Plugin Server: ${it.filename}")
+            it.filename
+        }
+
+        rpc.addSerializer("org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.AssetLockSerializer")
+        rpc.addSerializer("org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.FungibleAssetExchangeAgreementSerializer")
+        rpc.addSerializer("org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.LockMechanismSerializer")
+        rpc.addSerializer("org.hyperledger.cacti.weaver.imodule.corda.flows.customSerializers.AssetLockHTLCSerializer")
+        logger.info("reloading rpc connection with class loader ${rpc.serializedWhitelistClasses.size} classes")
+
+        rpc.loadRpc();
+
+        return DeployContractJarsSuccessV1Response(deployedJarFileNames)
     }
 
     // FIXME - make it clear in the documentation that this deployment endpoint is not recommended for production

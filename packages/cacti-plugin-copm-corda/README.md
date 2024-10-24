@@ -1,0 +1,1 @@
+DOCKER_BUILDKIT=1 docker build   ./packages/cacti-plugin-copm-corda/clientapp/   --progress=plain   --tag copmcon   --tag copmcon:latest 
