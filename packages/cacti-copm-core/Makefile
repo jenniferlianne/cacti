@@ -1,5 +1,5 @@
 WORKSPACE ?= $(shell realpath `pwd`/../../)
-DOCKER_IMAGES=hyperledger/fabric-orderer hyperledger/fabric-peer hyperledger/fabric-ca ghcr.io/hyperledger/cacti-weaver-iin-agent ghcr.io/hyperledger/cacti-weaver-relay-server ghcr.io/hyperledger/cacti-weaver-driver-fabric corda/community:4.12-zulu-openjdk ghcr.io/hyperledger/cacti-weaver-driver-corda
+DOCKER_IMAGES=hyperledger/fabric-orderer hyperledger/fabric-peer hyperledger/fabric-ca ghcr.io/hyperledger/cacti-weaver-iin-agent ghcr.io/hyperledger/cacti-weaver-relay-server ghcr.io/hyperledger/cacti-weaver-driver-fabric corda/community:4.12-zulu-openjdk ghcr.io/hyperledger/cacti-weaver-driver-corda copm-corda
 
 
 # DL-NETWORK ---------------------------------------------------

@@ -16,21 +16,22 @@ setup: build-local-deps
 	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/contracts-kotlin/build/libs/contracts-kotlin-*.jar localdeps
 	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/workflows-kotlin/build/libs/workflows-kotlin-*.jar localdeps
 
-docker:
+docker-image:
 	DOCKER_BUILDKIT=1 docker build . --tag copm-corda 
 
 pledge-network:  
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
-	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup
+	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup 
+	make server
 
 lock-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
-	make corda-lock-dl corda-cli
+	make corda-lock-dl corda-cli 
+	make server
 
-server:
-	./gradlew build
-	java -jar build/libs/copm-corda-0.4.jar
-
+server: docker-image
+	export COPM_CORDA_RPC=`cat ../cacti-copm-test-tooling/corda_rpc.json`
+	docker run -e COPM_CORDA_RPC -p 9199:9090 --detach copm-corda 
 
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && make clean-network 
