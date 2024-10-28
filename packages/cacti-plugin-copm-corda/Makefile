@@ -4,7 +4,7 @@ build-local-deps:
 	cd $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt && \
 	./gradlew build && \
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
-	make setup-corda
+	make corda-setup
 
 setup: build-local-deps
 	mkdir -p localdeps && \
