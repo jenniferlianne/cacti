@@ -13,10 +13,12 @@ jobs:
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-        JEST_TEST_PATTERN: packages/cacti-plugin-copm-corda/src/test/typescript/integration/test-copm-getverifiedview-corda.test.ts
+        JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-getverifiedview.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-pledge
         JEST_TEST_CODE_COVERAGE_ENABLED: true
+        COPM_NET_1: "corda"
+        COPM_NET_2: "corda"
       runs-on: ubuntu-22.04
       steps:
         - uses: actions/checkout@v4.1.1
@@ -58,10 +60,12 @@ jobs:
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-        JEST_TEST_PATTERN: packages/cacti-plugin-copm-corda/src/test/typescript/integration/test-copm-lock-claim-corda.test.ts
+        JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-lock-claim.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-lock
         JEST_TEST_CODE_COVERAGE_ENABLED: true
+        COPM_NET_1: "corda"
+        COPM_NET_2: "corda"
       runs-on: ubuntu-22.04
       steps:
         - uses: actions/checkout@v4.1.1
@@ -86,7 +90,6 @@ jobs:
         - name: Make the corda network
           run: |
             make setup; make lock-network
-            make server&
           working-directory: packages/cacti-plugin-copm-corda
         - name: show the running network
           run: docker container ls
@@ -99,19 +102,22 @@ jobs:
             path: ./code-coverage-ts/**/
 
     copm-fabric-fabric-pledge-and-provestate:
+        runs-on: ubuntu-22.04
         continue-on-error: false
         env:
           CACTI_NPM_PACKAGE_NAME: "@hyperledger-cacti/cacti-plugin-copm-fabric"
           HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
           FULL_BUILD_DISABLED: true
           FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-          JEST_TEST_PATTERN: packages/cacti-plugin-copm-fabric/src/test/typescript/integration/test-copm-pledge-claim.test.ts packages/cacti-plugin-copm-fabric/src/test/typescript/integration/test-copm-getverifiedview.test.ts
+          JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-pledge-claim.test.ts packages/cacti-plugin-copm-fabric/src/test/typescript/integration/test-copm-getverifiedview.test.ts
           JEST_TEST_RUNNER_DISABLED: false
           JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-fabric-fabric-pledge
           JEST_TEST_CODE_COVERAGE_ENABLED: true
           TAPE_TEST_PATTERN: ""
           TAPE_TEST_RUNNER_DISABLED: true
-        runs-on: ubuntu-22.04
+          COPM_NET_1: "fabric"
+          COPM_NET_2: "fabric"
+          runs-on: ubuntu-22.04
         steps:
           - uses: actions/checkout@v4.1.1
           - uses: ./.github/actions/copm_test/
@@ -137,12 +143,14 @@ jobs:
           HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
           FULL_BUILD_DISABLED: true
           FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-          JEST_TEST_PATTERN: packages/cacti-plugin-copm-fabric/src/test/typescript/integration/test-copm-lock-claim.test.ts
+          JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-lock-claim.test.ts
           JEST_TEST_RUNNER_DISABLED: false
           JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-fabric-fabric-lock
           JEST_TEST_CODE_COVERAGE_ENABLED: true
           TAPE_TEST_PATTERN: ""
           TAPE_TEST_RUNNER_DISABLED: true
+          COPM_NET_1: "fabric"
+          COPM_NET_2: "fabric"
         runs-on: ubuntu-22.04
         steps:
           - uses: actions/checkout@v4.1.1
