@@ -52,7 +52,7 @@ jobs:
           if: ${{ matrix.net1 != matrix.net2 }}
         - name: show the running network
           run: docker container ls
-        - run:  JEST_TEST_COVERAGE_PATH=./code-coverage-ts/plc-copm-pledge${{matrix.net1}}-${{matrix.net2}} COPM_NET_1=${{matrix.net1}} COPM_NET_2=${{matrix.net2}}./tools/ci.sh
+        - run:  JEST_TEST_COVERAGE_PATH=./code-coverage-ts/plc-copm-pledge${{matrix.net1}}-${{matrix.net2}} COPM_NET_1=${{matrix.net1}} COPM_NET_2=${{matrix.net2}} ./tools/ci.sh
         - name: Upload coverage reports as artifacts
           if: ${{ env.RUN_CODE_COVERAGE == 'true' }}
           uses: actions/upload-artifact@v4.3.3
