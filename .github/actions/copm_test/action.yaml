@@ -29,3 +29,9 @@ runs:
         unzip protoc-3.15.6-linux-x86_64.zip -d protoc
         go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.4.0
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3.11.0
+      with:
+          java-version: '17'
+          distribution: 'adopt'
+
