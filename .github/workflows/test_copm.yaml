@@ -13,7 +13,7 @@ jobs:
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-        JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-getverifiedview.test.ts
+        JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-getverifiedview.test.ts packages/cacti-copm-test/src/test/typescript/integration/test-copm-pledge-claim.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-pledge
         JEST_TEST_CODE_COVERAGE_ENABLED: true
