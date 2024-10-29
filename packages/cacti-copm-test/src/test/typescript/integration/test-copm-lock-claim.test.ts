@@ -47,10 +47,11 @@ describe("Copm Lock and Claim", () => {
     const sourceCert = await copmTester.getCertificateString(partyA);
     const destCert = await copmTester.getCertificateString(partyB);
 
-    await copmTester
-      .assetsFor(partyA)
-      .addNonFungibleAsset(assetType, lockAssetName);
-
+    if (netType == "fabric") {
+      await copmTester
+        .assetsFor(partyA)
+        .addNonFungibleAsset(assetType, lockAssetName);
+    }
     const lockResult = await copmTester.clientFor(partyA).lockAssetV1(
       new LockAssetV1Request({
         assetLockV1PB: {
@@ -110,7 +111,9 @@ describe("Copm Lock and Claim", () => {
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
 
-    await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
+    if (netType == "fabric") {
+      await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
+    }
 
     const srcCert = await copmTester.getCertificateString(partyA);
     const destCert = await copmTester.getCertificateString(partyB);

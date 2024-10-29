@@ -43,7 +43,6 @@ jobs:
         - name: Make the corda network
           run: |
             make setup; make pledge-network
-            make server&
           working-directory: packages/cacti-plugin-copm-corda
         - name: show the running network
           run: docker container ls

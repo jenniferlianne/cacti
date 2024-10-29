@@ -30,7 +30,10 @@ lock-network:
 	make server
 
 server: docker-image
-	docker run -e COPM_CORDA_RPC="`cat ../cacti-copm-test/corda_rpc.json`" -p 9199:9090 --detach copm-corda 
+	docker run -e COPM_RELAY_CONFIG="`cat ./corda-relay-config.json  | sed -e 's/127.0.0.1/172.17.0.1/g'`" \
+	-e COPM_REMOTE_CONFIG="`cat ../../weaver/samples/corda/corda-simple-application/clients/src/main/resources/config/remote-network-config.json`" \
+	-e COPM_CORDA_RPC="`cat ../cacti-copm-test/corda_rpc.json | sed -e 's/127.0.0.1/172.17.0.1/g'`" \
+	-p 9199:9090 --detach copm-corda 
 
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && make clean-network 

@@ -32,10 +32,17 @@ class InteropConfig {
     }
 
     fun getRelayConfig(localNetwork: String): RelayConfig {
-        val netConfigJson = this.remoteNetworkJson(localNetwork)
+        val relayConfigJSON = JSONObject(System.getenv("COPM_RELAY_CONFIG"))
+            
+        // throw exception if the networkID is not present in the file
+        if (!relayConfigJSON.has(localNetwork)) {
+            throw IllegalStateException("env var COPM_RELAY_CONFIG doesn't contain the configuration of networkID $localNetwork.")
+        }
+
+        val netConfigJson = relayConfigJSON.getJSONObject(localNetwork)
         val localRelayEndpoint: String = netConfigJson.getString("relayEndpoint")
-        val localRelayPort = localRelayEndpoint.split(":").last().toInt()
-        return RelayConfig("localhost:$localRelayPort", this.relayOptions())
+        logger.info("messages from ${localNetwork} will be sent to ${localRelayEndpoint}")
+        return RelayConfig(localRelayEndpoint, this.relayOptions())
     }
 
     fun getViewAddress(remoteNetwork: String, params: DLTransactionParams) : String {
@@ -86,28 +93,11 @@ class InteropConfig {
     }
 
     private fun remoteNetworkJson(networkID: String): JSONObject {
-        val currentDir = File(".") 
-        val relPath = "../../weaver/samples/corda/corda-simple-application/clients/src/main/resources/config/remote-network-config.json"
-        val networksConfigJSON: JSONObject
-        val networksConfigFile: File
-        try {
-            networksConfigFile = File(currentDir, relPath)
-            if (!networksConfigFile.exists()) {
-                println("File ${networksConfigFile.absolutePath} doesn't exist to fetch the network configuration of networkID $networkID.")
-                throw IllegalStateException("File ${networksConfigFile.absolutePath} doesn't exist to fetch the network configuration of networkID $networkID.")
-            } else {
-                // if file exists, read the contents of the file
-                networksConfigJSON = JSONObject(networksConfigFile.readText(Charsets.UTF_8))
-            }
-
-            // throw exception if the networkID is not present in the file
-            if (!networksConfigJSON.has(networkID)) {
-                println("File $networksConfigFile doesn't contain the configuration of networkID $networkID.")
-                throw IllegalStateException("File $networksConfigFile doesn't contain the configuration of networkID $networkID.")
-            }
-        } catch (e: Exception) {
-            println("Error: $e")
-            throw e
+        val networksConfigJSON = JSONObject(System.getenv("COPM_REMOTE_CONFIG"))
+            
+        // throw exception if the networkID is not present in the file
+        if (!networksConfigJSON.has(networkID)) {
+            throw IllegalStateException("env var COPM_REMOTE_CONFIG doesn't contain the configuration of networkID $networkID.")
         }
         return networksConfigJSON.getJSONObject(networkID)
     }
