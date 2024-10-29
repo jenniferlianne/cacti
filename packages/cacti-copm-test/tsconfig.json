@@ -21,6 +21,10 @@
     },
     {
       "path": "../cacti-plugin-copm-fabric/tsconfig.json"
+    },
+    {
+      "path": "../cacti-plugin-copm-corda/tsconfig.json"
     }
+
   ]
 }

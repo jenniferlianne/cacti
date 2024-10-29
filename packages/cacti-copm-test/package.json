@@ -45,6 +45,7 @@
     "@connectrpc/connect": "1.4.0",
     "@connectrpc/connect-node": "^1.6.1",
     "@hyperledger-cacti/cacti-copm-core": "workspace:^",
+    "@hyperledger-cacti/cacti-plugin-copm-corda": "workspace:^",
     "@hyperledger-cacti/cacti-plugin-copm-fabric": "workspace:^",
     "@hyperledger/cacti-weaver-protos-js": "2.0.0",
     "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^",
@@ -54,7 +55,8 @@
     "@hyperledger/cactus-core-api": "2.0.0",
     "@hyperledger/cactus-plugin-ledger-connector-corda": "workspace:^",
     "@hyperledger/cactus-test-tooling": "workspace:^",
-    "dockerode": "^4.0.2",
+    "@types/dockerode": "3.2.7",
+    "dockerode": "3.3.0",
     "fabric-ca-client": "^2.2.20",
     "fabric-common": "^2.2.20",
     "fabric-network": "^2.2.20"

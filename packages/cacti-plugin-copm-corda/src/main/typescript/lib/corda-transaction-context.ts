@@ -40,6 +40,7 @@ export class CordaTransactionContext
     if (contractInvocation.status != OK) {
       throw Error(`corda invocation error ${contractInvocation.statusText}`);
     }
+    this.log.debug(contractInvocation.data);
     return contractInvocation.data.callOutput.toString();
   }
 

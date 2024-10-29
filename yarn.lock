@@ -5710,13 +5710,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@balena/dockerignore@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@balena/dockerignore@npm:1.0.2"
-  checksum: 10/13d654fdd725008577d32e721c720275bdc48f72bce612326363d5bed449febbed856c517a0b23c7c40d87cb531e63432804550b4ecc13e365d26fee38fb6c8a
-  languageName: node
-  linkType: hard
-
 "@bcoe/v8-coverage@npm:^0.2.3":
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
@@ -9060,6 +9053,7 @@ __metadata:
     "@connectrpc/connect": "npm:1.4.0"
     "@connectrpc/connect-node": "npm:^1.6.1"
     "@hyperledger-cacti/cacti-copm-core": "workspace:^"
+    "@hyperledger-cacti/cacti-plugin-copm-corda": "workspace:^"
     "@hyperledger-cacti/cacti-plugin-copm-fabric": "workspace:^"
     "@hyperledger/cacti-weaver-protos-js": "npm:2.0.0"
     "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^"
@@ -9069,14 +9063,15 @@ __metadata:
     "@hyperledger/cactus-core-api": "npm:2.0.0"
     "@hyperledger/cactus-plugin-ledger-connector-corda": "workspace:^"
     "@hyperledger/cactus-test-tooling": "workspace:^"
-    dockerode: "npm:^4.0.2"
+    "@types/dockerode": "npm:3.2.7"
+    dockerode: "npm:3.3.0"
     fabric-ca-client: "npm:^2.2.20"
     fabric-common: "npm:^2.2.20"
     fabric-network: "npm:^2.2.20"
   languageName: unknown
   linkType: soft
 
-"@hyperledger-cacti/cacti-plugin-copm-corda@workspace:packages/cacti-plugin-copm-corda":
+"@hyperledger-cacti/cacti-plugin-copm-corda@workspace:^, @hyperledger-cacti/cacti-plugin-copm-corda@workspace:packages/cacti-plugin-copm-corda":
   version: 0.0.0-use.local
   resolution: "@hyperledger-cacti/cacti-plugin-copm-corda@workspace:packages/cacti-plugin-copm-corda"
   dependencies:
@@ -24477,17 +24472,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cpu-features@npm:~0.0.10":
-  version: 0.0.10
-  resolution: "cpu-features@npm:0.0.10"
-  dependencies:
-    buildcheck: "npm:~0.0.6"
-    nan: "npm:^2.19.0"
-    node-gyp: "npm:latest"
-  checksum: 10/941b828ffe77582b2bdc03e894c913e2e2eeb5c6043ccb01338c34446d026f6888dc480ecb85e684809f9c3889d245f3648c7907eb61a92bdfc6aed039fcda8d
-  languageName: node
-  linkType: hard
-
 "cpu-features@npm:~0.0.8":
   version: 0.0.8
   resolution: "cpu-features@npm:0.0.8"
@@ -26355,18 +26339,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docker-modem@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "docker-modem@npm:5.0.3"
-  dependencies:
-    debug: "npm:^4.1.1"
-    readable-stream: "npm:^3.5.0"
-    split-ca: "npm:^1.0.1"
-    ssh2: "npm:^1.15.0"
-  checksum: 10/fc4cc09f3aab0e17d32eb5a01974bed845a803e23352937aceab2e35c35bdcd283d1655c154b737063b037f164f57addbd447628d620f564a2da82e036543a5f
-  languageName: node
-  linkType: hard
-
 "dockerode@npm:3.3.0":
   version: 3.3.0
   resolution: "dockerode@npm:3.3.0"
@@ -26384,17 +26356,6 @@ __metadata:
     docker-modem: "npm:^3.0.0"
     tar-fs: "npm:~2.0.1"
   checksum: 10/7bf4c06a2f63b6afaf8000355cca6c89f142a7dbb61a92efb8b0947adc277b9e85e642b9b8ee51d6c2a2d6d8d115088afb852c6055a22562eb39d9f40aabc874
-  languageName: node
-  linkType: hard
-
-"dockerode@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "dockerode@npm:4.0.2"
-  dependencies:
-    "@balena/dockerignore": "npm:^1.0.2"
-    docker-modem: "npm:^5.0.3"
-    tar-fs: "npm:~2.0.1"
-  checksum: 10/859279721553cc07d00f8e7ac55abb3bba3a8a42685c742f3651c46a996755c720005fedc8b6bb7ac0ca5dc9123536164099c93741d691c7779669ecde3bbc3d
   languageName: node
   linkType: hard
 
@@ -40346,15 +40307,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nan@npm:^2.19.0, nan@npm:^2.20.0":
-  version: 2.22.0
-  resolution: "nan@npm:2.22.0"
-  dependencies:
-    node-gyp: "npm:latest"
-  checksum: 10/ab165ba910e549fcc21fd561a33f534d86e81ae36c97b1019dcfe506b09692ff867c97794a54b49c9a83b8b485f529f0f58d24966c3a11863c97dc70814f4d50
-  languageName: node
-  linkType: hard
-
 "nano-base32@npm:^1.0.1":
   version: 1.0.1
   resolution: "nano-base32@npm:1.0.1"
@@ -49420,23 +49372,6 @@ __metadata:
     nan:
       optional: true
   checksum: 10/95f1114f26a6b5bfb94c14de1513e37207bcffb096e8b315faa2b31539e7c8f98071e6fc0e3fd709d685b55ebc74b0206edc6ae5a4df833991641f02fdc863e2
-  languageName: node
-  linkType: hard
-
-"ssh2@npm:^1.15.0":
-  version: 1.16.0
-  resolution: "ssh2@npm:1.16.0"
-  dependencies:
-    asn1: "npm:^0.2.6"
-    bcrypt-pbkdf: "npm:^1.0.2"
-    cpu-features: "npm:~0.0.10"
-    nan: "npm:^2.20.0"
-  dependenciesMeta:
-    cpu-features:
-      optional: true
-    nan:
-      optional: true
-  checksum: 10/0951c22d9c5a0e3b89a8e5ae890ebcbce9f1f94dbed37d1490e4e48e26bc8b074fa81f202ee57b708e31b5f33033f4c870b92047f4f02b6bc26c32225b01d84c
   languageName: node
   linkType: hard
 

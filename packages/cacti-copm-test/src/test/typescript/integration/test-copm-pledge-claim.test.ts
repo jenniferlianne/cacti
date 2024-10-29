@@ -52,12 +52,10 @@ describe("Copm Pledge and Claim", () => {
     const partyB = copmTester.getPartyB(assetType);
     const certA = await copmTester.getCertificateString(partyA);
     const certB = await copmTester.getCertificateString(partyB);
-    if (net1Type == "fabric") {
-      await copmTester
-        .assetsFor(partyA)
-        .addNonFungibleAsset(assetType, pledgeAssetName);
-    }
-    log.info("calling pledge asset");
+    await copmTester
+      .assetsFor(partyA)
+      .addNonFungibleAsset(assetType, pledgeAssetName);
+
     const pledgeNFTResult = await copmTester.clientFor(partyA).pledgeAssetV1(
       new PledgeAssetV1Request({
         assetPledgeV1PB: {
@@ -100,20 +98,22 @@ describe("Copm Pledge and Claim", () => {
         }),
       );
     expect(claimNFTResult).toBeTruthy();
-    /*
-    // Check that the asset changed networks.
-    expect(
-      await copmTester
-        .assetsFor(partyA)
-        .userOwnsNonFungibleAsset(assetType, pledgeAssetName),
-    ).toBeFalse();
 
-    expect(
-      await copmTester
-        .assetsFor(partyB)
-        .userOwnsNonFungibleAsset(assetType, pledgeAssetName),
-    ).toBeTrue();
-    */
+    if (net1Type == "fabric") {
+      // Check that the asset changed networks.
+      expect(
+        await copmTester
+          .assetsFor(partyA)
+          .userOwnsNonFungibleAsset(assetType, pledgeAssetName),
+      ).toBeFalse();
+    }
+    if (net2Type == "fabric") {
+      expect(
+        await copmTester
+          .assetsFor(partyB)
+          .userOwnsNonFungibleAsset(assetType, pledgeAssetName),
+      ).toBeTrue();
+    }
   });
 
   test(`${net1Type}-${net2Type} asset token pledge and claim`, async () => {
@@ -124,16 +124,21 @@ describe("Copm Pledge and Claim", () => {
     const certA = await copmTester.getCertificateString(partyA);
     const certB = await copmTester.getCertificateString(partyB);
 
+    const assetsPartyA = copmTester.assetsFor(partyA);
+    const assetsPartyB = copmTester.assetsFor(partyB);
+
+    // ensure initial account balance - user will not h
+    await assetsPartyA.addToken(assetType, 1 + exchangeQuantity);
+    await assetsPartyB.addToken(assetType, 1);
+
+    let user1StartBalance = 0,
+      user2StartBalance = 0;
+
     if (net1Type == "fabric") {
-      const assetsPartyA = copmTester.assetsFor(partyA);
-      //const assetsPartyB = copmTester.assetsFor(partyB);
-
-      // ensure initial account balance - user will not h
-      await assetsPartyA.addToken(assetType, 1 + exchangeQuantity);
-      //await assetsPartyB.addToken(assetType, 1);
-
-      //const user1StartBalance = await assetsPartyA.tokenBalance(assetType);
-      //const user2StartBalance = await assetsPartyB.tokenBalance(assetType);
+      user1StartBalance = await assetsPartyA.tokenBalance(assetType);
+    }
+    if (net2Type == "fabric") {
+      user2StartBalance = await assetsPartyB.tokenBalance(assetType);
     }
 
     const pledgeResult = await copmTester.clientFor(partyA).pledgeAssetV1(
@@ -182,15 +187,21 @@ describe("Copm Pledge and Claim", () => {
       }),
     );
     expect(claimResult).toBeTruthy();
-    /*
+
     // Check that the tokens changed networks.
-    expect(await assetsPartyA.tokenBalance(assetType)).toEqual(
-      user1StartBalance - exchangeQuantity,
-    );
+    if (net1Type == "fabric") {
+      expect(await assetsPartyA.tokenBalance(assetType)).toEqual(
+        user1StartBalance - exchangeQuantity,
+      );
+    }
+    if (net2Type == "fabric") {
+      expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
+        user2StartBalance + exchangeQuantity,
+      );
+    }
 
     expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
       user2StartBalance + exchangeQuantity,
     );
-    */
   });
 });

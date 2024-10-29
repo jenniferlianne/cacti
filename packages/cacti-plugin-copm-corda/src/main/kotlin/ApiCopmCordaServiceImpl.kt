@@ -70,30 +70,13 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
 
     override suspend fun lockAssetV1(request: DefaultServiceOuterClass.LockAssetV1Request): LockAssetV1200ResponsePb.LockAssetV1200ResponsePB
     {
-        val data = ValidatedLockAssetV1Request(request)
-        this.makeTestAsset(data.source, data.asset)
         return lockAssetV1Impl(request, this.transactionContextFactory, this.cordaConfig)
     }
 
     override suspend fun pledgeAssetV1(request: DefaultServiceOuterClass.PledgeAssetV1Request): PledgeAssetV1200ResponsePb.PledgeAssetV1200ResponsePB {
         // Obtain the recipient certificate from the name of the recipient
         logger.info("starting pledge asset")
-        val data = ValidatedPledgeAssetV1Request(request)
-        this.makeTestAsset(data.sourceAccount, data.asset)
         return pledgeAssetV1Impl(request, this.transactionContextFactory, this.cordaConfig)
-    }
-
-    private fun makeTestAsset(account: DLAccount, asset: DLAsset) {
-        val rpc = this.cordaConfig.getRPC(account)
-        if( ! asset.isNFT ) {
-            logger.info("issuing tokens")
-            rpc.proxy.startFlow(::IssueAssetState, asset.assetQuantity, asset.assetType)
-            .returnValue.get().tx.outputStates.first() as AssetState
-        } else {
-            logger.info("issuing bond")
-            rpc.proxy.startFlow(::IssueBondAssetState, asset.assetId, asset.assetType)
-                .returnValue.get().tx.outputStates.first()
-        }
     }
 
 }

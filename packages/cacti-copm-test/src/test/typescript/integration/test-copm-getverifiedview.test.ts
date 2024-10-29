@@ -59,9 +59,8 @@ describe(`COPM get verified view ${net1Type}-${net2Type}`, () => {
   test(`${net1Type}-${net2Type} get verified view1`, async () => {
     const assetType = "token1";
     const assetQuantity = 2;
-    if (net1Type == "fabric") {
-      await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
-    }
+    await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
+
     log.info(`party a ${partyA.organization} ${partyA.userId}`);
     log.info(`party b ${partyB.organization} ${partyB.userId}`);
 

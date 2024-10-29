@@ -14,33 +14,27 @@ import * as path from "path";
 import { createPromiseClient, PromiseClient } from "@connectrpc/connect";
 import { createGrpcTransport } from "@connectrpc/connect-node";
 import { CopmTester } from "../interfaces/copm-tester";
-import { WeaverInteropConfiguration } from "../lib/weaver-interop-configuration";
 import { TestAssets } from "../interfaces/test-assets";
 import { CopmNetworkMode } from "../lib/types";
+import { TestAssetsCorda } from "./test-assets-corda";
+import { TestCordaConnector } from "./test-corda-connector";
 
 export class CopmWeaverCordaTestnet implements CopmTester {
   logLevel: LogLevelDesc = "INFO";
   log: Logger;
   //cordaTransactionFactory: CordaTransactionContextFactory;
   //cordaConfig: TestCordaConfig;
-  interopConfig: WeaverInteropConfiguration;
   contractNames: CopmContractNames;
 
   private assetContractName: string;
   private hostAddr: string;
   private networkMode: CopmNetworkMode;
+  private testAssetMap = new Map<string, TestAssetsCorda>();
 
   constructor(log: Logger, networkMode: CopmNetworkMode) {
     this.log = log;
     this.networkMode = networkMode;
     this.hostAddr = "127.0.0.1";
-    this.interopConfig = new WeaverInteropConfiguration("interop", this.log);
-    //this.cordaConfig = new TestCordaConfig(log);
-    //this.cordaTransactionFactory = new CordaTransactionContextFactory(
-    //  this.cordaConfig,
-    //  this.interopConfig,
-    //  this.log,
-    //);
     this.assetContractName = "com.cordaSimpleApplication.flow";
     this.contractNames = {
       pledgeContract: "org.hyperledger.cacti.weaver.imodule.corda.flows",
@@ -50,8 +44,43 @@ export class CopmWeaverCordaTestnet implements CopmTester {
     this.writeClientJson(this.hostAddr);
   }
 
-  assetsFor(account: DLAccount): TestAssets {
-    throw new Error("Method not implemented.");
+  public assetsFor(account: DLAccount): TestAssets {
+    const accountKey = account.userId + "@" + account.organization;
+    const assets = this.testAssetMap.get(accountKey);
+    if (!assets) {
+      throw Error(`no assets found for account ${accountKey}`);
+    }
+    return assets;
+  }
+
+  private async createTestAssets(account: DLAccount): Promise<TestAssetsCorda> {
+    const accountKey = account.userId + "@" + account.organization;
+
+    const corda_rpc_file = path.join(
+      __dirname,
+      this.packageRelativePath,
+      "corda_rpc.json",
+    );
+    const config = JSON.parse(fs.readFileSync(corda_rpc_file).toString());
+    if (!config[accountKey]) {
+      throw Error(`account ${accountKey} not found in ${corda_rpc_file}`);
+    }
+    const client = config[accountKey];
+    const assets = new TestAssetsCorda(
+      account,
+      this.assetContractName,
+      new TestCordaConnector(
+        client.username,
+        client.password,
+        "172.17.0.1",
+        //client.host,
+        client.port,
+        this.log,
+      ),
+      this.log,
+    );
+    await assets.start();
+    return assets;
   }
 
   public networkNames(): string[] {
@@ -59,11 +88,18 @@ export class CopmWeaverCordaTestnet implements CopmTester {
   }
 
   async startServer() {
-    // this is handled outside of test for now
+    this.log.info("starting corda test server");
+    for (const user of [this.getPartyA(""), this.getPartyB("")]) {
+      this.log.info("creating test assets for user %s", user.userId);
+      const assets = await this.createTestAssets(user);
+      this.testAssetMap.set(user.userId + "@" + user.organization, assets);
+    }
   }
 
   async stopServer() {
-    // this is handled outside of test for now
+    for (const [_, assets] of this.testAssetMap) {
+      await assets.stop();
+    }
   }
 
   public writeClientJson(hostAddr: string) {

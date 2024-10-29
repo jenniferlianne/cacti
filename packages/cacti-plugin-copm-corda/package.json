@@ -12,6 +12,12 @@
   },
   "license": "Apache-2.0",
   "author": "Jennifer Bell",
+  "main": "dist/lib/main/typescript/index.js",
+  "types": "dist/lib/main/typescript/index.d.ts",
+  "module": "dist/lib/main/typescript/index.js",
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
     "bundleopenapi": "yarn run --top-level tools:bundle-open-api-tpl-files",
     "build": "./gradlew build",

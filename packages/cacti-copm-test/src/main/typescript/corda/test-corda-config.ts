@@ -1,13 +1,11 @@
-/*
 import { DLAccount } from "@hyperledger-cacti/cacti-copm-core";
 import { DefaultApi as CordaApi } from "@hyperledger/cactus-plugin-ledger-connector-corda";
 import { TransferrableAsset } from "@hyperledger-cacti/cacti-copm-core";
-import { CordaConfiguration } from "../../../main/typescript/lib/corda-configuration";
 import {
+  CordaConfiguration,
   CordaParty,
-  CommandData,
   AssetCommands,
-} from "../../../main/typescript/lib/corda_types";
+} from "@hyperledger-cacti/cacti-plugin-copm-corda";
 import { Logger } from "@hyperledger/cactus-common";
 
 export class TestCordaConfig implements CordaConfiguration {
@@ -37,6 +35,7 @@ export class TestCordaConfig implements CordaConfiguration {
     }
     return api;
   }
+
   public getCordaParty(user: DLAccount): CordaParty {
     return new CordaParty(user.userId);
   }
@@ -47,28 +46,10 @@ export class TestCordaConfig implements CordaConfiguration {
   }
 
   public getAssetCmds(asset: TransferrableAsset): AssetCommands {
-    return asset.isNFT()
-      ? {
-          ref: "com.cordaSimpleApplication.flow.RetrieveBondAssetStateAndRef",
-          add: "BondAssetContract.Commands.Issue",
-          update:
-            "com.cordaSimpleApplication.flow.UpdateBondAssetOwnerFromPointer",
-          del: new CommandData(
-            "com.cordaSimpleApplication.contract.BondAssetContract$Commands$Delete",
-          ),
-        }
-      : {
-          ref: "com.cordaSimpleApplication.flow.RetrieveStateAndRef",
-          add: "AssetContract.Commands.Issue()",
-          update: "com.cordaSimpleApplication.flow.UpdateAssetOwnerFromPointer",
-          del: new CommandData(
-            "com.cordaSimpleApplication.contract.AssetContract$Commands$Delete",
-          ),
-        };
+    throw new Error("Method not implemented.");
   }
 
   public getObservers(): CordaParty[] {
     return [];
   }
 }
-*/
