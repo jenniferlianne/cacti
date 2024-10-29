@@ -49,6 +49,8 @@ export class CopmCordaImpl
     this.contextFactory = contextFactory;
     this.contractNames = copmContractNames;
   }
+  
+  noopV1: (...args: never[]) => unknown;
 
   public async pledgeAssetV1(
     _req: PledgeAssetV1Request,

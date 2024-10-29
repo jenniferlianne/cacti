@@ -122,7 +122,8 @@ describe("Copm Lock and Claim", () => {
             assetType: assetType,
             assetQuantity: assetQuantity,
           },
-          owner: { network: partyA.organization, userId: partyA.userId },
+          source: { network: partyA.organization, userId: partyA.userId },
+          dest: { network: partyB.organization, userId: partyB.userId },
           hashInfo: {
             secret: hashSecret,
           },

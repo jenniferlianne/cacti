@@ -22,7 +22,7 @@ export async function lockAssetV1Impl(
   const params = Validators.validateLockAssetRequest(req);
 
   const transactionContext = await contextFactory.getTransactionContext(
-    params.owner,
+    params.source,
   );
 
   const assetCmds = cordaConfig.getAssetCmds(params.asset);
