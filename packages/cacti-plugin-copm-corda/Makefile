@@ -19,15 +19,19 @@ setup: build-local-deps
 docker-image:
 	DOCKER_BUILDKIT=1 docker build . --tag copm-corda 
 
+test-asset-server:
+	cd ../../ && \
+	DOCKER_BUILDKIT=1 docker build   ./packages/cactus-plugin-ledger-connector-corda/src/main-server/   --progress=plain   --tag cccs   --tag cccs:latest
+
 pledge-network:  
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
 	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup 
-	make server
+	make server test-asset-server
 
 lock-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
 	make corda-lock-dl corda-cli 
-	make server
+	make server test-asset-server
 
 server: docker-image
 	docker run -e COPM_RELAY_CONFIG="`cat ./corda-relay-config.json  | sed -e 's/127.0.0.1/172.17.0.1/g'`" \
