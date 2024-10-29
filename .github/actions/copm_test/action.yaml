@@ -34,17 +34,4 @@ runs:
       with:
           java-version: '17'
           distribution: 'adopt'
-    - name: Generate github.properties
-      shell: bash
-      run: |
-            echo "Using ${GITHUB_ACTOR} user."
-            echo "username=${GITHUB_ACTOR}" >> github.properties
-            echo "password=${{ secrets.GITHUB_TOKEN }}" >> github.properties
-            echo "url=https://maven.pkg.github.com/hyperledger/cacti" >> github.properties
-
-            echo "Using ${GITHUB_ACTOR} user."
-            echo "username=${GITHUB_ACTOR}" >> github.main.properties
-            echo "password=${{ secrets.GITHUB_TOKEN }}" >> github.main.properties
-            echo "url=https://maven.pkg.github.com/hyperledger/cacti" >> github.main.properties
-      working-directory: weaver/tests/network-setups/corda
 

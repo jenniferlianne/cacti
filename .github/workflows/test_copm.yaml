@@ -23,6 +23,18 @@ jobs:
       steps:
         - uses: actions/checkout@v4.1.1
         - uses: ./.github/actions/copm_test/
+        - name: Generate github.properties
+          run: |
+              echo "Using ${GITHUB_ACTOR} user."
+              echo "username=${GITHUB_ACTOR}" >> github.properties
+              echo "password=${{ secrets.GITHUB_TOKEN }}" >> github.properties
+              echo "url=https://maven.pkg.github.com/hyperledger/cacti" >> github.properties
+  
+              echo "Using ${GITHUB_ACTOR} user."
+              echo "username=${GITHUB_ACTOR}" >> github.main.properties
+              echo "password=${{ secrets.GITHUB_TOKEN }}" >> github.main.properties
+              echo "url=https://maven.pkg.github.com/hyperledger/cacti" >> github.main.properties
+          working-directory: weaver/tests/network-setups/corda
         - name: Make the first network - ${{matrix.net1}}
           run: |
             make setup; make pledge-network
@@ -56,6 +68,17 @@ jobs:
       steps:
         - uses: actions/checkout@v4.1.1
         - uses: ./.github/actions/copm_test/
+        - name: Generate github.properties
+          run: |
+              echo "Using ${GITHUB_ACTOR} user."
+              echo "username=${GITHUB_ACTOR}" >> github.properties
+              echo "password=${{ secrets.GITHUB_TOKEN }}" >> github.properties
+              echo "url=https://maven.pkg.github.com/hyperledger/cacti" >> github.properties
+  
+              echo "Using ${GITHUB_ACTOR} user."
+              echo "username=${GITHUB_ACTOR}" >> github.main.properties
+              echo "password=${{ secrets.GITHUB_TOKEN }}" >> github.main.properties
+              echo "url=https://maven.pkg.github.com/hyperledger/cacti" >> github.main.properties
         - name: Make the ${{matrix.net1}} network
           run: |
             make setup; make lock-network
