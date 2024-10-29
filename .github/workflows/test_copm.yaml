@@ -17,6 +17,7 @@ jobs:
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-pledge
         JEST_TEST_CODE_COVERAGE_ENABLED: true
+        TAPE_TEST_PATTERN: ''
         COPM_NET_1: "corda"
         COPM_NET_2: "corda"
       runs-on: ubuntu-22.04
@@ -54,6 +55,7 @@ jobs:
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
+        TAPE_TEST_PATTERN: ''
         JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-lock-claim.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-lock
