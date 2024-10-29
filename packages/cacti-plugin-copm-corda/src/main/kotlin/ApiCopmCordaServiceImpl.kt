@@ -13,6 +13,7 @@ import net.corda.core.utilities.loggerFor
 import com.cordaSimpleApplication.flow.IssueAssetState
 import com.cordaSimpleApplication.flow.IssueBondAssetState
 import com.cordaSimpleApplication.state.AssetState
+import com.google.protobuf.Empty
 import net.devh.boot.grpc.server.advice.GrpcAdvice
 import net.devh.boot.grpc.server.advice.GrpcExceptionHandler
 import net.devh.boot.grpc.server.service.GrpcService
@@ -51,7 +52,10 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
         val logger = loggerFor<ApiCopmCordaServiceImpl>()
     }
 
-    @Override
+    override suspend fun noopV1(request: Empty): Empty {
+        return Empty.getDefaultInstance();
+    }
+
     override suspend fun claimLockedAssetV1(request: DefaultServiceOuterClass.ClaimLockedAssetV1Request): ClaimPledgedAssetV1200ResponsePb.ClaimPledgedAssetV1200ResponsePB {
         return claimLockedAssetV1Impl(request, this.transactionContextFactory, this.cordaConfig)
     }
@@ -60,16 +64,14 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
         return claimPledgedAssetV1Impl(request, this.transactionContextFactory, this.cordaConfig, this.interopConfig)
     }
 
-    @Override
     override suspend fun getVerifiedViewV1(request: DefaultServiceOuterClass.GetVerifiedViewV1Request): GetVerifiedViewV1200ResponsePb.GetVerifiedViewV1200ResponsePB {
         return getVerifiedViewV1Impl(request, this.transactionContextFactory)
     }
 
-    @Override
     override suspend fun lockAssetV1(request: DefaultServiceOuterClass.LockAssetV1Request): LockAssetV1200ResponsePb.LockAssetV1200ResponsePB
     {
         val data = ValidatedLockAssetV1Request(request)
-        this.makeTestAsset(data.owner, data.asset)
+        this.makeTestAsset(data.source, data.asset)
         return lockAssetV1Impl(request, this.transactionContextFactory, this.cordaConfig)
     }
 

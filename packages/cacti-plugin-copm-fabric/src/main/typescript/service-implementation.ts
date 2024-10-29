@@ -50,6 +50,11 @@ export class CopmFabricImpl
     this.contractNames = copmContractNames;
   }
 
+  public async noopV1(): Promise<void> {
+    // operation can be used as a health check
+    return;
+  }
+
   public async pledgeAssetV1(
     req: PledgeAssetV1Request,
   ): Promise<PledgeAssetV1200ResponsePB> {

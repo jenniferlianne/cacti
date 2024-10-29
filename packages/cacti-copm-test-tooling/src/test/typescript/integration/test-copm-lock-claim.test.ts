@@ -58,9 +58,13 @@ describe("Copm Lock and Claim", () => {
             assetType: assetType,
             assetId: lockAssetName,
           },
-          owner: {
+          source: {
             network: partyA.organization,
             userId: partyA.userId,
+          },
+          dest: {
+            network: partyB.organization,
+            userId: partyB.userId,
           },
           hashInfo: {
             secret: hashSecret,

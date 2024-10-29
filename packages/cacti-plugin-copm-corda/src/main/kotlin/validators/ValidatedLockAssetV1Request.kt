@@ -8,7 +8,8 @@ import org.hyperledger.cacti.plugin.cacti.plugin.copm.core.services.defaultservi
 import org.hyperledger.cacti.weaver.sdk.corda.HashFunctions
 
 class ValidatedLockAssetV1Request(val asset: DLAsset,
-                                  val owner: DLAccount,
+                                  val source: DLAccount,
+                                  val dest: DLAccount,
                                   val hash: HashFunctions.Hash,
                                   val sourceCert: String,
                                   val destCert: String,
@@ -16,7 +17,8 @@ class ValidatedLockAssetV1Request(val asset: DLAsset,
                                   val expiryTime: Long) {
     constructor(req: LockAssetV1Request) : this(
         validateAsset(req.assetLockV1PB.asset, "asset"),
-        validateAccount(req.assetLockV1PB.owner, "owner"),
+        validateAccount(req.assetLockV1PB.source, "source"),
+        validateAccount(req.assetLockV1PB.dest, "dest"),
         validateHash(req.assetLockV1PB.hashInfo, "hashInfo"),
         req.assetLockV1PB.sourceCertificate ?: "",
         req.assetLockV1PB.destinationCertificate ?: "",
