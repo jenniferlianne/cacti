@@ -90,7 +90,6 @@ iin:
 	sed -i "s#<PATH-TO-WEAVER>#$(WORKSPACE)/weaver#g" docker-testnet/envs/.env.n2.org2 && \
 	sed -i "s#^AUTO_SYNC=true#AUTO_SYNC=false#g" docker-testnet/envs/.env.n2.org2 && \
 	sed -i "s#^DNS_CONFIG_PATH=.*#DNS_CONFIG_PATH=./docker-testnet/configs/dnsconfig-2-nodes.json#g" docker-testnet/envs/.env.n2.org2 && \
-	make build-image-local && \
 	make deploy COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org1' DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network1/peerOrganizations/org1.network1.com && \
 	make deploy COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org2' DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network1/peerOrganizations/org2.network1.com && \
 	make deploy COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org1' DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network2/peerOrganizations/org1.network2.com && \
@@ -158,7 +157,7 @@ fabric-setup:
 	cd $(WORKSPACE)/weaver/common/protos-js && make build
 	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
 	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
-	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local build-image-local
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
 
 corda-setup:
@@ -169,6 +168,7 @@ corda-setup:
 	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
+
 
 
 define stop_docker
