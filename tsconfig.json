@@ -131,7 +131,7 @@
       "path": "./packages/cacti-plugin-copm-corda/tsconfig.json"
     },
     {
-      "path": "./packages/cacti-copm-test-tooling/tsconfig.json"
+      "path": "./packages/cacti-copm-test/tsconfig.json"
     },
     {
       "path": "./packages/cactus-test-tooling/tsconfig.json"

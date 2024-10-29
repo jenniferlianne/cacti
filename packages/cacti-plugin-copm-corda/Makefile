@@ -30,7 +30,7 @@ lock-network:
 	make server
 
 server: docker-image
-	docker run -e COPM_CORDA_RPC="`cat ../cacti-copm-test-tooling/corda_rpc.json`" -p 9199:9090 --detach copm-corda 
+	docker run -e COPM_CORDA_RPC="`cat ../cacti-copm-test/corda_rpc.json`" -p 9199:9090 --detach copm-corda 
 
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && make clean-network 

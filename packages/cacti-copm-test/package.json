@@ -1,5 +1,5 @@
 {
-  "name": "@hyperledger-cacti/cacti-copm-test-tooling",
+  "name": "@hyperledger-cacti/cacti-copm-test",
   "version": "2.0.0-rc.4",
   "description": "COPM test tooling. Not included in cactus package due to weaver depencies requiring removal of strict compiler checks.",
   "keywords": [

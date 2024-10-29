@@ -28,7 +28,7 @@
     "@connectrpc/connect": "1.4.0",
     "@connectrpc/connect-web": "1.4.0",
     "@hyperledger-cacti/cacti-copm-core": "workspace:^",
-    "@hyperledger-cacti/cacti-copm-test-tooling": "workspace:^",
+    "@hyperledger-cacti/cacti-copm-test": "workspace:^",
     "@hyperledger/cacti-weaver-protos-js": "workspace:^",
     "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^",
     "@hyperledger/cactus-common": "2.0.0",

@@ -6,7 +6,7 @@ import {
 import { LogLevelDesc, Logger } from "@hyperledger/cactus-common";
 //import { TestAssets } from "./test-assets";
 //import { CordaTransactionContextFactory } from "../../../main/typescript/lib/corda-transaction-context-factory";
-//import { TestAssets, WeaverInteropConfiguration } from "@hyperledger-cacti/cacti-copm-test-tooling";
+//import { TestAssets, WeaverInteropConfiguration } from "@hyperledger-cacti/cacti-copm-test";
 import * as fs from "fs";
 import * as path from "path";
 //import { DefaultApi as CordaApi } from "@hyperledger/cactus-plugin-ledger-connector-corda";

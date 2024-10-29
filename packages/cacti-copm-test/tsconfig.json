@@ -5,7 +5,7 @@
     "outDir": "./dist/lib/",
     "declarationDir": "dist/lib",
     "rootDir": "./src",
-    "tsBuildInfoFile": "../../.build-cache/cacti-copm-test-tooling.tsbuildinfo",
+    "tsBuildInfoFile": "../../.build-cache/cacti-copm-test.tsbuildinfo",
     "strict": false,
     "noImplicitAny": false
   },

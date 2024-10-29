@@ -13,7 +13,7 @@ jobs:
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-        JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-getverifiedview.test.ts
+        JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-getverifiedview.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-pledge
         JEST_TEST_CODE_COVERAGE_ENABLED: true
@@ -60,7 +60,7 @@ jobs:
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-        JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-lock-claim.test.ts
+        JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-lock-claim.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-lock
         JEST_TEST_CODE_COVERAGE_ENABLED: true
@@ -109,7 +109,7 @@ jobs:
           HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
           FULL_BUILD_DISABLED: true
           FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-          JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-pledge-claim.test.ts packages/cacti-plugin-copm-fabric/src/test/typescript/integration/test-copm-getverifiedview.test.ts
+          JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-pledge-claim.test.ts packages/cacti-plugin-copm-fabric/src/test/typescript/integration/test-copm-getverifiedview.test.ts
           JEST_TEST_RUNNER_DISABLED: false
           JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-fabric-fabric-pledge
           JEST_TEST_CODE_COVERAGE_ENABLED: true
@@ -143,7 +143,7 @@ jobs:
           HFC_LOGGING: '{"debug":"console","info":"console","warn": "console","error":"console"}'
           FULL_BUILD_DISABLED: true
           FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-          JEST_TEST_PATTERN: packages/cacti-copm-test-tooling/src/test/typescript/integration/test-copm-lock-claim.test.ts
+          JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-lock-claim.test.ts
           JEST_TEST_RUNNER_DISABLED: false
           JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-fabric-fabric-lock
           JEST_TEST_CODE_COVERAGE_ENABLED: true

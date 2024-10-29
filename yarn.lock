@@ -9053,9 +9053,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hyperledger-cacti/cacti-copm-test-tooling@workspace:^, @hyperledger-cacti/cacti-copm-test-tooling@workspace:packages/cacti-copm-test-tooling":
+"@hyperledger-cacti/cacti-copm-test@workspace:^, @hyperledger-cacti/cacti-copm-test@workspace:packages/cacti-copm-test":
   version: 0.0.0-use.local
-  resolution: "@hyperledger-cacti/cacti-copm-test-tooling@workspace:packages/cacti-copm-test-tooling"
+  resolution: "@hyperledger-cacti/cacti-copm-test@workspace:packages/cacti-copm-test"
   dependencies:
     "@connectrpc/connect": "npm:1.4.0"
     "@connectrpc/connect-node": "npm:^1.6.1"
@@ -9088,7 +9088,7 @@ __metadata:
     "@connectrpc/connect-web": "npm:1.4.0"
     "@connectrpc/protoc-gen-connect-es": "npm:^1.4.0"
     "@hyperledger-cacti/cacti-copm-core": "workspace:^"
-    "@hyperledger-cacti/cacti-copm-test-tooling": "workspace:^"
+    "@hyperledger-cacti/cacti-copm-test": "workspace:^"
     "@hyperledger/cacti-weaver-protos-js": "workspace:^"
     "@hyperledger/cacti-weaver-sdk-fabric": "workspace:^"
     "@hyperledger/cactus-cmd-api-server": "npm:2.0.0"

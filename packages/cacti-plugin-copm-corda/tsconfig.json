@@ -32,7 +32,7 @@
       "path": "../cactus-test-tooling/tsconfig.json"
     },
     {
-      "path": "../cacti-copm-test-tooling/tsconfig.json"
+      "path": "../cacti-copm-test/tsconfig.json"
     }
   ]
 }
