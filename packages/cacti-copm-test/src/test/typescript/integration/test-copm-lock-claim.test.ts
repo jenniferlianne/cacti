@@ -39,7 +39,7 @@ describe("Copm Lock and Claim", () => {
     }
   });
 
-  test(`${netType} can lock/claim nft on same network by asset agreement`, async () => {
+  test(`${netType} can lock/claim nft on same network`, async () => {
     const assetType = "bond";
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
@@ -82,6 +82,7 @@ describe("Copm Lock and Claim", () => {
     const claimResult = await copmTester.clientFor(partyB).claimLockedAssetV1(
       new ClaimLockedAssetV1Request({
         assetLockClaimV1PB: {
+          lockId: lockResult.lockId,
           asset: {
             assetType: assetType,
             assetId: lockAssetName,
