@@ -2,6 +2,8 @@ package com.copmCorda.interop
 
 import arrow.core.Either
 import com.copmCorda.corda.CordaConfiguration
+import com.copmCorda.corda.CordaParty
+import com.copmCorda.corda.NodeRPCConnection
 import com.copmCorda.types.DLAccount
 import com.copmCorda.types.DLTransactionContext
 import com.copmCorda.types.DLTransactionParams
@@ -9,10 +11,11 @@ import org.hyperledger.cacti.weaver.sdk.corda.InteroperableHelper
 import net.corda.core.utilities.loggerFor
 
 class RemoteTransactionContext(
-    private val localAccount: DLAccount,
-    private val remoteNetwork: String,
-    private val interopConfig: InteropConfig,
-    private val cordaConfiguration: CordaConfiguration
+    private val localOrgKey: String,
+    private val relayConfig: RelayConfig,
+    private val viewAddressFormat: ViewAddressFormat,
+    private val rpc: NodeRPCConnection,
+    private val participants: List<CordaParty>
 ) : DLTransactionContext  {
 
     companion object {
@@ -20,16 +23,14 @@ class RemoteTransactionContext(
     }
 
     override suspend fun invoke(cmd: DLTransactionParams): Any? {
-        val relayConfig = this.interopConfig.getRelayConfig(this.localAccount.organization)
-        val rpc = this.cordaConfiguration.getRPC(this.localAccount)
-        val address = interopConfig.getViewAddress(this.remoteNetwork, cmd).toString()
+        val address = this.viewAddressFormat.address(cmd)
         logger.info("invoking flow: $address at relay ${relayConfig.endpoint}")
         val result = InteroperableHelper.interopFlow(
-            rpc.proxy,
+            this.rpc.proxy,
             arrayOf(address),
             relayConfig.endpoint,
-            this.localAccount.organization,
-            externalStateParticipants = listOf(this.cordaConfiguration.getIssuer(this.localAccount).toCordaParam(rpc)),
+            localOrgKey,
+            externalStateParticipants = this.participants.map { it.toCordaParam(rpc) },
             relayOptions = relayConfig.options
         )
         when (result) {

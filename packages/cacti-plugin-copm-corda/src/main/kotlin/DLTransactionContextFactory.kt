@@ -27,10 +27,16 @@ class DLTransactionContextFactory {
     }
 
     fun getLocalTransactionContext(account: DLAccount) : DLTransactionContext {
-        return LocalTransactionContext(account, this.cordaConfig);
+        return LocalTransactionContext(account, this.cordaConfig.getRPC(account));
     }
 
     fun getRemoteTransactionContext(account: DLAccount, remoteNetwork: String): DLTransactionContext {
-        return RemoteTransactionContext(account, remoteNetwork, this.interopConfig, this.cordaConfig);
+        return RemoteTransactionContext(
+            account.organization,
+            this.interopConfig.getRelayConfig(account.organization),
+            this.interopConfig.getViewAddressFormat(remoteNetwork),
+            this.cordaConfig.getRPC(account),
+            listOf(this.cordaConfig.getIssuer(account))
+            );
     }
 }

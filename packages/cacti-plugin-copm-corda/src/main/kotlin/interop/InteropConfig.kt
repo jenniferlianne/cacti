@@ -13,6 +13,7 @@ import org.json.JSONObject
 import org.springframework.stereotype.Component
 import java.io.File
 import net.corda.core.utilities.loggerFor
+import kotlin.reflect.KClass
 
 @Component
 class InteropConfig {
@@ -25,9 +26,9 @@ class InteropConfig {
             RemoteCopmContractCordaNFT(),
             RemoteCopmContractCordaFungible()
         )
-        val viewAddressFormats = listOf(
-            ViewAddressFabric(),
-            ViewAddressCorda(),
+        val viewAddressFormats:  Map<String, KClass<*>> = mapOf(
+                "corda" to ViewAddressCorda::class,
+                "fabric" to ViewAddressFabric::class
         )
     }
 
@@ -45,14 +46,13 @@ class InteropConfig {
         return RelayConfig(localRelayEndpoint, this.relayOptions())
     }
 
-    fun getViewAddress(remoteNetwork: String, params: DLTransactionParams) : String {
+    fun getViewAddressFormat(remoteNetwork: String) : ViewAddressFormat {
         val networkConfig = this.getRemoteNetworkConfig(remoteNetwork)
-        for (viewAddressFormat in viewAddressFormats) {
-            if (viewAddressFormat.forNetwork() == networkConfig.networkType) {
-                return viewAddressFormat.address(networkConfig, params)
-            }
+        if (! viewAddressFormats.contains(networkConfig.networkType)) {
+            throw IllegalStateException("no view address formatter found for $remoteNetwork")
         }
-        throw IllegalStateException("no view address formatter found for $remoteNetwork")
+        val clazz = viewAddressFormats[networkConfig.networkType]
+        return clazz!!.constructors.first().call(networkConfig) as ViewAddressFormat;
     }
 
     fun getRemoteCopmContract(remoteNetwork: String, asset: DLAsset) : RemoteCopmContract {
@@ -65,7 +65,7 @@ class InteropConfig {
         throw IllegalStateException("no contract found for $remoteNetwork matching asset ${asset.assetType}")
     }
 
-    private fun getRemoteNetworkConfig(remoteNetwork: String): RemoteNetworkConfig {
+    fun getRemoteNetworkConfig(remoteNetwork: String): RemoteNetworkConfig {
         val netConfigJson = remoteNetworkJson(remoteNetwork)
         logger.info("getting configuration for $remoteNetwork")
         logger.info(netConfigJson.toString())

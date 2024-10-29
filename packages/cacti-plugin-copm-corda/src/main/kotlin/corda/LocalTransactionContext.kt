@@ -8,11 +8,10 @@ import net.corda.core.flows.FlowLogic
 import com.copmCorda.types.DLTransactionContext
 
 
-class LocalTransactionContext(private val account: DLAccount, private val cordaConfig: CordaConfiguration) : DLTransactionContext {
+class LocalTransactionContext(private val account: DLAccount, private val rpc: NodeRPCConnection) : DLTransactionContext {
 
     override suspend fun invoke(cmd: DLTransactionParams) : Any? {
-        val rpc = this.cordaConfig.getRPC(this.account)
-        val cordaParams = this.cordaParams(cmd.args, rpc).toTypedArray()
+        val cordaParams = this.cordaParams(cmd.args).toTypedArray()
         @Suppress("UNCHECKED_CAST")
         val cordaFlow = Class.forName("${cmd.contract}.${cmd.method}") as Class<out FlowLogic<*>>
         val result = withContext(Dispatchers.IO) {
@@ -32,11 +31,11 @@ class LocalTransactionContext(private val account: DLAccount, private val cordaC
         throw IllegalStateException("Corda did not return an EITHER\n")
     }
 
-    private fun cordaParams(params: List<Any>, rpc: NodeRPCConnection) : List<Any> {
+    private fun cordaParams(params: List<Any>) : List<Any> {
         return params.map {
             when (it) {
-                is CordaType -> it.toCordaParam(rpc)
-                is List<*> -> this.cordaParams(it.map { it as Any}, rpc)
+                is CordaType -> it.toCordaParam(this.rpc)
+                is List<*> -> this.cordaParams(it.map { it as Any})
                 else -> it
             }
         }

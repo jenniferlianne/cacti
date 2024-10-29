@@ -5,16 +5,16 @@ import com.copmCorda.interop.RemoteNetworkConfig
 import com.copmCorda.interop.ViewAddressFormat
 import org.hyperledger.cacti.weaver.sdk.corda.InteroperableHelper
 
-class ViewAddressFabric: ViewAddressFormat {
+class ViewAddressFabric(private val remoteNetworkConfig: RemoteNetworkConfig): ViewAddressFormat {
     override fun forNetwork(): String {
         return "fabric"
     }
 
-    override fun address(remoteNetworkConfig: RemoteNetworkConfig, cmd: DLTransactionParams): String {
+    override fun address(cmd: DLTransactionParams): String {
         return InteroperableHelper.createFabricViewAddress(
-            remoteNetworkConfig.networkId,
-            remoteNetworkConfig.relayEndpoint,
-            remoteNetworkConfig.channelName,
+            this.remoteNetworkConfig.networkId,
+            this.remoteNetworkConfig.relayEndpoint,
+            this.remoteNetworkConfig.channelName,
             cmd.contract,
             cmd.method,
             cmd.args.joinToString(separator=":") { it.toString() })

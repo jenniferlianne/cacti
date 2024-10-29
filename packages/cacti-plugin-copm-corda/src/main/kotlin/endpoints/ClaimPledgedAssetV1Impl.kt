@@ -35,7 +35,7 @@ suspend fun claimPledgedAssetV1Impl(request: DefaultServiceOuterClass.ClaimPledg
             cordaConfig.getIssuer(data.destinationAccount), // @property issuer
             cordaConfig.getObservers(data.destinationAccount) // @property observers
         )
-        val transaction = LocalTransactionContext(data.destinationAccount, cordaConfig)
+        val transaction = contextFactory.getLocalTransactionContext(data.destinationAccount)
         val res = transaction.invoke(
             DLTransactionParams(
                 cordaConfig.copmContract,
