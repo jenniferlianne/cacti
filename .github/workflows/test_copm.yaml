@@ -23,6 +23,7 @@ jobs:
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/copm-pledge-${{ matrix.net1 }}-${{ matrix.net2}}
         JEST_TEST_CODE_COVERAGE_ENABLED: true
         TAPE_TEST_PATTERN: ''
+        TAPE_TEST_RUNNER_DISABLED: true
         COPM_NET_1: ${{ matrix.net1 }}
         COPM_NET_2: ${{ matrix.net2 }}
       runs-on: ubuntu-22.04
@@ -112,6 +113,7 @@ jobs:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
         TAPE_TEST_PATTERN: ''
+        TAPE_TEST_RUNNER_DISABLED: true
         JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-lock-claim.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/copm-lock-${{ matrix.net1 }}
@@ -153,6 +155,7 @@ jobs:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
         TAPE_TEST_PATTERN: ''
+        TAPE_TEST_RUNNER_DISABLED: true
         JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-lock-claim.test.ts
         JEST_TEST_RUNNER_DISABLED: false
         JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/plc-copm-corda-corda-lock
