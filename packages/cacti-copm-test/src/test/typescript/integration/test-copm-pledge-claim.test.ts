@@ -50,8 +50,10 @@ describe("Copm Pledge and Claim", () => {
     if (net1Type == "corda" && net2Type == "fabric") {
       // nft sample assets can currently not go from corda to fabric
       // -- the sample corda nft does not have a maturity date
+      // https://github.com/hyperledger-cacti/cacti/issues/3610
       return;
     }
+
     const assetType = "bond01";
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
