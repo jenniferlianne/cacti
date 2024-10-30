@@ -3,6 +3,13 @@ description: "common setup steps for the weaver network needed to run copm tests
 runs:
   using: "composite"
   steps:
+    - name: free github runner disk space
+      shell: bash
+      run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - name: Use Node.js ${{ env.NODEJS_VERSION }}
       uses: actions/setup-node@v4.0.2
       with:
