@@ -45,6 +45,10 @@ describe("Copm Lock and Claim", () => {
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
 
+    // parties are different but on the same network
+    expect(partyA.organization).toEqual(partyB.organization);
+    expect(partyA.userId).not.toEqual(partyB.userId);
+
     const sourceCert = await copmTester.getCertificateString(partyA);
     const destCert = await copmTester.getCertificateString(partyB);
 
@@ -111,6 +115,10 @@ describe("Copm Lock and Claim", () => {
     const assetQuantity = 10;
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
+
+    // parties are different but on the same network
+    expect(partyA.organization).toEqual(partyB.organization);
+    expect(partyA.userId).not.toEqual(partyB.userId);
 
     await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
 

@@ -47,9 +47,17 @@ describe("Copm Pledge and Claim", () => {
   });
 
   test(`${net1Type}-${net2Type} asset nft pledge and claim`, async () => {
+    if (net1Type == "corda" && net2Type == "fabric") {
+      // nft sample assets can currently not go from corda to fabric
+      // -- the sample corda nft does not have a maturity date
+      return;
+    }
     const assetType = "bond01";
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
+
+    expect(partyA.organization).not.toEqual(partyB.organization);
+
     const certA = await copmTester.getCertificateString(partyA);
     const certB = await copmTester.getCertificateString(partyB);
     await copmTester
@@ -121,6 +129,9 @@ describe("Copm Pledge and Claim", () => {
     const exchangeQuantity = 10;
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
+
+    expect(partyA.organization).not.toEqual(partyB.organization);
+
     const certA = await copmTester.getCertificateString(partyA);
     const certB = await copmTester.getCertificateString(partyB);
 
@@ -199,9 +210,5 @@ describe("Copm Pledge and Claim", () => {
         user2StartBalance + exchangeQuantity,
       );
     }
-
-    expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
-      user2StartBalance + exchangeQuantity,
-    );
   });
 });

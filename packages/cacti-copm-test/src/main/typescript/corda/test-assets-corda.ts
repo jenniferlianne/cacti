@@ -92,7 +92,7 @@ export class TestAssetsCorda implements TestAssets {
       contract: this.contractName,
       method: "GetStatesByTokenType",
       args: [tokenType],
-    })
+    });
     // AssetState(quantity=5, tokenType=t1, owner=O=PartyA, L=London, C=GB,
     const matches = res.match(/AssetState\(quantity=(\d+)/);
     if (matches) {
