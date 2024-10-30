@@ -12,7 +12,7 @@ export interface CopmTester {
   getPartyB(assetType: string): DLAccount;
 
   clientFor(account: DLAccount): PromiseClient<typeof DefaultService>;
-  assetsFor(account: DLAccount): TestAssets;
+  assetsFor(account: DLAccount): Promise<TestAssets>;
 
   getCertificateString(account: DLAccount): Promise<string>;
 

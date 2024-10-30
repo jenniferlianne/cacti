@@ -65,7 +65,7 @@ export class CopmWeaverFabricTestnet implements CopmTester {
     this.apiServer = null;
   }
 
-  public assetsFor(account: DLAccount): TestAssets {
+  public async assetsFor(account: DLAccount): Promise<TestAssets> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const testnet = this;
 

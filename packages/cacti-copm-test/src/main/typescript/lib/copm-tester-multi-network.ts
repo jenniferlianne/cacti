@@ -7,43 +7,44 @@ import { Logger } from "@hyperledger/cactus-common";
 import { CopmNetworkMode } from "./types";
 
 export class CopmTestertMultiNetwork implements CopmTester {
-  net1: CopmTester;
-  net2: CopmTester;
+  net1: CopmTester | null;
+  net2: CopmTester | null;
   log: Logger;
   networkMode: CopmNetworkMode;
-  net1Type: string;
-  net2Type: string;
+  net1Type: string | null;
+  net2Type: string | null;
+  netMap: Map<string, CopmTester> = new Map();
 
-  constructor(
-    log: Logger,
-    net1Type: string,
-    net2Type: string,
-    mode: CopmNetworkMode,
-  ) {
-    this.net1 = copmTesterFactory(log, net1Type, mode);
-    this.net2 = copmTesterFactory(log, net2Type, mode);
-    this.log = log;
+  constructor(log: Logger, mode: CopmNetworkMode) {
     this.networkMode = mode;
+    this.log = log;
+    this.net1 = null;
+    this.net2 = null;
+    this.net1Type = null;
+    this.net2Type = null;
+  }
+
+  async setNetworks(net1Type: string, net2Type: string) {
     this.net1Type = net1Type;
     this.net2Type = net2Type;
+    this.net1 = await this.getFactory(net1Type);
+    this.net2 = await this.getFactory(net2Type);
   }
 
   networkNames(): string[] {
-    return this.net1.networkNames().concat(this.net2.networkNames());
+    return this.getNet1().networkNames();
   }
 
-  async startServer() {
-    await this.net1.startServer();
-    await this.net2.startServer();
-  }
+  async startServer() {}
 
   async stopServer() {
-    await this.net1.stopServer();
-    await this.net2.stopServer();
+    for (const net of this.netMap.values()) {
+      await net.stopServer();
+    }
   }
 
   getPartyA(assetType: string): DLAccount {
-    return this.net1.getPartyA(assetType);
+    return this.getNet1().getPartyA(assetType);
   }
 
   getPartyB(assetType: string): DLAccount {
@@ -54,13 +55,13 @@ export class CopmTestertMultiNetwork implements CopmTester {
       // for different network types,
       // cross network perms have only been set up for
       // the primary user on each network.
-      return this.net2.getPartyA(assetType);
+      return this.getNet2().getPartyA(assetType);
     } else {
-      return this.net2.getPartyB(assetType);
+      return this.getNet2().getPartyB(assetType);
     }
   }
 
-  assetsFor(account: DLAccount): TestAssets {
+  async assetsFor(account: DLAccount): Promise<TestAssets> {
     return this.getNetworkFor(account).assetsFor(account);
   }
 
@@ -73,7 +74,7 @@ export class CopmTestertMultiNetwork implements CopmTester {
   }
 
   getVerifiedViewExpectedResult(): string {
-    return this.net1.getVerifiedViewExpectedResult();
+    return this.getNet1().getVerifiedViewExpectedResult();
   }
 
   async getVerifyViewCmd(
@@ -86,7 +87,7 @@ export class CopmTestertMultiNetwork implements CopmTester {
     function: string;
     input: string[];
   }> {
-    return await this.net1.getVerifyViewCmd(
+    return await this.getNet1().getVerifyViewCmd(
       pledgeId,
       src_crt,
       dest_cert,
@@ -95,12 +96,40 @@ export class CopmTestertMultiNetwork implements CopmTester {
   }
 
   private getNetworkFor(account: DLAccount): CopmTester {
-    if (this.net1.networkNames().includes(account.organization)) {
-      return this.net1;
+    if (this.getNet1().networkNames().includes(account.organization)) {
+      return this.getNet1();
     }
-    if (this.net2.networkNames().includes(account.organization)) {
-      return this.net2;
+    if (this.getNet2().networkNames().includes(account.organization)) {
+      return this.getNet2();
     }
     throw new Error("Unknown organization: " + account.organization);
+  }
+
+  private async getFactory(netType: string): Promise<CopmTester> {
+    if (!this.netMap.has(netType)) {
+      const factory = copmTesterFactory(this.log, netType, this.networkMode);
+      this.netMap.set(netType, factory);
+      await factory.startServer();
+    }
+
+    const factory = this.netMap.get(netType);
+    if (factory == null) {
+      throw new Error("Factory not found for " + netType);
+    }
+    return factory;
+  }
+
+  private getNet1(): CopmTester {
+    if (this.net1 == null) {
+      throw new Error("Network 1 not set");
+    }
+    return this.net1;
+  }
+
+  private getNet2(): CopmTester {
+    if (this.net2 == null) {
+      throw new Error("Network 2 not set");
+    }
+    return this.net2;
   }
 }

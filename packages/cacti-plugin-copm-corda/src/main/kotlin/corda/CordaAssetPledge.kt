@@ -18,10 +18,10 @@ class CordaAssetPledge(private val data: ValidatedPledgeAssetV1Request,
             data.destinationAccount.organization, // @property remoteNetworkId
             data.destinationCertificate, // @property recipientCert
             data.timeout, // @property expiryTimeSecs
-            getStateAndRef,
-            assetBurn,
-            issuer.toCordaParam(rpc),
-            observers.map { it.toCordaParam(rpc) }
+            this.getStateAndRef,
+            this.assetBurn,
+            this.issuer.toCordaParam(rpc),
+            this.observers.map { it.toCordaParam(rpc) }
         )
     }
 }

@@ -16,8 +16,9 @@ import { createGrpcTransport } from "@connectrpc/connect-node";
 import { CopmTester } from "../interfaces/copm-tester";
 import { TestAssets } from "../interfaces/test-assets";
 import { CopmNetworkMode } from "../lib/types";
-import { TestAssetsCorda } from "./test-assets-corda";
-import { TestCordaConnector } from "./test-corda-connector";
+//import { TestAssetsCorda } from "./test-assets-corda";
+//import { TestCordaConnector } from "./test-corda-connector";
+import { TestAssetsCordaCli } from "./test-assets-corda-cli";
 
 export class CopmWeaverCordaTestnet implements CopmTester {
   logLevel: LogLevelDesc = "INFO";
@@ -29,7 +30,7 @@ export class CopmWeaverCordaTestnet implements CopmTester {
   private assetContractName: string;
   private hostAddr: string;
   private networkMode: CopmNetworkMode;
-  private testAssetMap = new Map<string, TestAssetsCorda>();
+  private testAssetMap = new Map<string, TestAssetsCordaCli>();
 
   constructor(log: Logger, networkMode: CopmNetworkMode) {
     this.log = log;
@@ -44,14 +45,24 @@ export class CopmWeaverCordaTestnet implements CopmTester {
     this.writeClientJson(this.hostAddr);
   }
 
-  public assetsFor(account: DLAccount): TestAssets {
+  public async assetsFor(account: DLAccount): Promise<TestAssets> {
     const accountKey = account.userId + "@" + account.organization;
+    if (!this.testAssetMap.has(accountKey)) {
+      this.testAssetMap.set(accountKey, await this.createTestAssets(account));
+    }
     const assets = this.testAssetMap.get(accountKey);
     if (!assets) {
       throw Error(`no assets found for account ${accountKey}`);
     }
     return assets;
   }
+
+  private async createTestAssets(
+    account: DLAccount,
+  ): Promise<TestAssetsCordaCli> {
+    return new TestAssetsCordaCli(account, this.log);
+  }
+  /*
 
   private async createTestAssets(account: DLAccount): Promise<TestAssetsCorda> {
     const accountKey = account.userId + "@" + account.organization;
@@ -82,25 +93,21 @@ export class CopmWeaverCordaTestnet implements CopmTester {
     await assets.start();
     return assets;
   }
-
+*/
   public networkNames(): string[] {
     return ["Corda_Network", "Corda_Network2"];
   }
 
   async startServer() {
-    this.log.info("starting corda test server");
-    for (const user of [this.getPartyA(""), this.getPartyB("")]) {
-      this.log.info("creating test assets for user %s", user.userId);
-      const assets = await this.createTestAssets(user);
-      this.testAssetMap.set(user.userId + "@" + user.organization, assets);
-    }
   }
 
   async stopServer() {
+/*
     for (const [_, assets] of this.testAssetMap) {
       await assets.stop();
     }
-  }
+*/
+    }
 
   public writeClientJson(hostAddr: string) {
     // todo: pass this as an env var to the spring client

@@ -17,7 +17,7 @@ suspend fun pledgeAssetV1Impl(request: DefaultServiceOuterClass.PledgeAssetV1Req
     val data = ValidatedPledgeAssetV1Request(request)
     val assetContract = cordaConfig.assetContract(data.asset)
     val transaction = contextFactory.getLocalTransactionContext(data.sourceAccount)
-    logger.info("starting transaction")
+    logger.info(  "starting transaction is NFT? ${data.asset.isNFT} ${data.asset.assetIdOrQuantity()} ${data.asset.assetIdOrQuantity()::class.simpleName}")
     val params = CordaAssetPledge(data,
         assetContract.getStateAndRef,
         assetContract.assetBurn,

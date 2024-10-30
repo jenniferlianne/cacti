@@ -75,7 +75,6 @@ class ApiCopmCordaServiceImpl : DefaultServiceGrpcKt.DefaultServiceCoroutineImpl
 
     override suspend fun pledgeAssetV1(request: DefaultServiceOuterClass.PledgeAssetV1Request): PledgeAssetV1200ResponsePb.PledgeAssetV1200ResponsePB {
         // Obtain the recipient certificate from the name of the recipient
-        logger.info("starting pledge asset")
         return pledgeAssetV1Impl(request, this.transactionContextFactory, this.cordaConfig)
     }
 
