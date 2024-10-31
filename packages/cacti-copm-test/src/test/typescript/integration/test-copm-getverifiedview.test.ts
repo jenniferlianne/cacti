@@ -32,7 +32,7 @@ describe(`COPM get verified view ${net1Type}-${net2Type}`, () => {
     log.info("setting up fabric test network");
 
     copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
-    copmTester.setNetworks(net1Type, net2Type);
+    await copmTester.setNetworks(net1Type, net2Type);
     await copmTester.startServer();
 
     partyA = copmTester.getPartyA("bond");
