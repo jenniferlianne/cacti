@@ -63,6 +63,12 @@ describe("Copm Pledge and Claim", () => {
   test.each(networksToTest)(
     "%s-%s nft pledge and claim",
     async (net1Type, net2Type) => {
+      if (net1Type == "corda" && net2Type == "fabric") {
+        // can not transfer nft from corda to fabric due to
+        // maturity date issue
+        //https://github.com/hyperledger-cacti/cacti/issues/3610
+        return;
+      }
       await copmTester.setNetworks(net1Type, net2Type);
 
       const assetType = "bond01";
@@ -143,24 +149,18 @@ describe("Copm Pledge and Claim", () => {
       const assetsPartyB = await copmTester.assetsFor(partyB);
 
       await assetsPartyA.addToken(assetType, exchangeQuantity);
-      if (net2Type != "corda") {
-        // ensure initial account balance
-        await assetsPartyB.addToken(assetType, 1);
-      }
-      let user1StartBalance = 0,
-        user2StartBalance = 0;
 
-      user1StartBalance = await assetsPartyA.tokenBalance(assetType);
-      user2StartBalance = await assetsPartyB.tokenBalance(assetType);
+      const user1StartBalance = await assetsPartyA.tokenBalance(assetType);
+      const user2StartBalance = await assetsPartyB.tokenBalance(assetType);
 
       log.info(
-        "party a %s@%s start balance %s",
+        "party a %s@%s start balance %d",
         partyA.userId,
         partyA.organization,
         user1StartBalance,
       );
       log.info(
-        "party b %s@%s start balance %s",
+        "party b %s@%s start balance %d",
         partyB.userId,
         partyB.organization,
         user2StartBalance,
@@ -215,17 +215,13 @@ describe("Copm Pledge and Claim", () => {
         );
       expect(claimResult).toBeTruthy();
 
-      //if (net1Type != "corda") {
-        expect(await assetsPartyA.tokenBalance(assetType)).toEqual(
-          user1StartBalance - exchangeQuantity,
-        );
-      //}
+      expect(await assetsPartyA.tokenBalance(assetType)).toEqual(
+        user1StartBalance - exchangeQuantity,
+      );
 
-      //if (net2Type != "corda") {
-        expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
-          user2StartBalance + exchangeQuantity,
-        );
-      //}
+      expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
+        user2StartBalance + exchangeQuantity,
+      );
     },
   );
 });

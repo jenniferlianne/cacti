@@ -107,14 +107,27 @@ export class TestAssetsFabric implements TestAssets {
       this.owner,
     );
 
-    const walletBalance = await transaction.invoke({
-      contract: this.contractName,
-      method: "GetMyWallet",
-      args: [],
-    });
+    try {
+      const walletBalance = await transaction.invoke({
+        contract: this.contractName,
+        method: "GetMyWallet",
+        args: [],
+      });
 
-    this.log.info(walletBalance);
-    const walletParts = walletBalance.split("=");
-    return +walletParts[1];
+      for (const asset of walletBalance.split(",")) {
+        if (asset.includes(tokenType)) {
+          const matches = walletBalance.match(/="(\d+)"/);
+          if (matches) {
+            return +matches[1];
+          }
+        }
+      }
+      throw new Error(`Could not find ${tokenType} in ${walletBalance}`);
+    } catch (ex) {
+      if (ex.message.includes("does not have a wallet")) {
+        return 0;
+      }
+      throw ex;
+    }
   }
 }
