@@ -31,12 +31,8 @@ describe(`COPM get verified view ${net1Type}-${net2Type}`, () => {
   beforeAll(async () => {
     log.info("setting up fabric test network");
 
-    copmTester = new CopmTestertMultiNetwork(
-      log,
-      net1Type,
-      net2Type,
-      CopmNetworkMode.Pledge,
-    );
+    copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
+    copmTester.setNetworks(net1Type, net2Type);
     await copmTester.startServer();
 
     partyA = copmTester.getPartyA("bond");
@@ -59,7 +55,9 @@ describe(`COPM get verified view ${net1Type}-${net2Type}`, () => {
   test(`${net1Type}-${net2Type} get verified view1`, async () => {
     const assetType = "token1";
     const assetQuantity = 2;
-    await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
+    await (
+      await copmTester.assetsFor(partyA)
+    ).addToken(assetType, assetQuantity);
 
     log.info(`party a ${partyA.organization} ${partyA.userId}`);
     log.info(`party b ${partyB.organization} ${partyB.userId}`);

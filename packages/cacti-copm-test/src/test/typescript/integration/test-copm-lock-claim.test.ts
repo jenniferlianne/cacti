@@ -52,9 +52,9 @@ describe("Copm Lock and Claim", () => {
     const sourceCert = await copmTester.getCertificateString(partyA);
     const destCert = await copmTester.getCertificateString(partyB);
 
-    await copmTester
-      .assetsFor(partyA)
-      .addNonFungibleAsset(assetType, lockAssetName);
+    await (
+      await copmTester.assetsFor(partyA)
+    ).addNonFungibleAsset(assetType, lockAssetName);
 
     const lockResult = await copmTester.clientFor(partyA).lockAssetV1(
       new LockAssetV1Request({
@@ -120,7 +120,9 @@ describe("Copm Lock and Claim", () => {
     expect(partyA.organization).toEqual(partyB.organization);
     expect(partyA.userId).not.toEqual(partyB.userId);
 
-    await copmTester.assetsFor(partyA).addToken(assetType, assetQuantity);
+    await (
+      await copmTester.assetsFor(partyA)
+    ).addToken(assetType, assetQuantity);
 
     const srcCert = await copmTester.getCertificateString(partyA);
     const destCert = await copmTester.getCertificateString(partyB);
