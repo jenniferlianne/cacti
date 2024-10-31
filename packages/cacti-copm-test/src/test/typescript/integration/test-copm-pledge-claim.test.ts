@@ -143,8 +143,7 @@ describe("Copm Pledge and Claim", () => {
       const assetsPartyB = await copmTester.assetsFor(partyB);
 
       // ensure initial account balance
-      const initialBalance = net1Type == "corda" ? 0 : 1;
-      await assetsPartyA.addToken(assetType, initialBalance + exchangeQuantity);
+      await assetsPartyA.addToken(assetType, exchangeQuantity);
       await assetsPartyB.addToken(assetType, 1);
 
       let user1StartBalance = 0,
@@ -215,13 +214,17 @@ describe("Copm Pledge and Claim", () => {
         );
       expect(claimResult).toBeTruthy();
 
-      //expect(await assetsPartyA.tokenBalance(assetType)).toEqual(
-      //  user1StartBalance - exchangeQuantity,
-      //);
+      if (net1Type != "corda") {
+        expect(await assetsPartyA.tokenBalance(assetType)).toEqual(
+          user1StartBalance - exchangeQuantity,
+        );
+      }
 
-      //expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
-      //  user2StartBalance + exchangeQuantity,
-      //);
+      if (net2Type != "corda") {
+        expect(await assetsPartyB.tokenBalance(assetType)).toEqual(
+          user2StartBalance + exchangeQuantity,
+        );
+      }
     },
   );
 });
