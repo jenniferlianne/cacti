@@ -72,6 +72,9 @@ export class TestAssetsCordaCli implements TestAssets {
     if (matches) {
       return +matches[1];
     }
+    if (res.includes("[]")) {
+      return 0;
+    }
     throw new Error(`Could not find quantity in response ${res}`);
   }
 
