@@ -1,8 +1,8 @@
 import { CopmTester } from "../interfaces/copm-tester";
-import { CopmWeaverFabricTestnet } from "../fabric/copm-weaver-fabric-testnet";
+import { CopmTesterFabric } from "../fabric/copm-tester-fabric";
 import { CopmNetworkMode } from "../lib/types";
 import { Logger } from "@hyperledger/cactus-common";
-import { CopmWeaverCordaTestnet } from "../corda/copm-weaver-corda-testnet";
+import { CopmTesterCorda } from "../corda/copm-tester-corda";
 
 export function copmTesterFactory(
   log: Logger,
@@ -10,10 +10,10 @@ export function copmTesterFactory(
   networkMode: CopmNetworkMode,
 ): CopmTester {
   if (netType === "fabric") {
-    return new CopmWeaverFabricTestnet(log, networkMode);
+    return new CopmTesterFabric(log, networkMode);
   }
   if (netType == "corda") {
-    return new CopmWeaverCordaTestnet(log, networkMode);
+    return new CopmTesterCorda(log, networkMode);
   }
   throw new Error("Unsupported network type: " + netType);
 }

@@ -143,7 +143,7 @@ describe("Copm Pledge and Claim", () => {
       const assetsPartyB = await copmTester.assetsFor(partyB);
 
       await assetsPartyA.addToken(assetType, exchangeQuantity);
-      if (net1Type != "corda") {
+      if (net2Type != "corda") {
         // ensure initial account balance
         await assetsPartyB.addToken(assetType, 1);
       }

@@ -20,13 +20,13 @@ import { CopmNetworkMode } from "../lib/types";
 //import { TestCordaConnector } from "./test-corda-connector";
 import { TestAssetsCordaCli } from "./test-assets-corda-cli";
 
-export class CopmWeaverCordaTestnet implements CopmTester {
+export class CopmTesterCorda implements CopmTester {
   logLevel: LogLevelDesc = "INFO";
   log: Logger;
   //cordaTransactionFactory: CordaTransactionContextFactory;
   //cordaConfig: TestCordaConfig;
   contractNames: CopmContractNames;
-
+  private weaverRelativePath = "../../../../../../weaver/";
   private assetContractName: string;
   private hostAddr: string;
   private networkMode: CopmNetworkMode;
@@ -41,8 +41,6 @@ export class CopmWeaverCordaTestnet implements CopmTester {
       pledgeContract: "org.hyperledger.cacti.weaver.imodule.corda.flows",
       lockContract: "org.hyperledger.cacti.weaver.imodule.corda.flows",
     };
-
-    this.writeClientJson(this.hostAddr);
   }
 
   public async assetsFor(account: DLAccount): Promise<TestAssets> {
@@ -98,54 +96,14 @@ export class CopmWeaverCordaTestnet implements CopmTester {
     return ["Corda_Network", "Corda_Network2"];
   }
 
-  async startServer() {
-  }
+  async startServer() {}
 
   async stopServer() {
-/*
+    /*
     for (const [_, assets] of this.testAssetMap) {
       await assets.stop();
     }
 */
-    }
-
-  public writeClientJson(hostAddr: string) {
-    // todo: pass this as an env var to the spring client
-    const username = "clientUser1";
-    const password = "test";
-    const json = {
-      "O=PartyA, L=London, C=GB@Corda_Network": {
-        host: hostAddr,
-        username: username,
-        password: password,
-        port: 10006,
-      },
-      "O=PartyB, L=London, C=GB@Corda_Network": {
-        host: hostAddr,
-        username: username,
-        password: password,
-        port: 10009,
-      },
-      "O=PartyA, L=London, C=GB@Corda_Network2": {
-        host: hostAddr,
-        username: username,
-        password: password,
-        port: 30006,
-      },
-      "O=PartyB, L=London, C=GB@Corda_Network2": {
-        host: hostAddr,
-        username: username,
-        password: password,
-        port: 30009,
-      },
-    };
-    const clientFile = path.join(
-      __dirname,
-      this.packageRelativePath,
-      "corda_rpc.json",
-    );
-
-    fs.writeFileSync(clientFile, JSON.stringify(json));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -205,20 +163,6 @@ export class CopmWeaverCordaTestnet implements CopmTester {
       input: [pledgeId, organization],
     };
   }
-
-  public assets() {
-    /*
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    return new TestAssets(
-      this.assetContractName,
-      this.cordaTransactionFactory,
-      this.log,
-    );
-    */
-  }
-
-  private packageRelativePath = "../../../../";
-  private weaverRelativePath = "../../../../../../weaver/";
 
   public getCertificateString(account: DLAccount): Promise<string> {
     const certsFile = path.join(

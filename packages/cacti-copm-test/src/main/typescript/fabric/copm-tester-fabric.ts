@@ -34,7 +34,7 @@ type FabricIdentity = Identity & {
   };
 };
 
-export class CopmWeaverFabricTestnet implements CopmTester {
+export class CopmTesterFabric implements CopmTester {
   logLevel: LogLevelDesc = "INFO";
   log: Logger;
   fabricConfig: TestFabricConfiguration;

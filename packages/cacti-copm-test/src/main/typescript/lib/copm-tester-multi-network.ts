@@ -27,8 +27,8 @@ export class CopmTestertMultiNetwork implements CopmTester {
   async setNetworks(net1Type: string, net2Type: string) {
     this.net1Type = net1Type;
     this.net2Type = net2Type;
-    this.net1 = await this.getFactory(net1Type);
-    this.net2 = await this.getFactory(net2Type);
+    this.net1 = await this.getTesterForNetworkType(net1Type);
+    this.net2 = await this.getTesterForNetworkType(net2Type);
   }
 
   networkNames(): string[] {
@@ -105,7 +105,7 @@ export class CopmTestertMultiNetwork implements CopmTester {
     throw new Error("Unknown organization: " + account.organization);
   }
 
-  private async getFactory(netType: string): Promise<CopmTester> {
+  private async getTesterForNetworkType(netType: string): Promise<CopmTester> {
     if (!this.netMap.has(netType)) {
       const factory = copmTesterFactory(this.log, netType, this.networkMode);
       this.netMap.set(netType, factory);
