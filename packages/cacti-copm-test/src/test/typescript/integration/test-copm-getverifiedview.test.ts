@@ -13,6 +13,8 @@ import * as path from "path";
 import * as dotenv from "dotenv";
 import { CopmTestertMultiNetwork } from "../../../main/typescript/lib/copm-tester-multi-network";
 import { CopmNetworkMode } from "../../../main/typescript/lib/types";
+import { CopmTestNetwork } from "../../../main/typescript/lib/copm-testnetwork";
+
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const logLevel: LogLevelDesc = "DEBUG";
@@ -21,24 +23,24 @@ const log: Logger = LoggerProvider.getOrCreate({
   level: logLevel,
 });
 let dest_cert: string;
-const net1Type = process.env["COPM_NET_1"] || "fabric";
-const net2Type = process.env["COPM_NET_2"] || "fabric";
 
-describe(`COPM get verified view ${net1Type}-${net2Type}`, () => {
+describe(`COPM get verified view`, () => {
   let copmTester: CopmTestertMultiNetwork;
   let partyA: DLAccount, partyB: DLAccount;
+  let networksToTest: string[][];
+  const copmTestNetwork: CopmTestNetwork = new CopmTestNetwork(
+    log,
+    CopmNetworkMode.Pledge,
+  );
 
   beforeAll(async () => {
     log.info("setting up fabric test network");
 
-    copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
-    await copmTester.setNetworks(net1Type, net2Type);
-    await copmTester.startServer();
-
-    partyA = copmTester.getPartyA("bond");
-    partyB = copmTester.getPartyB("bond");
-
-    dest_cert = await copmTester.getCertificateString(partyB);
+    if (process.env["COPM_NET_1"] && process.env["COPM_NET_2"]) {
+      networksToTest = [[process.env["COPM_NET_1"], process.env["COPM_NET_2"]]];
+    } else {
+      networksToTest = copmTestNetwork.supportedNetworkMatrix();
+    }
 
     log.info("test setup complete");
   });
@@ -49,62 +51,73 @@ describe(`COPM get verified view ${net1Type}-${net2Type}`, () => {
     }
   });
 
-  test(`${net1Type}-${net2Type} get verified view1`, async () => {
-    const assetType = "token1";
-    const assetQuantity = 2;
-    await (
-      await copmTester.assetsFor(partyA)
-    ).addToken(assetType, assetQuantity);
+  test.each(networksToTest)(
+    "%s-%s get verified view",
+    async (net1Type, net2Type) => {
+      copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
+      await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
+      await copmTester.setNetworkTypes(net1Type, net2Type);
+      const assetType = "token1";
 
-    log.info(`party a ${partyA.organization} ${partyA.userId}`);
-    log.info(`party b ${partyB.organization} ${partyB.userId}`);
+      partyA = copmTester.getPartyA(assetType);
+      partyB = copmTester.getPartyB(assetType);
 
-    const pledgeResult = await copmTester.clientFor(partyA).pledgeAssetV1(
-      new PledgeAssetV1Request({
-        assetPledgeV1PB: {
-          asset: {
-            assetType: assetType,
-            assetQuantity: assetQuantity,
-          },
-          source: {
-            network: partyA.organization,
-            userId: partyA.userId,
-          },
-          destination: {
-            network: partyB.organization,
-            userId: partyB.userId,
-          },
-          expirySecs: BigInt(45),
-          destinationCertificate: dest_cert,
-        },
-      }),
-    );
+      dest_cert = await copmTester.getCertificateString(partyB);
+      const assetQuantity = 2;
+      await (
+        await copmTester.assetsFor(partyA)
+      ).addToken(assetType, assetQuantity);
 
-    expect(pledgeResult).toBeTruthy();
-    expect(pledgeResult.pledgeId).toBeString();
-    const readPledge = await copmTester.getVerifyViewCmd(
-      pledgeResult.pledgeId,
-      await copmTester.getCertificateString(partyA),
-      dest_cert,
-      partyB.organization,
-    );
-    const res = await copmTester.clientFor(partyB).getVerifiedViewV1(
-      new GetVerifiedViewV1Request({
-        getVerifiedViewV1RequestPB: {
-          account: {
-            network: partyB.organization,
-            userId: partyB.userId,
-          },
-          view: {
-            network: partyA.organization,
-            viewAddress: readPledge,
-          },
-        },
-      }),
-    );
+      log.info(`party a ${partyA.organization} ${partyA.userId}`);
+      log.info(`party b ${partyB.organization} ${partyB.userId}`);
 
-    expect(res).toBeTruthy();
-    expect(res.data).toBeString();
-    log.info(res.data);
-  });
+      const pledgeResult = await copmTester.clientFor(partyA).pledgeAssetV1(
+        new PledgeAssetV1Request({
+          assetPledgeV1PB: {
+            asset: {
+              assetType: assetType,
+              assetQuantity: assetQuantity,
+            },
+            source: {
+              network: partyA.organization,
+              userId: partyA.userId,
+            },
+            destination: {
+              network: partyB.organization,
+              userId: partyB.userId,
+            },
+            expirySecs: BigInt(45),
+            destinationCertificate: dest_cert,
+          },
+        }),
+      );
+
+      expect(pledgeResult).toBeTruthy();
+      expect(pledgeResult.pledgeId).toBeString();
+      const readPledge = await copmTester.getVerifyViewCmd(
+        pledgeResult.pledgeId,
+        await copmTester.getCertificateString(partyA),
+        dest_cert,
+        partyB.organization,
+      );
+      const res = await copmTester.clientFor(partyB).getVerifiedViewV1(
+        new GetVerifiedViewV1Request({
+          getVerifiedViewV1RequestPB: {
+            account: {
+              network: partyB.organization,
+              userId: partyB.userId,
+            },
+            view: {
+              network: partyA.organization,
+              viewAddress: readPledge,
+            },
+          },
+        }),
+      );
+
+      expect(res).toBeTruthy();
+      expect(res.data).toBeString();
+      log.info(res.data);
+    },
+  );
 });

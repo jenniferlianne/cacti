@@ -24,7 +24,7 @@ export class CopmTestertMultiNetwork implements CopmTester {
     this.net2Type = null;
   }
 
-  async setNetworks(net1Type: string, net2Type: string) {
+  async setNetworkTypes(net1Type: string, net2Type: string) {
     this.net1Type = net1Type;
     this.net2Type = net2Type;
     this.net1 = await this.getTesterForNetworkType(net1Type);
@@ -32,7 +32,7 @@ export class CopmTestertMultiNetwork implements CopmTester {
   }
 
   networkNames(): string[] {
-    return this.getNet1().networkNames();
+    return this.getNet1().networkNames().concat(this.getNet2().networkNames());
   }
 
   async startServer() {}

@@ -33,17 +33,6 @@ jobs:
           with:
             github-actor: ${GITHUB_ACTOR}
             github-token: ${{ secrets.GITHUB_TOKEN }}
-        - name: Make the ${{matrix.net1}} network
-          run: |
-            make setup; make pledge-network
-          working-directory: packages/cacti-plugin-copm-${{ matrix.net1 }}
-        - name: Make the ${{matrix.net2}} network
-          run: |
-            make setup; make pledge-network
-          working-directory: packages/cacti-plugin-copm-${{ matrix.net2 }}
-          if: ${{ matrix.net1 != matrix.net2 }}
-        - name: show the running network
-          run: docker container ls
         - run: ./tools/ci.sh
         - name: Upload coverage reports as artifacts
           if: ${{ env.RUN_CODE_COVERAGE == 'true' }}
@@ -75,13 +64,6 @@ jobs:
           with:
             github-actor: ${GITHUB_ACTOR}
             github-token: ${{ secrets.GITHUB_TOKEN }}
-        - name: Make the ${{matrix.net1}} network
-          run: |
-            make setup; make lock-network
-          working-directory: packages/cacti-plugin-copm-${{ matrix.net1 }}
-        - name: show the running network
-          run: docker container ls
-        - run: ./tools/ci.sh
         - name: Upload coverage reports as artifacts
           if: ${{ env.RUN_CODE_COVERAGE == 'true' }}
           uses: actions/upload-artifact@v4.3.3

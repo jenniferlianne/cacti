@@ -9,6 +9,7 @@ import {
   PledgeAssetV1Request,
 } from "@hyperledger-cacti/cacti-copm-core";
 import { CopmNetworkMode } from "../../../main/typescript/lib/types";
+import { CopmTestNetwork } from "../../../main/typescript/lib/copm-testnetwork";
 import { CopmTestertMultiNetwork } from "../../../main/typescript/lib/copm-tester-multi-network";
 import * as path from "path";
 import * as dotenv from "dotenv";
@@ -21,42 +22,34 @@ const log: Logger = LoggerProvider.getOrCreate({
   level: logLevel,
 });
 
-function makeMatrix(supportedNetworks: string[]): string[][] {
-  const supportedCombos = [];
-  for (const val1 of supportedNetworks) {
-    for (const val2 of supportedNetworks) {
-      supportedCombos.push([val1, val2]);
-    }
-  }
-  return supportedCombos;
-}
-
 describe("Copm Pledge and Claim", () => {
   let copmTester: CopmTestertMultiNetwork;
+  const copmTestNetwork: CopmTestNetwork = new CopmTestNetwork(
+    log,
+    CopmNetworkMode.Pledge,
+  );
 
   const pledgeAssetName: string =
     "pledgeasset" + new Date().getTime().toString();
 
-  const supportedNetworks = ["fabric", "corda"];
   let networksToTest: string[][];
   if (process.env["COPM_NET_1"] && process.env["COPM_NET_2"]) {
     networksToTest = [[process.env["COPM_NET_1"], process.env["COPM_NET_2"]]];
   } else {
-    networksToTest = makeMatrix(supportedNetworks);
+    networksToTest = copmTestNetwork.supportedNetworkMatrix();
   }
 
-  log.info(`Supported network combos: ${JSON.stringify(networksToTest)}`);
+  log.info(`Testing network combos: ${JSON.stringify(networksToTest)}`);
 
   beforeAll(async () => {
     copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
-    await copmTester.startServer();
-    log.info("test setup complete");
   });
 
   afterAll(async () => {
     if (copmTester) {
       await copmTester.stopServer();
     }
+    await copmTestNetwork.stopNetworks();
   });
 
   test.each(networksToTest)(
@@ -68,8 +61,10 @@ describe("Copm Pledge and Claim", () => {
         //https://github.com/hyperledger-cacti/cacti/issues/3610
         return;
       }
-      await copmTester.setNetworks(net1Type, net2Type);
-
+      log.info("setting up test networks");
+      await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
+      await copmTester.setNetworkTypes(net1Type, net2Type);
+      log.info("starting tests");
       const assetType = "bond01";
       const partyA = copmTester.getPartyA(assetType);
       const partyB = copmTester.getPartyB(assetType);
@@ -135,7 +130,9 @@ describe("Copm Pledge and Claim", () => {
   test.each(networksToTest)(
     "%s-%s fungible pledge and claim",
     async (net1Type, net2Type) => {
-      await copmTester.setNetworks(net1Type, net2Type);
+      log.info("setting up test networks");
+      await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
+      await copmTester.setNetworkTypes(net1Type, net2Type);
       log.info("starting tests");
       const assetType = "token1";
       const exchangeQuantity = 10;

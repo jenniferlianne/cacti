@@ -1,5 +1,6 @@
 WORKSPACE ?= $(shell realpath `pwd`/../../)
 DOCKER_IMAGES=hyperledger/fabric-orderer hyperledger/fabric-peer hyperledger/fabric-ca ghcr.io/hyperledger/cacti-weaver-iin-agent ghcr.io/hyperledger/cacti-weaver-relay-server ghcr.io/hyperledger/cacti-weaver-driver-fabric corda/community:4.12-zulu-openjdk ghcr.io/hyperledger/cacti-weaver-driver-corda copm-corda
+COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target
 
 
 # DL-NETWORK ---------------------------------------------------
@@ -169,6 +170,22 @@ corda-setup:
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
 
+stop-network:
+	cd $(WORKSPACE)/weaver/tests/network-setups/fabric/dev && make stop-network1 stop-network2 PROFILE=2-nodes
+	cd $(WORKSPACE)/weaver/tests/network-setups/corda && make stop PROFILE=3-nodes
+	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.n1' 
+	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.n2' 
+	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.corda' 
+	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.corda2' 
+	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.n1' NETWORK_NAME=network1 
+	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.n2' NETWORK_NAME=network2 
+	cd $(WORKSPACE)/weaver/core/drivers/corda-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.corda'
+	cd $(WORKSPACE)/weaver/core/drivers/corda-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.corda2'
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org1'  
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org2'  
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org1'  
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org2'  
+	rm $(COPM_TARGET_DIR)/*/*network-up.txt || true
 
 
 define stop_docker
@@ -192,3 +209,4 @@ clean-network:
 	fi 
 	docker volume rm `docker volume ls | grep -v NAME | sed -e 's/local   //g' | grep -v vscode | xargs` || true
 	cd $(WORKSPACE)/weaver/tests/network-setups/corda && make clean || true
+	rm $(COPM_TARGET_DIR)/*/*network-up.txt || true

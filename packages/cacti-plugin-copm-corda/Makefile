@@ -1,6 +1,8 @@
 WORKSPACE ?= $(shell realpath `pwd`/../../)
 
-build-local-deps:
+COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target/corda
+
+$(COPM_TARGET_DIR)/setup.txt:
 	cd $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt && \
 	./gradlew build && \
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
@@ -13,26 +15,25 @@ build-local-deps:
 	cp $(WORKSPACE)/weaver/core/network/corda-interop-app/interop-contracts/build/libs/interop-contracts-*.jar localdeps
 	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/contracts-kotlin/build/libs/contracts-kotlin-*.jar localdeps
 	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/workflows-kotlin/build/libs/workflows-kotlin-*.jar localdeps
-
-server-docker-image:
 	DOCKER_BUILDKIT=1 docker build . --tag copm-corda 
+	mkdir -p $(COPM_TARGET_DIR)
+	touch $(COPM_TARGET_DIR)/setup.txt
 
-setup: build-local-deps server-docker-image
-
-
-pledge-network:  
+$(COPM_TARGET_DIR)/pledge-network-up.txt: $(COPM_TARGET_DIR)/setup.txt 
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
 	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup
+	touch $(COPM_TARGET_DIR)/pledge-network-up.txt
 
-lock-network:
+$(COPM_TARGET_DIR)/lock-network-up.txt: $(COPM_TARGET_DIR)/setup.txt 
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
 	make corda-lock-dl corda-cli 
+	touch $(COPM_TARGET_DIR)/lock-network-up.txt
 
-server: server-docker-image
-	docker run -e COPM_RELAY_CONFIG="`cat ./corda-relay-config.json  | sed -e 's/127.0.0.1/172.17.0.1/g'`" \
-	-e COPM_REMOTE_CONFIG="`cat ../../weaver/samples/corda/corda-simple-application/clients/src/main/resources/config/remote-network-config.json`" \
-	-e COPM_CORDA_RPC="`cat ../cacti-copm-test/corda_rpc.json | sed -e 's/127.0.0.1/172.17.0.1/g'`" \
-	-p 9199:9090 --detach copm-corda
+setup: $(COPM_TARGET_DIR)/setup.txt
+
+pledge-network: $(COPM_TARGET_DIR)/pledge-network-up.txt 
+
+lock-network: $(COPM_TARGET_DIR)/lock-network-up.txt	
 
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && make clean-network 
