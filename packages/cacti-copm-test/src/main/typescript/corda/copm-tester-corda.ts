@@ -209,7 +209,7 @@ export class CopmTesterCorda implements CopmTester {
     const relayConfigPath = path.resolve(
       __dirname,
       this.packageRelativePath,
-      "./../cacti-plugin-copm-corda/corda-relay-config.json",
+      "src/test/json/resources/corda-relay-config.json",
     );
     const relayConfigContent = fs.readFileSync(relayConfigPath, "utf-8");
     return relayConfigContent.replace(/127.0.0.1/g, "172.17.0.1");

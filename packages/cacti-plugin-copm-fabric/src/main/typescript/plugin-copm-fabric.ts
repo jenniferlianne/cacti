@@ -4,6 +4,7 @@ import {
   Logger,
 } from "@hyperledger/cactus-common";
 import {
+  ICactusPlugin,
   ICactusPluginOptions,
   ICrpcSvcRegistration,
   IPluginCrpcService,
@@ -25,7 +26,7 @@ export interface IPluginCopmFabricOptions extends ICactusPluginOptions {
   contractNames: CopmContractNames;
 }
 
-export class PluginCopmFabric implements IPluginCrpcService {
+export class PluginCopmFabric implements IPluginCrpcService, ICactusPlugin {
   public static readonly CLASS_NAME = "PluginCopmFabric";
   private readonly instanceId: string;
   private readonly logLevel: LogLevelDesc;

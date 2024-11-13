@@ -5,8 +5,7 @@ import * as path from "path";
 export class CordaRPCConfig {
   private static readonly cordaRpcFile = path.join(
     __dirname,
-    "../../../../config",
-    "corda_rpc.json",
+    "../../../../src/test/json/resources/corda_rpc.json",
   );
 
   public static rpcJSON(): string {

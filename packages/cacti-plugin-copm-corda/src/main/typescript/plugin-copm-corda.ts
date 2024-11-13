@@ -1,6 +1,7 @@
 import {
   IPluginCrpcService,
   ICactusPluginOptions,
+  ICactusPlugin,
 } from "@hyperledger/cactus-core-api";
 import {
   Logger,
@@ -19,7 +20,7 @@ export interface IPluginCopmCordaOptions extends ICactusPluginOptions {
   copmKotlinServerBaseUrl: string;
 }
 
-export class PluginCopmCorda implements IPluginCrpcService {
+export class PluginCopmCorda implements IPluginCrpcService, ICactusPlugin {
   public static readonly CLASS_NAME = "PluginCopmCorda";
   private readonly instanceId: string;
   private readonly logLevel: LogLevelDesc;
