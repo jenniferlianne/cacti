@@ -51,7 +51,9 @@ describe("Copm Lock and Claim", () => {
     for (const tester of copmTesterMap.values()) {
       await tester.stopServer();
     }
-    await copmTestNetwork.stopNetworks();
+    if (!process.env["COPM_KEEP_UP"]) {
+      await copmTestNetwork.stopNetworks();
+    }
   });
 
   test.each(networksToTest)(

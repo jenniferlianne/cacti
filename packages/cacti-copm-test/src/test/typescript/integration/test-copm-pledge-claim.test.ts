@@ -29,15 +29,10 @@ describe("Copm Pledge and Claim", () => {
     CopmNetworkMode.Pledge,
   );
 
-  const pledgeAssetName: string =
-    "pledgeasset" + new Date().getTime().toString();
-
-  let networksToTest: string[][];
-  if (process.env["COPM_NET_1"] && process.env["COPM_NET_2"]) {
-    networksToTest = [[process.env["COPM_NET_1"], process.env["COPM_NET_2"]]];
-  } else {
-    networksToTest = copmTestNetwork.supportedNetworkMatrix();
-  }
+  const networksToTest: string[][] =
+    process.env["COPM_NET_1"] && process.env["COPM_NET_2"]
+      ? [[process.env["COPM_NET_1"], process.env["COPM_NET_2"]]]
+      : copmTestNetwork.supportedNetworkMatrix();
 
   log.info(`Testing network combos: ${JSON.stringify(networksToTest)}`);
 
@@ -49,7 +44,9 @@ describe("Copm Pledge and Claim", () => {
     if (copmTester) {
       await copmTester.stopServer();
     }
-    await copmTestNetwork.stopNetworks();
+    if (!process.env["COPM_KEEP_UP"]) {
+      await copmTestNetwork.stopNetworks();
+    }
   });
 
   test.each(networksToTest)(
@@ -62,6 +59,10 @@ describe("Copm Pledge and Claim", () => {
         return;
       }
       log.info("setting up test networks");
+
+      const pledgeAssetName: string =
+        "pledgeasset" + new Date().getTime().toString();
+
       await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
       await copmTester.setNetworkTypes(net1Type, net2Type);
       log.info("starting tests");

@@ -1,11 +1,14 @@
 WORKSPACE ?= $(shell realpath `pwd`/../../)
 
-COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target/corda
+COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target
+CORDA_SETUP_TARGET=$(COPM_TARGET_DIR)/corda-setup.txt
+CORDA_LOCK_NETWORK_TARGET=$(COPM_TARGET_DIR)/corda-lock-network-up.txt
+CORDA_PLEDGE_NETWORK_TARGET=$(COPM_TARGET_DIR)/corda-pledge-network-up.txt
 
-$(COPM_TARGET_DIR)/setup.txt:
+$(CORDA_SETUP_TARGET):
 	cd $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt && \
 	./gradlew build && \
-	cd $(WORKSPACE)/packages/cacti-copm-core && \
+	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	make corda-setup
 	mkdir -p localdeps && \
 	cp $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt/build/libs/copm-corda-*jar localdeps 
@@ -17,24 +20,28 @@ $(COPM_TARGET_DIR)/setup.txt:
 	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/workflows-kotlin/build/libs/workflows-kotlin-*.jar localdeps
 	DOCKER_BUILDKIT=1 docker build . --tag copm-corda 
 	mkdir -p $(COPM_TARGET_DIR)
-	touch $(COPM_TARGET_DIR)/setup.txt
+	touch $(CORDA_SETUP_TARGET)
 
-$(COPM_TARGET_DIR)/pledge-network-up.txt: $(COPM_TARGET_DIR)/setup.txt 
-	cd $(WORKSPACE)/packages/cacti-copm-core && \
+$(CORDA_PLEDGE_NETWORK_TARGET): $(CORDA_SETUP_TARGET) 
+	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup
-	touch $(COPM_TARGET_DIR)/pledge-network-up.txt
+	touch $(CORDA_PLEDGE_NETWORK_TARGET)
 
-$(COPM_TARGET_DIR)/lock-network-up.txt: $(COPM_TARGET_DIR)/setup.txt 
-	cd $(WORKSPACE)/packages/cacti-copm-core && \
+$(CORDA_LOCK_NETWORK_TARGET): $(CORDA_SETUP_TARGET) 
+	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	make corda-lock-dl corda-cli 
-	touch $(COPM_TARGET_DIR)/lock-network-up.txt
+	touch $(CORDA_LOCK_NETWORK_TARGET
 
-setup: $(COPM_TARGET_DIR)/setup.txt
+.PHONY: setup
+setup: $(CORDA_SETUP_TARGET)
 
+.PHONY: pledge-network
 pledge-network: $(COPM_TARGET_DIR)/pledge-network-up.txt 
 
+.PHONY: lock-network
 lock-network: $(COPM_TARGET_DIR)/lock-network-up.txt	
 
+.PHONY: clean-network
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && make clean-network 
 

@@ -25,36 +25,29 @@ const log: Logger = LoggerProvider.getOrCreate({
 let dest_cert: string;
 
 describe(`COPM get verified view`, () => {
-  let copmTester: CopmTestertMultiNetwork;
   let partyA: DLAccount, partyB: DLAccount;
-  let networksToTest: string[][];
   const copmTestNetwork: CopmTestNetwork = new CopmTestNetwork(
     log,
     CopmNetworkMode.Pledge,
   );
-
-  beforeAll(async () => {
-    log.info("setting up fabric test network");
-
-    if (process.env["COPM_NET_1"] && process.env["COPM_NET_2"]) {
-      networksToTest = [[process.env["COPM_NET_1"], process.env["COPM_NET_2"]]];
-    } else {
-      networksToTest = copmTestNetwork.supportedNetworkMatrix();
-    }
-
-    log.info("test setup complete");
-  });
+  const copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
+  const networksToTest: string[][] =
+    process.env["COPM_NET_1"] && process.env["COPM_NET_2"]
+      ? [[process.env["COPM_NET_1"], process.env["COPM_NET_2"]]]
+      : copmTestNetwork.supportedNetworkMatrix();
 
   afterAll(async () => {
     if (copmTester) {
       await copmTester.stopServer();
+    }
+    if (!process.env["COPM_KEEP_UP"]) {
+      await copmTestNetwork.stopNetworks();
     }
   });
 
   test.each(networksToTest)(
     "%s-%s get verified view",
     async (net1Type, net2Type) => {
-      copmTester = new CopmTestertMultiNetwork(log, CopmNetworkMode.Pledge);
       await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
       await copmTester.setNetworkTypes(net1Type, net2Type);
       const assetType = "token1";
