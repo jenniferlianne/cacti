@@ -46,6 +46,7 @@ export class CopmTestNetwork {
       [`${networkModeStr}-network`],
       true,
     );
+    await this.runCliCommand("./", "docker", ["container", "ls"], true);
   }
 
   public async stopNetworks() {
