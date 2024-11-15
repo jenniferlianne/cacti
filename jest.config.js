@@ -6,7 +6,10 @@ module.exports = {
   moduleNameMapper: {
     "^(\\.\\.?\\/.+)\\.jsx?$": "$1",
   },
-  modulePathIgnorePatterns: ["./weaver/core/identity-management", "./weaver/sdks/fabric/interoperation-node-sdk"],
+  modulePathIgnorePatterns: [
+    "./weaver/core/identity-management",
+    "./weaver/sdks/fabric/interoperation-node-sdk",
+  ],
   maxWorkers: 1,
   maxConcurrency: 1,
   setupFilesAfterEnv: ["jest-extended/all", "./jest.setup.console.logs.js"],
