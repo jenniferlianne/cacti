@@ -1,47 +1,66 @@
 WORKSPACE ?= $(shell realpath `pwd`/../../)
 
+# file targets are used as placeholders to ensure that steps are only run once
 COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target
 CORDA_SETUP_TARGET=$(COPM_TARGET_DIR)/corda-setup.txt
-CORDA_LOCK_NETWORK_TARGET=$(COPM_TARGET_DIR)/corda-lock-network-up.txt
-CORDA_PLEDGE_NETWORK_TARGET=$(COPM_TARGET_DIR)/corda-pledge-network-up.txt
+LOCK_NETWORK=$(COPM_TARGET_DIR)/corda-lock-network-up.txt
+PLEDGE_NETWORK=$(COPM_TARGET_DIR)/corda-pledge-network-up.txt
 
-$(CORDA_SETUP_TARGET):
+VERSION=2.0.0
+SIMPLEAPP_VERSION=0.4
+
+LOCALDEPS = localdeps/protos-java-kt-$(VERSION).jar localdeps/copm-corda-$(VERSION).jar localdeps/weaver-sdk-corda-$(VERSION).jar \
+	localdeps/interop-workflows-$(VERSION).jar localdeps/contracts-kotlin-$(SIMPLEAPP_VERSION).jar
+
+## Build monorepo dependencies and copy to localdeps directory
+
+localdeps/protos-java-kt-$(VERSION).jar: 
+	mkdir -p localdeps 
+	cd $(WORKSPACE)/weaver/common/protos-java-kt && make build
+	cp $(WORKSPACE)/weaver/common/protos-java-kt/build/libs/protos-java-kt-$(VERSION).jar localdeps
+
+localdeps/copm-corda-$(VERSION).jar: 
 	cd $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt && \
-	./gradlew build && \
-	cd $(WORKSPACE)/packages/cacti-copm-test && \
-	make corda-setup
-	mkdir -p localdeps && \
-	cp $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt/build/libs/copm-corda-*jar localdeps 
-	cp $(WORKSPACE)/weaver/common/protos-java-kt/build/libs/protos-java-kt-*.jar localdeps
-	cp $(WORKSPACE)/weaver/sdks/corda/build/libs/weaver-sdk-corda-*.jar localdeps
-	cp $(WORKSPACE)/weaver/core/network/corda-interop-app/interop-workflows/build/libs/interop-workflows-*.jar localdeps
-	cp $(WORKSPACE)/weaver/core/network/corda-interop-app/interop-contracts/build/libs/interop-contracts-*.jar localdeps
-	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/contracts-kotlin/build/libs/contracts-kotlin-*.jar localdeps
-	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/workflows-kotlin/build/libs/workflows-kotlin-*.jar localdeps
-	DOCKER_BUILDKIT=1 docker build . --tag copm-corda 
-	mkdir -p $(COPM_TARGET_DIR)
-	touch $(CORDA_SETUP_TARGET)
+	./gradlew build 
+	cp $(WORKSPACE)/packages/cacti-copm-core/src/main/protos-kt/build/libs/copm-corda-$(VERSION).jar localdeps
 
-$(CORDA_PLEDGE_NETWORK_TARGET): $(CORDA_SETUP_TARGET) 
+localdeps/weaver-sdk-corda-$(VERSION).jar:
+	cd $(WORKSPACE)/weaver/sdks/corda && make build
+	cp $(WORKSPACE)/weaver/sdks/corda/build/libs/weaver-sdk-corda-$(VERSION).jar localdeps
+
+localdeps/interop-workflows-$(VERSION).jar: 
+	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
+	cp $(WORKSPACE)/weaver/core/network/corda-interop-app/interop-workflows/build/libs/interop-workflows-$(VERSION).jar localdeps
+	cp $(WORKSPACE)/weaver/core/network/corda-interop-app/interop-contracts/build/libs/interop-contracts-$(VERSION).jar localdeps
+
+localdeps/contracts-kotlin-$(SIMPLEAPP_VERSION).jar: 
+	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
+	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/contracts-kotlin/build/libs/contracts-kotlin-$(SIMPLEAPP_VERSION).jar localdeps
+	cp $(WORKSPACE)/weaver/samples/corda/corda-simple-application/workflows-kotlin/build/libs/workflows-kotlin-$(SIMPLEAPP_VERSION).jar localdeps
+
+# MAIN TARGETS
+
+docker-image: 
+	DOCKER_BUILDKIT=1 docker build . --tag copm-corda 
+
+localdeps: $(LOCALDEPS)
+
+setup: localdeps docker-image
+
+$(PLEDGE_NETWORK): setup 
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup
-	touch $(CORDA_PLEDGE_NETWORK_TARGET)
+	touch $(PLEDGE_NETWORK)
 
-$(CORDA_LOCK_NETWORK_TARGET): $(CORDA_SETUP_TARGET) 
+$(LOCK_NETWORK): setup 
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	make corda-lock-dl corda-cli 
-	touch $(CORDA_LOCK_NETWORK_TARGET
+	touch $(LOCK_NETWORK
 
-.PHONY: setup
-setup: $(CORDA_SETUP_TARGET)
+pledge-network: $(PLEDGE_NETWORK) 
 
-.PHONY: pledge-network
-pledge-network: $(COPM_TARGET_DIR)/pledge-network-up.txt 
+lock-network: $(LOCK_NETWORK)
 
-.PHONY: lock-network
-lock-network: $(COPM_TARGET_DIR)/lock-network-up.txt	
-
-.PHONY: clean-network
 clean-network:
-	cd $(WORKSPACE)/packages/cacti-copm-core && make clean-network 
+	cd $(WORKSPACE)/packages/cacti-copm-test && make clean-network 
 

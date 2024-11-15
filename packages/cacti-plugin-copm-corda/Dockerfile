@@ -1,4 +1,4 @@
-FROM gradle:8.1.1-jdk17-jammy as builder
+FROM gradle:8.1.1-jdk17-jammy AS builder
 
 WORKDIR /
 COPY ./src/main/kotlin /kotlin-spring/src/main/kotlin

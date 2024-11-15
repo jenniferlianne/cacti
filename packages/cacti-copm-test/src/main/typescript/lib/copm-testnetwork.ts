@@ -49,9 +49,12 @@ export class CopmTestNetwork {
   }
 
   public async stopNetworks() {
-    await this.runCliCommand("packages/cacti-copm-core", "make", [
-      "stop-network",
-    ]);
+    await this.runCliCommand(
+      "packages/cacti-copm-test",
+      "make",
+      ["stop-network"],
+      true,
+    );
   }
 
   private async runCliCommand(
@@ -60,7 +63,9 @@ export class CopmTestNetwork {
     args: string[],
     show_progress = false,
   ): Promise<void> {
-    this.log.info(`Running command: ${command} ${args.join(" ")}`);
+    this.log.info(
+      `Running command: ${command} ${args.join(" ")} in directory ${directory}`,
+    );
     return new Promise((resolve, reject) => {
       const cmd = spawn(command, args, { cwd: directory });
       if (show_progress) {

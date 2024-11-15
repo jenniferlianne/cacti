@@ -162,9 +162,6 @@ fabric-setup:
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
 
 corda-setup:
-	# also need to build the fabric interop helper as it is used in the copm impl
-	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
-	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
 	cd $(WORKSPACE)/weaver/common/protos-java-kt && make build
 	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
@@ -185,7 +182,7 @@ stop-network:
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org2'  
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org1'  
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org2'  
-	rm $(COPM_TARGET_DIR)/*/*network-up.txt || true
+	rm $(COPM_TARGET_DIR)/*network-up.txt || true
 
 
 define stop_docker

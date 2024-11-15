@@ -90,7 +90,7 @@ jar {
     reproducibleFileOrder = true
 
     dependencies {
-        implementation files("./localdeps/copm-corda-0.4.jar")
+        implementation files("./localdeps/copm-corda-2.0.0.jar")
         implementation files("./localdeps/protos-java-kt-2.0.0.jar")
         implementation files("./localdeps/weaver-sdk-corda-2.0.0.jar")
         implementation files("./localdeps/interop-workflows-2.0.0.jar")
