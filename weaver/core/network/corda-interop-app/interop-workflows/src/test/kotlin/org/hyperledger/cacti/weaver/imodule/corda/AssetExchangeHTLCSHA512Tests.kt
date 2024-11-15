@@ -69,6 +69,7 @@ class AssetExchangeHTLCSHA512Tests {
     val bob = partyB.info.legalIdentities.first()
     val charlie = partyC.info.legalIdentities.first()
     val issuer = charlie
+    val assetType = "simple"
     
     val preimage = OpaqueBytes("secrettext".toByteArray())
     val hash = OpaqueBytes(Base64.getDecoder().decode("C2Eebv+5ANup+OFSol2igMpbLIvcZVxdWgrCgcSYGWbpfdNCwg7jI7xrQbVUKhDwxtRQ4uCivarra05qkdvOGQ=="))
@@ -96,11 +97,15 @@ class AssetExchangeHTLCSHA512Tests {
     
     @Test
     fun `LockAssetHTLC tests`() {
-        val assetStateRef = createAssetTx("l01")
+        val assetId = "l01"
+        val assetStateRef = createAssetTx(assetId)
+
         
         // UnHappy case: Third party trying to lock asset of alice.
         val futureFail = partyB.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            assetId,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             charlie,
@@ -113,6 +118,8 @@ class AssetExchangeHTLCSHA512Tests {
         // Happy case.
         val future = partyA.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            assetId,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             bob,
@@ -139,6 +146,8 @@ class AssetExchangeHTLCSHA512Tests {
         // Unhappy case: asset is already locked
         val futureTwo = partyA.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            assetId,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             bob,
@@ -362,6 +371,8 @@ class AssetExchangeHTLCSHA512Tests {
         assertEquals(alice, assetStateRef.state.data.owner)
         val future = partyA.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            id,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             bob,

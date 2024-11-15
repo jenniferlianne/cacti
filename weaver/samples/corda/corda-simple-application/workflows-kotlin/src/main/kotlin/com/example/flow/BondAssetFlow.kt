@@ -29,6 +29,7 @@ import net.corda.core.contracts.requireThat
 import java.util.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import net.corda.core.identity.CordaX500Name
 import org.hyperledger.cacti.weaver.imodule.corda.flows.GetAssetClaimStatusState
 import org.hyperledger.cacti.weaver.imodule.corda.states.AssetPledgeState
 import org.hyperledger.cacti.weaver.imodule.corda.flows.GetAssetPledgeStatus
@@ -220,6 +221,19 @@ class GetStatesByBondAssetType(val assetType: String) : FlowLogic<ByteArray>() {
         println("Retrieved states with assetType $assetType: $states\n")
         return states.toString().toByteArray()
     }
+}
+
+@StartableByRPC
+class GetBondIssuer(val assetType: String, val assetId: Any) : FlowLogic<Party>() {
+
+    @Suspendable
+    override fun call(): Party {
+        val issuer_dn="O=PartyA,L=London,C=GB"
+        val issuerParty = serviceHub.identityService.wellKnownPartyFromX500Name(CordaX500Name.parse(issuer_dn))
+            ?: throw IllegalArgumentException("Party with name $issuer_dn not found.")
+        return issuerParty
+    }
+
 }
 
 /**

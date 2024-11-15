@@ -50,9 +50,6 @@ class LockAsset
 constructor(
         val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.AssetExchangeAgreement,
-        val getAssetFlowName: String,
-        val assetStateDeleteCommand: CommandData,
-        val issuer: Party,
         val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
     /**
@@ -84,40 +81,62 @@ constructor(
                 hash = OpaqueBytes(Base64.getDecoder().decode(lockInfoHTLC.hashBase64.toByteArray())),
                 expiryTime = expiryTime
             )
-            
-            // Get AssetStateAndRef
-            resolveStateAndRefFlow(getAssetFlowName,
-                listOf(agreement.assetType, agreement.id)
-            ).fold({
-                println("Error: Unable to resolve Get Asset StateAndRef Flow.")
-                Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
-            }, {
-                println("Resolved Get Asset flow to ${it}")
-                val assetRef = subFlow(it)
-                
-                if (assetRef == null) {
-                    println("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.id}.")
-                    Left(Error("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.id}."))
-                }
-                
-                // Resolve recipient name to party
-                val recipientName: CordaX500Name = CordaX500Name.parse(agreement.recipient)
-                val recipient = serviceHub.networkMapCache.getPeerByLegalName(recipientName)
-                
-                if (recipient == null) {
-                    println("Error: Unable to find recipient party: ${agreement.recipient}.")
-                    Left(Error("Error: Unable to find recipient party: ${agreement.recipient}."))
-                }
-                
-                subFlow(LockAssetHTLC.Initiator(
-                    lockInfoData, 
-                    assetRef!!,
-                    assetStateDeleteCommand,
-                    recipient!!,
-                    issuer,
-                    observers
-                ))
-            })
+            subFlow(GetInteropAssetTypeStateByName(agreement.assetType)).fold(
+                {
+                    println("Error: Unable to resolve interop asset type ${agreement.assetType}.")
+                    Left(Error("Error: Unable to resolve interop asset type ${agreement.assetType}."))
+                },
+                {
+                    val interopAssetType = it.state.data.assetType
+
+                    // Get AssetStateAndRef
+                    resolveStateAndRefFlow(
+                        interopAssetType.getAssetStateAndRef,
+                        listOf(agreement.assetType, agreement.id)
+                    ).fold({
+                        println("Error: Unable to resolve Get Asset StateAndRef Flow.")
+                        Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
+                    }, {
+                        println("Resolved Get Asset flow to ${it}")
+                        val assetRef = subFlow(it)
+
+                        if (assetRef == null) {
+                            println("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.id}.")
+                            Left(Error("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.id}."))
+                        }
+
+                        // Resolve recipient name to party
+                        val recipientName: CordaX500Name = CordaX500Name.parse(agreement.recipient)
+                        val recipient = serviceHub.networkMapCache.getPeerByLegalName(recipientName)
+
+                        if (recipient == null) {
+                            println("Error: Unable to find recipient party: ${agreement.recipient}.")
+                            Left(Error("Error: Unable to find recipient party: ${agreement.recipient}."))
+                        }
+
+                        resolveAssetIssuer(interopAssetType.getAssetIssuer,
+                            listOf(agreement.assetType, agreement.id)).fold(
+                            {
+                                println("Error: Unable to resolve issuer.")
+                                Left(Error("Error: Unable to resolve issuer"))
+                            },
+                            {
+                                val issuer = subFlow(it)
+                                subFlow(
+                                    LockAssetHTLC.Initiator(
+                                        lockInfoData,
+                                        agreement.assetType,
+                                        agreement.id,
+                                        assetRef!!,
+                                        interopAssetType.deleteAssetCommand,
+                                        recipient!!,
+                                        issuer,
+                                        observers
+                                    )
+                                )
+                            })
+                    })
+                })
             
         } else {
             println("Lock Mechanism not supported.")
@@ -141,9 +160,6 @@ class LockFungibleAsset
 constructor(
         val assetLock: AssetLocks.AssetLock,
         val agreement: AssetLocks.FungibleAssetExchangeAgreement,
-        val getAssetFlowName: String,
-        val assetStateDeleteCommand: CommandData,
-        val issuer: Party,
         val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, UniqueIdentifier>>() {
     /**
@@ -175,41 +191,63 @@ constructor(
                 hash = OpaqueBytes(Base64.getDecoder().decode(lockInfoHTLC.hashBase64.toByteArray())),
                 expiryTime = expiryTime
             )
-            
-            // Get AssetStateAndRef
-            resolveStateAndRefFlow(getAssetFlowName,
-                listOf(agreement.assetType, agreement.numUnits)
-            ).fold({
-                println("Error: Unable to resolve Get Asset StateAndRef Flow.")
-                Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
-            }, {
-                println("Resolved Get Asset flow to ${it}")
-                val assetRef = subFlow(it)
-                
-                if (assetRef == null) {
-                    println("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.numUnits}.")
-                    Left(Error("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.numUnits}."))
-                }
-                
-                // Resolve recipient name to party
-                val recipientName: CordaX500Name = CordaX500Name.parse(agreement.recipient)
-                val recipient = serviceHub.networkMapCache.getPeerByLegalName(recipientName)
-                
-                if (recipient == null) {
-                    println("Error: Unable to find recipient party: ${agreement.recipient}.")
-                    Left(Error("Error: Unable to find recipient party: ${agreement.recipient}."))
-                }
-                
-                subFlow(LockAssetHTLC.Initiator(
-                    lockInfoData, 
-                    assetRef!!,
-                    assetStateDeleteCommand,
-                    recipient!!,
-                    issuer,
-                    observers
-                ))
-            })
-            
+
+            subFlow(GetInteropAssetTypeStateByName(agreement.assetType)).fold(
+                {
+                    println("Error: Unable to resolve interop asset type ${agreement.assetType}.")
+                    Left(Error("Error: Unable to resolve interop asset type ${agreement.assetType}."))
+                },
+                {
+                    val interopAssetType = it.state.data.assetType
+
+                    // Get AssetStateAndRef
+                    resolveStateAndRefFlow(
+                        interopAssetType.getAssetStateAndRef,
+                        listOf(agreement.assetType, agreement.numUnits)
+                    ).fold({
+                        println("Error: Unable to resolve Get Asset StateAndRef Flow.")
+                        Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
+                    }, {
+                        println("Resolved Get Asset flow to ${it}")
+                        val assetRef = subFlow(it)
+
+                        if (assetRef == null) {
+                            println("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.numUnits}.")
+                            Left(Error("Error: Unable to Get Asset StateAndRef for type: ${agreement.assetType} and id: ${agreement.numUnits}."))
+                        }
+
+                        // Resolve recipient name to party
+                        val recipientName: CordaX500Name = CordaX500Name.parse(agreement.recipient)
+                        val recipient = serviceHub.networkMapCache.getPeerByLegalName(recipientName)
+
+                        if (recipient == null) {
+                            println("Error: Unable to find recipient party: ${agreement.recipient}.")
+                            Left(Error("Error: Unable to find recipient party: ${agreement.recipient}."))
+                        }
+
+                        resolveAssetIssuer(interopAssetType.getAssetIssuer,
+                            listOf(agreement.assetType, agreement.numUnits)).fold(
+                            {
+                                println("Error: Unable to resolve issuer.")
+                                Left(Error("Error: Unable to resolve issuer"))
+                            },
+                            {
+                                val issuer = subFlow(it)
+                                subFlow(
+                                    LockAssetHTLC.Initiator(
+                                        lockInfoData,
+                                        agreement.assetType,
+                                        agreement.numUnits,
+                                        assetRef!!,
+                                        interopAssetType.deleteAssetCommand,
+                                        recipient!!,
+                                        issuer,
+                                        observers
+                                    )
+                                )
+                            })
+                    })
+                })
         } else {
             println("Lock Mechanism not supported.")
             Left(Error("Lock Mechanism not supported."))
@@ -234,9 +272,6 @@ class ClaimAsset
 constructor(
         val contractId: String,
         val assetClaim: AssetLocks.AssetClaim,
-        val assetStateCreateCommand: CommandData,
-        val updateOwnerFlow: String,
-        val issuer: Party,
         val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
@@ -254,14 +289,40 @@ constructor(
                 hashMechanism = getHashMechanism(claimInfoHTLC.hashMechanism),
                 hashPreimage = OpaqueBytes(Base64.getDecoder().decode(claimInfoHTLC.hashPreimageBase64.toByteArray()))
             )
-            subFlow(ClaimAssetHTLC.Initiator(
-                contractId,
-                claimInfoData,
-                assetStateCreateCommand,
-                updateOwnerFlow,
-                issuer,
-                observers
-            ))
+            subFlow(GetAssetExchangeHTLCStateById(contractId)).fold({
+                println("AssetExchangeHTLCState for Id: ${contractId} not found.")
+                Left(Error("AssetExchangeHTLCState for Id: ${contractId} not found."))
+            }, {
+                val exchangeHTLCState = it.state.data
+                subFlow(GetInteropAssetTypeStateByName(exchangeHTLCState.assetType)).fold(
+                    {
+                        println("Error: Unable to resolve interop asset type ${exchangeHTLCState.assetType}.")
+                        Left(Error("Error: Unable to resolve interop asset type ${exchangeHTLCState.assetType}."))
+                    },
+                    {
+                        val interopAssetType = it.state.data.assetType
+                        resolveAssetIssuer(interopAssetType.getAssetIssuer,
+                            listOf(exchangeHTLCState.assetType, exchangeHTLCState.idOrQuantity)).fold(
+                            {
+                                println("Error: Unable to resolve issuer.")
+                                Left(Error("Error: Unable to resolve issuer"))
+                            },
+                            {
+                                val issuer = subFlow(it)
+
+                                subFlow(
+                                    ClaimAssetHTLC.Initiator(
+                                        contractId,
+                                        claimInfoData,
+                                        interopAssetType.issueAssetCommand,
+                                        interopAssetType.updateAssetOwnerFromPointer,
+                                        issuer,
+                                        observers
+                                    )
+                                )
+                            })
+                    })
+            })
         } else {
             println("Lock Mechanism not supported.")
             Left(Error("Lock Mechanism not supported."))
@@ -284,8 +345,6 @@ class UnlockAsset
 @JvmOverloads
 constructor(
         val contractId: String,
-        val assetStateCreateCommand: CommandData,
-        val issuer: Party,
         val observers: List<Party> = listOf<Party>()
 ) : FlowLogic<Either<Error, SignedTransaction>>() {
     /**
@@ -295,12 +354,37 @@ constructor(
      */
     @Suspendable
     override fun call(): Either<Error, SignedTransaction> = try {
-        subFlow(UnlockAssetHTLC.Initiator(
-            contractId,
-            assetStateCreateCommand,
-            issuer,
-            observers
-        ))
+        subFlow(GetAssetExchangeHTLCStateById(contractId)).fold({
+            println("AssetExchangeHTLCState for Id: ${contractId} not found.")
+            Left(Error("AssetExchangeHTLCState for Id: ${contractId} not found."))
+        }, {
+            val exchangeHTLCState = it.state.data
+            subFlow(GetInteropAssetTypeStateByName(exchangeHTLCState.assetType)).fold(
+                {
+                    println("Error: Unable to resolve interop asset type ${exchangeHTLCState.assetType}.")
+                    Left(Error("Error: Unable to resolve interop asset type ${exchangeHTLCState.assetType}."))
+                },
+                {
+                    val interopAssetType = it.state.data.assetType
+                    resolveAssetIssuer(interopAssetType.getAssetIssuer,
+                        listOf(exchangeHTLCState.assetType, exchangeHTLCState.idOrQuantity)).fold(
+                        {
+                            println("Error: Unable to resolve issuer.")
+                            Left(Error("Error: Unable to resolve issuer"))
+                        },
+                        {
+                            val issuer = subFlow(it)
+                            subFlow(
+                                UnlockAssetHTLC.Initiator(
+                                    contractId,
+                                    interopAssetType.issueAssetCommand,
+                                    issuer,
+                                    observers
+                                )
+                            )
+                        })
+                })
+        })
     } catch (e: Exception) {
         println("Error unlocking: ${e.message}\n")
         Left(Error("Failed to unlock: ${e.message}"))
@@ -326,6 +410,28 @@ fun resolveStateAndRefFlow(flowName: String, flowArgs: List<Any>): Either<Error,
     } else {
         try {
             Right(ctor.call(*flowArgs.toTypedArray()) as FlowLogic<StateAndRef<ContractState>?>)
+        } catch (e: Exception) {
+            println("Flow Resolution Error: $flowName not a flow: ${e.message}.\n")
+            Left(Error("Flow Resolution Error: $flowName not a flow"))
+        }
+    }
+} catch (e: Exception) {
+    println("Flow Resolution Error: ${e.message} \n")
+    Left(Error("Flow Resolution Error: ${e.message}"))
+}
+
+
+@Suppress("UNCHECKED_CAST")
+fun resolveAssetIssuer(flowName: String, flowArgs: List<Any>): Either<Error, FlowLogic<Party>> = try {
+    println("Attempting to resolve $flowName to a Corda flow.")
+    val kotlinClass = Class.forName(flowName).kotlin
+    val ctor = kotlinClass.constructors.first()
+    if (ctor.parameters.size != flowArgs.size) {
+        println("Flow Resolution Error: wrong number of arguments supplied.\n")
+        Left(Error("Flow Resolution Error: wrong number of arguments supplied"))
+    } else {
+        try {
+            Right(ctor.call(*flowArgs.toTypedArray()) as FlowLogic<Party>)
         } catch (e: Exception) {
             println("Flow Resolution Error: $flowName not a flow: ${e.message}.\n")
             Left(Error("Flow Resolution Error: $flowName not a flow"))

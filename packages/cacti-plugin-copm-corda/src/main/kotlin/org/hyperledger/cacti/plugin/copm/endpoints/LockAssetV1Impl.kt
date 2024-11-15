@@ -16,7 +16,6 @@ suspend fun lockAssetV1Impl(request: DefaultServiceOuterClass.LockAssetV1Request
 ): LockAssetV1200ResponsePb.LockAssetV1200ResponsePB {
     logger.debug("start lockAssetV1")
     val data = ValidatedLockAssetV1Request(request)
-    val contract = cordaConfig.assetContract(data.asset)
     val lockInfo = AssetManager.createAssetLockInfo(data.hash,data.expiryTimeFmt, data.expiryTime)
     val flow = if (data.asset.isNFT) "LockAsset" else "LockFungibleAsset"
     val agreement = if (data.asset.isNFT) AssetManager.createAssetExchangeAgreement(data.asset.assetType,data.asset.assetId, data.destAccount.accountId,"")
@@ -28,9 +27,6 @@ suspend fun lockAssetV1Impl(request: DefaultServiceOuterClass.LockAssetV1Request
             flow,
             listOf(lockInfo,
                 agreement,
-                contract.getStateAndRefCmdStr,
-                contract.burnAssetCmd,
-                cordaConfig.getIssuer(data.asset),
                 cordaConfig.getObservers(data.sourceAccount))
         )
     )

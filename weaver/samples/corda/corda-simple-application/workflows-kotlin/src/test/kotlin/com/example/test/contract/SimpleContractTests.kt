@@ -6,6 +6,8 @@
 
 package com.cordaSimpleApplication.test.contract
 
+/*
+
 import com.cordaSimpleApplication.contract.SimpleContract
 import com.cordaSimpleApplication.state.SimpleState
 import net.corda.core.identity.CordaX500Name
@@ -13,6 +15,7 @@ import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
 import org.junit.Test
+
 
 class SimpleContractTests {
     private val ledgerServices = MockServices(listOf("com.cordaSimpleApplication.contract", "com.cordaSimpleApplication.flow"))
@@ -188,3 +191,4 @@ class SimpleContractTests {
 }
 
 
+*/

@@ -26,7 +26,7 @@ pledge-network:
 
 lock-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
-	make corda-lock-dl corda-cli 
+	make corda-lock-dl corda-cli corda-lock-cli-setup
 
 server: server-docker-image
 	docker run -e COPM_RELAY_CONFIG="`cat ./corda-relay-config.json  | sed -e 's/127.0.0.1/172.17.0.1/g'`" \

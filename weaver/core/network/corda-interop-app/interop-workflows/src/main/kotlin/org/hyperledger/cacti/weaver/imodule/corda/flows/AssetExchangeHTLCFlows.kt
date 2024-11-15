@@ -63,6 +63,8 @@ object LockAssetHTLC {
     @JvmOverloads
     constructor(
             val lockInfo: AssetLockHTLCData,
+            val assetType: String,
+            val assetIdOrQuantity: Any,
             val assetStateRef: StateAndRef<ContractState>,
             val assetStateDeleteCommand: CommandData,
             val recipient: Party,
@@ -83,6 +85,8 @@ object LockAssetHTLC {
             val assetExchangeHTLCState = AssetExchangeHTLCState(
                 lockInfo,
                 StaticPointer(assetStateRef.ref, assetStateRef.state.data.javaClass), //Get the state pointer from StateAndRef
+                assetType,
+                assetIdOrQuantity,
                 ourIdentity,
                 recipient
             )

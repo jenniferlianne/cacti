@@ -15,7 +15,6 @@ suspend fun claimLockedAssetV1Impl(request: DefaultServiceOuterClass.ClaimLocked
 ): ClaimPledgedAssetV1200ResponsePb.ClaimPledgedAssetV1200ResponsePB {
     logger.debug("start claimLockedAssetV1")
     val data = ValidatedClaimLockedAssetV1Request(request)
-    val assetContract = cordaConfig.assetContract(data.asset)
     val transactionContext = transactionContextFactory.getLocalTransactionContext(data.recipient)
     val claimId = transactionContext.invoke(
         DLTransactionParams(
@@ -23,9 +22,6 @@ suspend fun claimLockedAssetV1Impl(request: DefaultServiceOuterClass.ClaimLocked
             "ClaimAsset",
             listOf(data.contractId,
                 AssetManager.createAssetClaimInfo(data.hash),
-                assetContract.issueAssetCmd,
-                assetContract.updateAssetOwnerCmdStr,
-                cordaConfig.getIssuer(data.asset),
                 cordaConfig.getObservers(data.recipient))
         )
     )

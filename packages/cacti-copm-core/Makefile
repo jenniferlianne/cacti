@@ -147,6 +147,12 @@ corda-pledge-cli-setup:
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application &&\
 	make initialise-vault-asset-transfer-docker
 
+corda-lock-cli-setup:
+	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application &&\
+	./clients/build/install/clients/bin/clients configure asset-types &&\
+	CORDA_PORT=10009  ./clients/build/install/clients/bin/clients configure asset-types
+
+
 # MAIN TARGETS
 
 PATH := $(PATH):$(WORKSPACE)/protoc/bin

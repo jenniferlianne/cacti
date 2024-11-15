@@ -8,10 +8,6 @@ package org.hyperledger.cacti.weaver.imodule.corda
 
 import arrow.core.Either
 import org.hyperledger.cacti.weaver.imodule.corda.flows.*
-import org.hyperledger.cacti.weaver.imodule.corda.states.AssetExchangeHTLCState
-import org.hyperledger.cacti.weaver.imodule.corda.states.AssetLockHTLCData
-import org.hyperledger.cacti.weaver.imodule.corda.states.AssetClaimHTLCData
-import org.hyperledger.cacti.weaver.imodule.corda.states.HashMechanism
 
 import org.hyperledger.cacti.weaver.imodule.corda.test.*
 
@@ -35,6 +31,8 @@ import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.contracts.TransactionState
 import net.corda.core.contracts.StateRef
 import net.corda.core.crypto.SecureHash
+import net.corda.core.identity.Party
+import org.hyperledger.cacti.weaver.imodule.corda.states.*
 
 class AssetExchangeHTLCSHA256Tests {
     companion object {
@@ -69,6 +67,7 @@ class AssetExchangeHTLCSHA256Tests {
     val bob = partyB.info.legalIdentities.first()
     val charlie = partyC.info.legalIdentities.first()
     val issuer = charlie
+    val assetType = "simple"
     
     val preimage = OpaqueBytes("secrettext".toByteArray())
     val hash = OpaqueBytes(Base64.getDecoder().decode("ivHErp1x4bJDKuRo6L5bApO/DdoyD/dG0mAZrzLZEIs="))
@@ -93,14 +92,18 @@ class AssetExchangeHTLCSHA256Tests {
         network.runNetwork()
         return tmp.getOrThrow()
     }
-    
+
+
     @Test
     fun `LockAssetHTLC tests`() {
-        val assetStateRef = createAssetTx("l01")
+        val assetId = "l01"
+        val assetStateRef = createAssetTx(assetId)
         
         // UnHappy case: Third party trying to lock asset of alice.
         val futureFail = partyB.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            assetId,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             charlie,
@@ -113,6 +116,8 @@ class AssetExchangeHTLCSHA256Tests {
         // Happy case.
         val future = partyA.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            assetId,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             bob,
@@ -139,6 +144,8 @@ class AssetExchangeHTLCSHA256Tests {
         // Unhappy case: asset is already locked
         val futureTwo = partyA.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            assetId,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             bob,
@@ -331,6 +338,8 @@ class AssetExchangeHTLCSHA256Tests {
         assertEquals(alice, assetStateRef.state.data.owner)
         val future = partyA.startFlow(LockAssetHTLC.Initiator(
             lockInfo,
+            assetType,
+            id,
             assetStateRef,
             AssetStateContract.Commands.Delete(),
             bob,

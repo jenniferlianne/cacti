@@ -18,7 +18,6 @@ suspend fun claimPledgedAssetV1Impl(request: DefaultServiceOuterClass.ClaimPledg
 ): ClaimPledgedAssetV1200ResponsePb.ClaimPledgedAssetV1200ResponsePB {
     logger.debug("start claimPledgedAssetV1")
     val data = ValidatedClaimPledgedAssetV1Request(request)
-    val assetContract = cordaConfig.assetContract(data.asset)
     val remoteContext = contextFactory.getRemoteTransactionContext(data.destinationAccount, data.sourceAccount.organization)
     val remoteCmd = interopConfig.getRemoteCopmContract(data.sourceAccount.organization, data.asset).getPledgeInfoCmd(data)
     logger.debug("getting remote pledge id")
@@ -28,9 +27,6 @@ suspend fun claimPledgedAssetV1Impl(request: DefaultServiceOuterClass.ClaimPledg
     val params = CordaAssetClaim(
         data,
         pledgeStatusLinearId,
-        assetContract.issueAssetCmd,
-        assetContract.getStateAndContractIdCmdStr,
-        cordaConfig.getIssuer(data.asset),
         cordaConfig.getObservers(data.destinationAccount)
     )
     val transaction = contextFactory.getLocalTransactionContext(data.destinationAccount)

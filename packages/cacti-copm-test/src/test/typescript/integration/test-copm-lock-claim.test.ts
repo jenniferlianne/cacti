@@ -41,7 +41,7 @@ describe("Copm Lock and Claim", () => {
   });
 
   test(`${netType} can lock/claim nft on same network`, async () => {
-    const assetType = "bond";
+    const assetType = "bond01";
     const partyA = copmTester.getPartyA(assetType);
     const partyB = copmTester.getPartyB(assetType);
 

@@ -15,12 +15,8 @@ suspend fun pledgeAssetV1Impl(request: DefaultServiceOuterClass.PledgeAssetV1Req
 ): PledgeAssetV1200ResponsePb.PledgeAssetV1200ResponsePB {
     logger.debug("starting pledge asset")
     val data = ValidatedPledgeAssetV1Request(request)
-    val assetContract = cordaConfig.assetContract(data.asset)
     val transaction = contextFactory.getLocalTransactionContext(data.sourceAccount)
     val params = CordaAssetPledge(data,
-        assetContract.getStateAndRefCmdStr,
-        assetContract.burnAssetCmd,
-        cordaConfig.getIssuer(data.asset),
         cordaConfig.getObservers(data.destinationAccount))
     val result = transaction.invoke(
         DLTransactionParams(cordaConfig.copmContract,

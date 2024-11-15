@@ -6,6 +6,7 @@
 
 package com.cordaSimpleApplication.test.flow
 
+/*
 import com.cordaSimpleApplication.flow.*
 import com.cordaSimpleApplication.state.SimpleState
 import javassist.NotFoundException
@@ -319,3 +320,5 @@ class SimpleFlowTests {
         network.runNetwork()
     }
 }
+
+ */

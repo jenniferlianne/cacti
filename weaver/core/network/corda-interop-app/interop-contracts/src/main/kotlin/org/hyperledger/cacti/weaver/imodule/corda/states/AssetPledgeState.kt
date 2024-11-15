@@ -62,23 +62,17 @@ data class AssetPledgeParameters(
     var remoteNetworkId: String,
     var recipientCert: String,
     var expiryTimeSecs: Long,
-    var getAssetStateAndRefFlow: String,
-    var deleteAssetStateCommand: CommandData,
-    var issuer: Party,
     var observers: List<Party>
 )
 
 @CordaSerializable
 data class AssetClaimParameters(
     val pledgeId: String,
-    val createAssetStateCommand: CommandData,
     val pledgeStatusLinearId: String,
-    val getAssetAndContractIdFlowName: String,
     val assetType: String,
     val assetIdOrQuantity: Any,
     val pledgerCert: String,
     val recipientCert: String,
-    val issuer: Party,
     val observers: List<Party>
 )
 

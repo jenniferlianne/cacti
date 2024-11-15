@@ -6,6 +6,8 @@
 
 package com.cordaSimpleApplication.client
 
+import com.cordaSimpleApplication.contract.AssetContract
+import com.cordaSimpleApplication.contract.BondAssetContract
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.requireObject
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -21,6 +23,9 @@ import java.util.stream.Collectors
 import net.corda.core.identity.Party
 
 import org.hyperledger.cacti.weaver.sdk.corda.CredentialsCreator
+import org.hyperledger.cacti.weaver.sdk.corda.InteropAssetTypeManager
+import org.hyperledger.cacti.weaver.imodule.corda.states.InteropAssetTypeState
+import org.hyperledger.cacti.weaver.imodule.corda.states.InteropAssetType
 
 class ConfigureCommand : CliktCommand(help ="Configure Command") {
     override fun run() {
@@ -38,6 +43,7 @@ class ConfigureAllCommand : CliktCommand(name="all",
         configureCreateAllHelper()
         configDataHelper(config)
         configNetworkHelper(config)
+        createInteropAssetTypes(config)
     }
 }
 
@@ -61,6 +67,14 @@ class ConfigureNetworkCommand : CliktCommand(name="network",
     val sharedPartiesNames by option("-p", "--parties", help="List of parties separated by \";\"")
     override fun run() = runBlocking {
         configNetworkHelper(config, sharedPartiesNames)
+    }
+}
+
+class ConfigureAssetTypesCommand : CliktCommand(name="asset-types",
+        help = "Sets the default interop asset types for the network") {
+    val config by requireObject<Map<String, String>>()
+    override fun run() = runBlocking {
+        createInteropAssetTypes(config)
     }
 }
 
@@ -165,4 +179,48 @@ fun configureCreateAllHelper() {
       out.write(jsonPrinter.print(verificationPolicy))
     }
     println("Verification Policy written to ${destPath}/verification-policy.json")
+}
+
+fun createInteropAssetTypes(config: Map<String, String>) {
+    val rpc = NodeRPCConnection(
+        host = config["CORDA_HOST"]!!,
+        username = "clientUser1",
+        password = "test",
+        rpcPort = config["CORDA_PORT"]!!.toInt())
+
+    val tokenAssetType = InteropAssetTypeState(
+        InteropAssetType(
+            name = "token1",
+            getAssetStateAndRef = "com.cordaSimpleApplication.flow.RetrieveStateAndRef",
+            getAssetStateAndContractId = "com.cordaSimpleApplication.flow.GetSimpleAssetStateAndContractId",
+            updateAssetOwnerFromPointer = "com.cordaSimpleApplication.flow.UpdateAssetOwnerFromPointer",
+            issueAssetCommand =  AssetContract.Commands.Issue(),
+            deleteAssetCommand = AssetContract.Commands.Delete(),
+            getAssetIssuer = "com.cordaSimpleApplication.flow.GetTokenIssuer"
+        )
+    )
+    println("Creating token asset type")
+
+    InteropAssetTypeManager.createAssetTypeState(rpc.proxy, tokenAssetType, emptyList<Party>())
+
+    val bondAssetType = InteropAssetTypeState(
+        InteropAssetType(
+            "bond01",
+            "com.cordaSimpleApplication.flow.RetrieveBondAssetStateAndRef",
+            "com.cordaSimpleApplication.flow.GetSimpleBondAssetStateAndContractId",
+            "com.cordaSimpleApplication.flow.UpdateBondAssetOwnerFromPointer",
+            BondAssetContract.Commands.Issue(),
+            BondAssetContract.Commands.Delete(),
+            "com.cordaSimpleApplication.flow.GetBondIssuer",
+        )
+    )
+    println("Creating bond asset type")
+
+    InteropAssetTypeManager.createAssetTypeState(rpc.proxy, bondAssetType, emptyList<Party>())
+
+    println("Done creating asset types")
+
+    rpc.close()
+    return;
+
 }

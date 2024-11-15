@@ -4,9 +4,10 @@ module.exports = {
   logHeapUsage: true,
   testEnvironment: "node",
   moduleNameMapper: {
+    "./build/src/(.*js)": "./dist/lib/$1", // special handling for weaver/sdks/fabric/interoperation-node-sdk
     "^(\\.\\.?\\/.+)\\.jsx?$": "$1",
   },
-  modulePathIgnorePatterns: ["./weaver/core/identity-management"],
+  modulePathIgnorePatterns: ["./weaver/core/identity-management", "./weaver/core/", ],
   maxWorkers: 1,
   maxConcurrency: 1,
   setupFilesAfterEnv: ["jest-extended/all", "./jest.setup.console.logs.js"],

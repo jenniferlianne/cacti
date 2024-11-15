@@ -118,6 +118,7 @@ fun main(args: Array<String>) = App()
                 ConfigureDataCommand(),
                 ConfigureNetworkCommand(),
                 ConfigureAllCommand(),
+                ConfigureAssetTypesCommand(),
                 ConfigureCreateAllCommand()
             ),
             HouseTokenCommand().subcommands(
