@@ -154,18 +154,20 @@ PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
 # SETUP - run once
 
-fabric-setup: 
+common-setup:
+	cd $(WORKSPACE)/weaver/core/relay && make build-images-local
+
+
+fabric-setup: common-setup
 	cd $(WORKSPACE)/weaver/common/protos-js && make build
 	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
 	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local build-image-local
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
+	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make build-image-local
 
-corda-setup:
-	cd $(WORKSPACE)/weaver/common/protos-java-kt && make build
-	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
-	cd $(WORKSPACE)/weaver/sdks/corda && make build
-	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
+corda-setup: common-setup
+	cd $(WORKSPACE)/weaver/core/drivers/corda-driver && make build-image-local
 
 stop-network:
 	cd $(WORKSPACE)/weaver/tests/network-setups/fabric/dev && make stop-network1 stop-network2 PROFILE=2-nodes
@@ -191,7 +193,7 @@ docker stop `docker container ls -a -q -f ancestor=$(1) | xargs` || true
 docker rm `docker container ls -a -q -f ancestor=$(1) | xargs` || true
 endef
 
-clean-network:
+clean-network: stop-network
 	$(foreach image,$(DOCKER_IMAGES),$(call stop_docker,$(image)))
 	cd $(WORKSPACE)/weaver/tests/network-setups/fabric/dev && make clean || true
 	docker volume prune -f
@@ -206,4 +208,4 @@ clean-network:
 	fi 
 	docker volume rm `docker volume ls | grep -v NAME | sed -e 's/local   //g' | grep -v vscode | xargs` || true
 	cd $(WORKSPACE)/weaver/tests/network-setups/corda && make clean || true
-	rm $(COPM_TARGET_DIR)/*/*network-up.txt || true
+	rm $(COPM_TARGET_DIR)/*txt || true

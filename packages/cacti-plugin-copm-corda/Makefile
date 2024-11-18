@@ -2,7 +2,7 @@ WORKSPACE ?= $(shell realpath `pwd`/../../)
 
 # file targets are used as placeholders to ensure that steps are only run once
 COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target
-CORDA_SETUP_TARGET=$(COPM_TARGET_DIR)/corda-setup.txt
+SETUP_TARGET=$(COPM_TARGET_DIR)/corda-setup.txt
 LOCK_NETWORK=$(COPM_TARGET_DIR)/corda-lock-network-up.txt
 PLEDGE_NETWORK=$(COPM_TARGET_DIR)/corda-pledge-network-up.txt
 
@@ -45,7 +45,9 @@ docker-image:
 
 localdeps: $(LOCALDEPS)
 
-setup: localdeps docker-image
+$(SETUP_TARGET): localdeps docker-image
+	cd $(WORKSPACE)/packages/cacti-copm-test && make corda-setup
+	touch $(SETUP_TARGET)
 
 $(PLEDGE_NETWORK): setup 
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
@@ -60,6 +62,8 @@ $(LOCK_NETWORK): setup
 pledge-network: $(PLEDGE_NETWORK) 
 
 lock-network: $(LOCK_NETWORK)
+
+setup: $(SETUP_TARGET)
 
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-test && make clean-network 
