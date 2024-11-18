@@ -36,10 +36,10 @@ $(CORDA_LOCK_NETWORK_TARGET): $(CORDA_SETUP_TARGET)
 setup: $(CORDA_SETUP_TARGET)
 
 .PHONY: pledge-network
-pledge-network: $(COPM_TARGET_DIR)/pledge-network-up.txt 
+pledge-network: $(CORDA_PLEDGE_NETWORK_TARGET) 
 
 .PHONY: lock-network
-lock-network: $(COPM_TARGET_DIR)/lock-network-up.txt	
+lock-network: $(CORDA_LOCK_NETWORK_TARGET)
 
 .PHONY: clean-network
 clean-network:

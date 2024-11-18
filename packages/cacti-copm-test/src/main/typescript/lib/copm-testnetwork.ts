@@ -49,7 +49,7 @@ export class CopmTestNetwork {
   }
 
   public async stopNetworks() {
-    await this.runCliCommand("packages/cacti-copm-core", "make", [
+    await this.runCliCommand("packages/cacti-copm-test", "make", [
       "stop-network",
     ]);
   }
