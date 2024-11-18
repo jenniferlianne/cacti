@@ -152,7 +152,7 @@ corda-pledge-cli-setup:
 
 PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
-# SETUP - run once
+# SETUP - run once -----------------------------------------------------
 
 fabric-setup: 
 	cd $(WORKSPACE)/weaver/common/protos-js && make build
@@ -169,6 +169,8 @@ corda-setup:
 	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
+
+# STOP - bring the network down -----------------------------------------------------
 
 fabric-stop:
 	cd $(WORKSPACE)/weaver/tests/network-setups/fabric/dev && make stop-network1 stop-network2 PROFILE=2-nodes
@@ -199,6 +201,8 @@ docker stop `docker container ls -a -q -f ancestor=$(1) | xargs` || true
 docker rm `docker container ls -a -q -f ancestor=$(1) | xargs` || true
 endef
 
+# Clean: stop network and remove artifacts---------------------------------
+
 clean-network:
 	$(foreach image,$(DOCKER_IMAGES),$(call stop_docker,$(image)))
 	cd $(WORKSPACE)/weaver/tests/network-setups/fabric/dev && make clean || true
@@ -214,4 +218,4 @@ clean-network:
 	fi 
 	docker volume rm `docker volume ls | grep -v NAME | sed -e 's/local   //g' | grep -v vscode | xargs` || true
 	cd $(WORKSPACE)/weaver/tests/network-setups/corda && make clean || true
-	rm $(COPM_TARGET_DIR)/*/*network-up.txt || true
+	rm $(COPM_TARGET_DIR)/*.txt || true
