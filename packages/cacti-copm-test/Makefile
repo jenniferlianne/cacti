@@ -161,6 +161,7 @@ fabric-setup:
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local build-image-local
 	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make build-image-local
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
+	cd $(WORKSPACE)/weaver/core/relay && make build-server-local
 
 corda-setup:
 	# also need to build the fabric interop helper as it is used in the copm impl
@@ -170,6 +171,7 @@ corda-setup:
 	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
+	cd $(WORKSPACE)/weaver/core/relay && make build-server-local
 
 # STOP - bring the network down -----------------------------------------------------
 
