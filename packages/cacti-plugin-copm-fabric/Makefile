@@ -1,28 +1,31 @@
 WORKSPACE ?= $(shell realpath `pwd`/../../)
 
-COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target/fabric
+COPM_TARGET_DIR=$(WORKSPACE)/packages/cacti-copm-test/target
+SETUP_TARGET=$(COPM_TARGET_DIR)/fabric-setup.txt
+PLEDGE_TARGET=$(COPM_TARGET_DIR)/fabric-pledge-network-up.txt
+LOCK_TARGET=$(COPM_TARGET_DIR)/fabric-lock-network-up.txt
 
-$(COPM_TARGET_DIR)/setup.txt:
+$(SETUP_TARGET):
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	make fabric-setup
 	mkdir -p $(COPM_TARGET_DIR)
-	touch $(COPM_TARGET_DIR)/setup.txt
+	touch $(SETUP_TARGET)
 
-$(COPM_TARGET_DIR)/lock-network-up.txt: $(COPM_TARGET_DIR)/setup.txt
+$(LOCK_TARGET): $(SETUP_TARGET)
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	chaincode=simpleasset make fabric-dl iin fabric-cli
-	touch $(COPM_TARGET_DIR)/lock-network-up.txt
+	touch $(LOCK_TARGET)
 
-$(COPM_TARGET_DIR)/pledge-network-up.txt: $(COPM_TARGET_DIR)/setup.txt
+$(PLEDGE_TARGET): $(SETUP_TARGET)
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
 	chaincode=simpleassettransfer make fabric-dl fabric1-driver fabric2-driver common-relay-config fabric1-relay fabric2-relay iin fabric-cli
-	touch $(COPM_TARGET_DIR)/pledge-network-up.txt
+	touch $(PLEDGE_TARGET)
 
-setup: $(COPM_TARGET_DIR)/setup.txt
+setup: $(SETUP_TARGET)
 
-pledge-network: $(COPM_TARGET_DIR)/pledge-network-up.txt
+pledge-network: $(PLEDGE_TARGET)
 
-lock-network: $(COPM_TARGET_DIR)/lock-network-up.txt
+lock-network: $(LOCK_TARGET)
 
 clean-network:
 	cd $(WORKSPACE)/packages/cacti-copm-core && \
