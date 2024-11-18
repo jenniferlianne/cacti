@@ -159,6 +159,7 @@ fabric-setup:
 	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
 	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local build-image-local
+	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make build-image-local
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
 
 corda-setup:
