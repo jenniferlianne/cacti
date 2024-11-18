@@ -170,23 +170,28 @@ corda-setup:
 	cd $(WORKSPACE)/weaver/sdks/corda && make build
 	cd $(WORKSPACE)/weaver/samples/corda/corda-simple-application && make build-local
 
-stop-network:
+fabric-stop:
 	cd $(WORKSPACE)/weaver/tests/network-setups/fabric/dev && make stop-network1 stop-network2 PROFILE=2-nodes
-	cd $(WORKSPACE)/weaver/tests/network-setups/corda && make stop PROFILE=3-nodes
 	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.n1' 
 	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.n2' 
-	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.corda' 
-	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.corda2' 
 	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.n1' NETWORK_NAME=network1 
 	cd $(WORKSPACE)/weaver/core/drivers/fabric-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.n2' NETWORK_NAME=network2 
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org1'  DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network1/peerOrganizations/org1.network1.com  
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org2'  DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network1/peerOrganizations/org2.network1.com 
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org1'  DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network2/peerOrganizations/org1.network2.com 
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org2'  DLT_SPECIFIC_DIR=$(WORKSPACE)/weaver/tests/network-setups/fabric/shared/network2/peerOrganizations/org2.network2.com 
+	rm $(COPM_TARGET_DIR)/fabric*network-up.txt || true
+
+corda-stop:
+	cd $(WORKSPACE)/weaver/tests/network-setups/corda && make stop PROFILE=3-nodes
+	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.corda' 
+	cd $(WORKSPACE)/weaver/core/relay && make stop COMPOSE_ARG='--env-file docker/testnet-envs/.env.corda2' 
 	cd $(WORKSPACE)/weaver/core/drivers/corda-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.corda'
 	cd $(WORKSPACE)/weaver/core/drivers/corda-driver && make stop COMPOSE_ARG='--env-file docker-testnet-envs/.env.corda2'
-	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org1'  
-	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org2'  
-	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org1'  
-	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org2'  
-	rm $(COPM_TARGET_DIR)/*network-up.txt || true
+	rm $(COPM_TARGET_DIR)/corda*network-up.txt || true
 
+
+stop-network: corda-stop fabric-stop
 
 define stop_docker
 echo "removing $(1)"

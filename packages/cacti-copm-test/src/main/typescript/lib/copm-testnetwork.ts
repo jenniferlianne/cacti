@@ -10,12 +10,14 @@ import { Logger } from "@hyperledger/cactus-common";
 export class CopmTestNetwork {
   private log: Logger;
   private mode: CopmNetworkMode;
+  private networkTypesStarted: string[];
 
   supportedNetworks: string[] = ["fabric", "corda"];
 
   constructor(log: Logger, mode: CopmNetworkMode) {
     this.log = log;
     this.mode = mode;
+    this.networkTypesStarted = [];
   }
 
   public supportedNetworkMatrix(): string[][] {
@@ -40,21 +42,28 @@ export class CopmTestNetwork {
     if (!this.supportedNetworks.includes(networkType)) {
       throw new Error(`Unsupported network type: ${networkType}`);
     }
+    if (this.networkTypesStarted.includes(networkType)) {
+      this.log.info(`already started network of type ${networkType}`);
+      return;
+    }
     await this.runCliCommand(
       `packages/cacti-plugin-copm-${networkType}`,
       "make",
       [`${networkModeStr}-network`],
       true,
     );
+    this.networkTypesStarted.push(networkType);
   }
 
   public async stopNetworks() {
-    await this.runCliCommand(
-      "packages/cacti-copm-test",
-      "make",
-      ["stop-network"],
-      true,
-    );
+    for (const networkType of this.networkTypesStarted) {
+      await this.runCliCommand(
+        "packages/cacti-copm-test",
+        "make",
+        [`${networkType}-stop`],
+        true,
+      );
+    }
   }
 
   private async runCliCommand(

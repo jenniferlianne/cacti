@@ -13,9 +13,9 @@ jobs:
       strategy:
         fail-fast: false
         matrix:
-            net1: ["fabric", "corda"]
-            net2: ["fabric", "corda"]
-            test-name: ["getverifiedview", "pledge-claim" ]
+          test-name: ["getverifiedview", "pledge-claim" ]
+          net1: ["fabric", "corda"]
+          net2: ["fabric", "corda"]
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
