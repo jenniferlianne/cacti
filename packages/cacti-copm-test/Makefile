@@ -185,7 +185,7 @@ stop-network:
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n1.org2'  
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org1'  
 	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make stop COMPOSE_ARG='--env-file docker-testnet/envs/.env.n2.org2'  
-	rm $(COPM_TARGET_DIR)/*/*network-up.txt || true
+	rm $(COPM_TARGET_DIR)/*network-up.txt || true
 
 
 define stop_docker
