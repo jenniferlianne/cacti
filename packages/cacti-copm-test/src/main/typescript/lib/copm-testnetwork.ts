@@ -1,6 +1,8 @@
 import { CopmNetworkMode } from "./types";
-import { spawn } from "child_process";
 import { Logger } from "@hyperledger/cactus-common";
+import { CordaLockNetwork } from "../corda/lock-test-network";
+import { TestNetwork } from "../interfaces/test-network";
+import { CordaInteropTestNetwork } from "../corda/interop-test-network";
 
 /**
  * Manages the docker network for the weaver and digital ledger
@@ -10,14 +12,14 @@ import { Logger } from "@hyperledger/cactus-common";
 export class CopmTestNetwork {
   private log: Logger;
   private mode: CopmNetworkMode;
-  private networkTypesStarted: string[];
+  private networks: Map<string, TestNetwork>;
 
   supportedNetworks: string[] = ["fabric", "corda"];
 
   constructor(log: Logger, mode: CopmNetworkMode) {
     this.log = log;
     this.mode = mode;
-    this.networkTypesStarted = [];
+    this.networks = new Map<string, TestNetwork>();
   }
 
   public supportedNetworkMatrix(): string[][] {
@@ -37,61 +39,47 @@ export class CopmTestNetwork {
   }
 
   public async startNetworkOfType(networkType: string) {
-    const networkModeStr =
-      this.mode == CopmNetworkMode.Lock ? "lock" : "pledge";
-    if (!this.supportedNetworks.includes(networkType)) {
-      throw new Error(`Unsupported network type: ${networkType}`);
-    }
-    if (this.networkTypesStarted.includes(networkType)) {
+    if (this.networks.has(networkType)) {
       this.log.info(`already started network of type ${networkType}`);
       return;
     }
-    await this.runCliCommand(
-      `packages/cacti-plugin-copm-${networkType}`,
-      "make",
-      [`${networkModeStr}-network`],
-      true,
-    );
-    this.networkTypesStarted.push(networkType);
+    const newNetwork = this.newNetwork(networkType);
+    await newNetwork.start();
+    this.networks.set(networkType, newNetwork);
   }
 
   public async stopNetworks() {
-    for (const networkType of this.networkTypesStarted) {
-      await this.runCliCommand(
-        "packages/cacti-copm-test",
-        "make",
-        [`${networkType}-stop`],
-        true,
-      );
+    for (const network of this.networks.values()) {
+      await network.stop();
     }
   }
 
-  private async runCliCommand(
-    directory: string,
-    command: string,
-    args: string[],
-    show_progress = false,
-  ): Promise<void> {
-    this.log.info(`Running command: ${command} ${args.join(" ")}`);
-    return new Promise((resolve, reject) => {
-      const cmd = spawn(command, args, { cwd: directory });
-      if (show_progress) {
-        cmd.stdout.on("data", function (data) {
-          console.log(data.toString());
-        });
-
-        cmd.stderr.on("data", function (data) {
-          console.log(data.toString());
-        });
-      }
-      cmd.on("exit", function (code) {
-        console.log(`child process exited with code ${code || "unknown"}`);
-        if (code && code != 0) {
-          reject(new Error(`Command failed with code ${code}`));
-        } else {
-          resolve();
+  private newNetwork(networkType: string): TestNetwork {
+    switch (networkType) {
+      case "fabric":
+        switch (this.mode) {
+          //case CopmNetworkMode.Lock:
+          //  return new FabricLockNetwork();
+          //case CopmNetworkMode.Pledge:
+          //  return new FabricInteropNetwork();
+          default:
+            throw new Error(
+              `Unsupported network mode: ${this.mode} for ${networkType}`,
+            );
         }
-      });
-    });
+      case "corda":
+        switch (this.mode) {
+          case CopmNetworkMode.Lock:
+            return new CordaLockNetwork();
+          case CopmNetworkMode.Pledge:
+            return new CordaInteropTestNetwork(this.log);
+          default:
+            throw new Error(
+              `Unsupported network mode: ${this.mode} for ${networkType}`,
+            );
+        }
+      default:
+        throw new Error(`Unsupported network type: ${networkType}`);
+    }
   }
 }

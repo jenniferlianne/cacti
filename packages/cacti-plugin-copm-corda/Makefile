@@ -24,12 +24,12 @@ $(CORDA_SETUP_TARGET):
 
 $(CORDA_PLEDGE_NETWORK_TARGET): $(CORDA_SETUP_TARGET) 
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
-	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup
+	make corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-pledge-cli-setup
 	touch $(CORDA_PLEDGE_NETWORK_TARGET)
 
 $(CORDA_LOCK_NETWORK_TARGET): $(CORDA_SETUP_TARGET) 
 	cd $(WORKSPACE)/packages/cacti-copm-test && \
-	make corda-lock-dl corda-cli 
+	make corda-lock-dl 
 	touch $(CORDA_LOCK_NETWORK_TARGET
 
 .PHONY: setup

@@ -40,7 +40,7 @@
     "test:lock": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-lock-claim.test.ts",
     "test:pledge": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-pledge-claim.test.ts",
     "test:view": "yarn run --top-level test:jest:all ./src/test/typescript/integration/test-copm-getverifiedview.test.ts",
-    "dev:stop" : "make stop-network"
+    "dev:stop": "make stop-network"
   },
   "dependencies": {
     "@connectrpc/connect": "1.4.0",
