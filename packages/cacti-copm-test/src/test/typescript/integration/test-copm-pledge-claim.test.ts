@@ -64,7 +64,7 @@ describe("Copm Pledge and Claim", () => {
         "pledgeasset" + new Date().getTime().toString();
 
       await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
-      await copmTester.setNetworkTypes(net1Type, net2Type);
+      await copmTester.setNetworks(net1Type, net2Type);
       log.info("starting tests");
       const assetType = "bond01";
       const partyA = copmTester.getPartyA(assetType);
@@ -133,7 +133,7 @@ describe("Copm Pledge and Claim", () => {
     async (net1Type, net2Type) => {
       log.info("setting up test networks");
       await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
-      await copmTester.setNetworkTypes(net1Type, net2Type);
+      await copmTester.setNetworks(net1Type, net2Type);
       log.info("starting tests");
       const assetType = "token1";
       const exchangeQuantity = 10;

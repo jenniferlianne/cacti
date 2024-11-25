@@ -1,44 +1,41 @@
-import { TestProcess } from "../lib/test-process-pair";
-import { TestService } from "../lib/test-service";
+import { TestDockerNetwork } from "../network/test-docker-network";
+import { TestNetworkComponent } from "../network/test-network-component";
+import { TestProcess } from "../network/test-process";
 
 export class CordaLockNetwork {
-  services: TestService[] = [];
-  start_processes: TestProcess[] = [];
-  stop_processes: TestProcess[] = [];
+  services: TestNetworkComponent[] = [];
 
   constructor() {
-    this.start_processes.push(
-      new TestProcess(
-        "weaver/tests/network-setups/corda",
-        "./scripts/get-cordapps.sh ",
-        ["simple", "local"],
+    this.services.push(
+      new TestDockerNetwork(
+        [
+          new TestProcess(
+            "/home/jennifer/cacti/weaver/tests/network-setups/corda",
+            "/bin/bash",
+            ["./scripts/get-cordapps.sh", "simple", "local"],
+          ),
+          new TestProcess(
+            "/home/jennifer/cacti/weaver/tests/network-setups/corda",
+            "make",
+            ["start-local", "PROFILE=3-nodes"],
+          ),
+        ],
+        new TestProcess("weaver/tests/network-setups/corda", "make", [
+          "stop",
+          "PROFILE=3-nodes",
+        ]),
+        ["corda_notary_1", "corda_partya_1", "corda_partyb_1"],
       ),
-    );
-    this.start_processes.push(
-      new TestProcess("weaver/tests/network-setups/corda", "make", [
-        "start-local",
-        "PROFILE=3-nodes",
-      ]),
-    );
-
-    this.stop_processes.push(
-      new TestProcess("weaver/tests/network-setups/corda", "make", ["stop"]),
     );
   }
 
   public async start(): Promise<void> {
-    for (const proc of this.start_processes) {
-      await proc.run();
-    }
     for (const service of this.services) {
       await service.start();
     }
   }
 
   public async stop(): Promise<void> {
-    for (const proc of this.stop_processes) {
-      await proc.run();
-    }
     for (const service of this.services) {
       await service.start();
     }

@@ -2,13 +2,13 @@ import { TestNetworkComponent } from "./test-network-component";
 import { TestProcess } from "./test-process";
 import { exec } from "child_process";
 
-export class DigitalLedgerDockerNetwork implements TestNetworkComponent {
+export class TestDockerNetwork implements TestNetworkComponent {
   private containerNames: string[] = [];
-  private startProcess: TestProcess;
+  private startProcess: TestProcess[];
   private stopProcess: TestProcess;
 
   constructor(
-    startProcess: TestProcess,
+    startProcess: TestProcess[],
     stopProcess: TestProcess,
     containerNames: string[],
   ) {
@@ -22,7 +22,9 @@ export class DigitalLedgerDockerNetwork implements TestNetworkComponent {
   }
 
   async start(): Promise<void> {
-    await this.startProcess.run();
+    for (const startProcess of this.startProcess) {
+      await startProcess.run();
+    }
   }
   async stop(): Promise<void> {
     await this.stopProcess.run();

@@ -49,7 +49,7 @@ describe(`COPM get verified view`, () => {
     "%s-%s get verified view",
     async (net1Type, net2Type) => {
       await copmTestNetwork.startNetworksOfType([net1Type, net2Type]);
-      await copmTester.setNetworkTypes(net1Type, net2Type);
+      await copmTester.setNetworks(net1Type, net2Type);
       const assetType = "token1";
 
       partyA = copmTester.getPartyA(assetType);

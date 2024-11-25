@@ -4,14 +4,17 @@ export class TestProcess {
   directory: string;
   command: string;
   args: string[];
+  private env: any;
   show_progress: boolean;
 
   constructor(
     directory: string,
     command: string,
     args: string[],
+    env = {},
     show_progress = true,
   ) {
+    this.env = env;
     this.directory = directory;
     this.command = command;
     this.args = args;
@@ -25,7 +28,10 @@ export class TestProcess {
   public async run(): Promise<void> {
     return new Promise((resolve, reject) => {
       console.log(`in run for ${this.idStr()}`);
-      const cmd = spawn(this.command, this.args, { cwd: this.directory });
+      const cmd = spawn(this.command, this.args, {
+        cwd: this.directory,
+        env: this.env,
+      });
       if (this.show_progress) {
         cmd.stdout.on("data", function (data) {
           console.log(data.toString());
