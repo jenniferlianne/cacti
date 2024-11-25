@@ -8,19 +8,20 @@ env:
   RUN_CODE_COVERAGE: true
 
 jobs:
-    matrix-pledge-and-getview:
-      name: pledge-getview-${{ matrix.net1 }}-${{ matrix.net2 }}
+    matrix-interop:
+      name: ${{matrix.test-name}}-${{ matrix.net1 }}-${{ matrix.net2 }}
       strategy:
         fail-fast: false
         matrix:
-            net1: ["fabric", "corda"]
-            net2: ["fabric", "corda"]
+          test-name: ["getverifiedview", "pledge-claim" ]
+          net1: ["fabric", "corda"]
+          net2: ["fabric", "corda"]
       env:
         FULL_BUILD_DISABLED: true
         FREE_UP_GITHUB_RUNNER_DISK_SPACE_DISABLED: false
-        JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-getverifiedview.test.ts packages/cacti-copm-test/src/test/typescript/integration/test-copm-pledge-claim.test.ts
+        JEST_TEST_PATTERN: packages/cacti-copm-test/src/test/typescript/integration/test-copm-${{ matrix.test-name }}.test.ts
         JEST_TEST_RUNNER_DISABLED: false
-        JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/copm-pledge-${{ matrix.net1 }}-${{ matrix.net2}}
+        JEST_TEST_COVERAGE_PATH: ./code-coverage-ts/copm-pledge-${{ matrix.net1 }}-${{ matrix.net2}}-${{ matrix.test-name }}
         JEST_TEST_CODE_COVERAGE_ENABLED: true
         TAPE_TEST_PATTERN: ''
         TAPE_TEST_RUNNER_DISABLED: true
@@ -33,23 +34,12 @@ jobs:
           with:
             github-actor: ${GITHUB_ACTOR}
             github-token: ${{ secrets.GITHUB_TOKEN }}
-        - name: Make the ${{matrix.net1}} network
-          run: |
-            make -f Makefile_${{matrix.net1}} setup pledge-network
-          working-directory: packages/cacti-copm-test
-        - name: Make the ${{matrix.net2}} network
-          run: |
-            make -f Makefile_${{matrix.net2}} setup pledge-network
-          working-directory: packages/cacti-copm-test
-          if: ${{ matrix.net1 != matrix.net2 }}
-        - name: show the running network
-          run: docker container ls
         - run: ./tools/ci.sh
         - name: Upload coverage reports as artifacts
           if: ${{ env.RUN_CODE_COVERAGE == 'true' }}
           uses: actions/upload-artifact@v4.3.3
           with:
-            name: copm-pledge-${{ matrix.net1 }}-${{ matrix.net2}}
+            name: copm-pledge-${{ matrix.net1 }}-${{ matrix.net2}}-${{ matrix.test-name }}
             path: ./code-coverage-ts/**/
 
     matrix-lock:
@@ -75,13 +65,6 @@ jobs:
           with:
             github-actor: ${GITHUB_ACTOR}
             github-token: ${{ secrets.GITHUB_TOKEN }}
-        - name: Make the ${{matrix.net1}} network
-          run: |
-            make -f Makefile_${{matrix.net1}} setup lock-network
-          working-directory: packages/cacti-copm-test
-        - name: show the running network
-          run: docker container ls
-        - run: ./tools/ci.sh
         - name: Upload coverage reports as artifacts
           if: ${{ env.RUN_CODE_COVERAGE == 'true' }}
           uses: actions/upload-artifact@v4.3.3
