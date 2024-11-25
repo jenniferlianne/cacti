@@ -57,36 +57,25 @@ export class WeaverInteropConfiguration implements CopmIF.InteropConfiguration {
       if (!netConfig.channelName) {
         throw Error(`no channel name defined for ${orgName}`);
       }
-
-      if (!netConfig.chaincode) {
-        throw Error(`no chaincode defined for ${orgName}`);
-      }
       return {
         channelName: netConfig.channelName,
-        chaincode: netConfig.chaincode,
         network: orgName,
         relayAddr: netConfig.relayEndpoint,
         e2eConfidentiality: false,
         partyEndPoint: "", // corda-specific
-        flowPackage: "", // corda-specific
         networkType: netConfig.type,
       };
     } else {
       if (!netConfig.partyEndPoint) {
         throw Error(`no partyEndpoint defined for ${orgName}`);
       }
-      if (!netConfig.flowPackage) {
-        throw Error(`no flowPackage defined for ${orgName}`);
-      }
 
       return {
         channelName: "", // fabric-specific
-        chaincode: "", // fabric-specific
         network: orgName,
         relayAddr: netConfig.relayEndpoint,
         e2eConfidentiality: false,
         partyEndPoint: netConfig.partyEndPoint,
-        flowPackage: netConfig.flowPackage,
         networkType: netConfig.type,
       };
     }
@@ -99,7 +88,8 @@ export class WeaverInteropConfiguration implements CopmIF.InteropConfiguration {
     const remoteNetConfig = this.getRemoteNetworkConfig(remoteOrgKey);
     if (remoteNetConfig.networkType === "corda") {
       return {
-        contract: remoteNetConfig.flowPackage || "",
+        contract:
+          "com.cordaSimpleApplication.flow.GetBondAssetPledgeStatusByPledgeId",
         method: claimRequest.asset.isNFT()
           ? "GetBondAssetPledgeStatusByPledgeId"
           : "GetAssetPledgeStatusByPledgeId",
@@ -107,7 +97,7 @@ export class WeaverInteropConfiguration implements CopmIF.InteropConfiguration {
       };
     } else {
       return {
-        contract: remoteNetConfig.chaincode || "",
+        contract: "simpleassettransfer",
         method: claimRequest.asset.isNFT()
           ? "GetAssetPledgeStatus"
           : "GetTokenAssetPledgeStatus",

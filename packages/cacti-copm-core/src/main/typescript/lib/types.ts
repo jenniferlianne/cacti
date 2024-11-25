@@ -17,12 +17,10 @@ export type CopmContractNames = {
 
 export type RemoteNetworkConfig = {
   channelName: string; // fabric-specific
-  chaincode: string; // fabric-specific
   network: string;
   relayAddr: string;
   e2eConfidentiality: boolean;
   partyEndPoint: string; // corda-specific
-  flowPackage: string; // corda-specific
   networkType: string;
 };
 
