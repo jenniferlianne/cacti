@@ -117,13 +117,13 @@ $(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts:
 
 PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
-
-setup: common-relay-config iin-config iin-agent-image fabric-driver-config \
+setup: common-relay-config fabric-driver-config \
  $(WORKSPACE)/weaver/common/protos-js/build/tsconfig.tsbuildinfo \
  $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build/package.json \
- $(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts
+ $(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts \
+ iin-config iin-agent-image
 
-pledge-network: fabric-dl fabric1-driver fabric2-driver common-relay-config fabric1-relay fabric2-relay iin fabric-cli
+pledge-network: fabric-dl fabric-driver-config fabric1-driver fabric2-driver common-relay-config fabric1-relay fabric2-relay iin fabric-cli
 
 lock-network: fabric-dl iin fabric-cli
 
