@@ -13,7 +13,7 @@ import * as path from "path";
 import * as dotenv from "dotenv";
 import { CopmTestertMultiNetwork } from "../../../main/typescript/lib/copm-tester-multi-network";
 import { CopmNetworkMode } from "../../../main/typescript/lib/types";
-import { CopmTestNetwork } from "../../../main/typescript/network/copm-testnetwork";
+import { TestNetworks } from "../../../main/typescript/network/test-networks";
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
@@ -26,7 +26,7 @@ let dest_cert: string;
 
 describe(`COPM get verified view`, () => {
   let partyA: DLAccount, partyB: DLAccount;
-  const copmTestNetwork: CopmTestNetwork = new CopmTestNetwork(
+  const copmTestNetwork: TestNetworks = new TestNetworks(
     log,
     CopmNetworkMode.Pledge,
   );

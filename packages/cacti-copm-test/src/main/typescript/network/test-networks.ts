@@ -1,15 +1,15 @@
 import { CopmNetworkMode } from "../lib/types";
 import { Logger } from "@hyperledger/cactus-common";
-import { CordaLockNetwork } from "../corda/lock-test-network";
+import { CordaLockNetwork } from "../corda/networks/lock-test-network";
 import { TestNetwork } from "../interfaces/test-network";
-import { CordaInteropTestNetwork } from "../corda/interop-test-network";
+import { CordaInteropTestNetwork } from "../corda/networks/interop-test-network";
 
 /**
  * Manages the docker network for the weaver and digital ledger
  * test environment
  */
 
-export class CopmTestNetwork {
+export class TestNetworks {
   private log: Logger;
   private mode: CopmNetworkMode;
   private networks: Map<string, TestNetwork>;
@@ -70,7 +70,7 @@ export class CopmTestNetwork {
       case "corda":
         switch (this.mode) {
           case CopmNetworkMode.Lock:
-            return new CordaLockNetwork();
+            return new CordaLockNetwork(this.log);
           case CopmNetworkMode.Pledge:
             return new CordaInteropTestNetwork(this.log);
           default:

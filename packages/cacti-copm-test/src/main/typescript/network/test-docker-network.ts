@@ -41,6 +41,8 @@ export class TestDockerNetwork implements TestNetworkComponent {
         const allContainersUp = this.containerNames.every((name) =>
           runningContainers.includes(name),
         );
+        console.log("containers", this.containerNames);
+        console.log("allContainersUp", allContainersUp);
         resolve(allContainersUp);
       });
     });

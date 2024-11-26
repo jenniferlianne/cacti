@@ -70,12 +70,10 @@ corda-pledge-cli-setup:
 PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
 # SETUP - run once
-
-setup: 
+corda-setup.txt:
 	cd $(WORKSPACE)/packages/cacti-plugin-copm-corda/src/test/kotlin && make build-image-local
+	touch corda-setup.txt
 
-pledge-network: corda-pledge-dl corda1-driver corda2-driver common-relay-config corda-relay-config corda1-relay corda2-relay corda-cli corda-pledge-cli-setup
-
-lock-network: corda-lock-dl corda-cli 
+setup: corda-setup.txt
 
 

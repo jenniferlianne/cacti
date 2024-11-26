@@ -2,9 +2,6 @@ WORKSPACE ?= $(shell realpath `pwd`/../../../../../)
 
 
 build-corda-copm-server-deps:
-	# also need to build the fabric interop helper as it is used in the copm impl
-	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
-	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
 	cd $(WORKSPACE)/weaver/common/protos-java-kt && make build
 	cd $(WORKSPACE)/weaver/core/network/corda-interop-app && make build-local
 	cd $(WORKSPACE)/weaver/sdks/corda && make build

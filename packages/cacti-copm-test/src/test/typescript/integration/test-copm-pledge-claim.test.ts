@@ -9,7 +9,7 @@ import {
   PledgeAssetV1Request,
 } from "@hyperledger-cacti/cacti-copm-core";
 import { CopmNetworkMode } from "../../../main/typescript/lib/types";
-import { CopmTestNetwork } from "../../../main/typescript/network/copm-testnetwork";
+import { TestNetworks } from "../../../main/typescript/network/test-networks";
 import { CopmTestertMultiNetwork } from "../../../main/typescript/lib/copm-tester-multi-network";
 import * as path from "path";
 import * as dotenv from "dotenv";
@@ -24,7 +24,7 @@ const log: Logger = LoggerProvider.getOrCreate({
 
 describe("Copm Pledge and Claim", () => {
   let copmTester: CopmTestertMultiNetwork;
-  const copmTestNetwork: CopmTestNetwork = new CopmTestNetwork(
+  const copmTestNetwork: TestNetworks = new TestNetworks(
     log,
     CopmNetworkMode.Pledge,
   );

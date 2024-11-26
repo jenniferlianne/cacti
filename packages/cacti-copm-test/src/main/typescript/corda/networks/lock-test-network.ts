@@ -1,12 +1,11 @@
-import { TestDockerNetwork } from "../network/test-docker-network";
-import { TestNetworkComponent } from "../network/test-network-component";
-import { TestProcess } from "../network/test-process";
-
-export class CordaLockNetwork {
-  services: TestNetworkComponent[] = [];
-
-  constructor() {
-    this.services.push(
+import { TestDockerNetwork } from "../../network/test-docker-network";
+import { Logger } from "@hyperledger/cactus-common";
+import { TestProcess } from "../../network/test-process";
+import { TestNetwork } from "../../network/test-network";
+export class CordaLockNetwork extends TestNetwork {
+  constructor(log: Logger) {
+    super(log, "CordaLockNetwork");
+    this.add(
       new TestDockerNetwork(
         [
           new TestProcess(
@@ -27,17 +26,5 @@ export class CordaLockNetwork {
         ["corda_notary_1", "corda_partya_1", "corda_partyb_1"],
       ),
     );
-  }
-
-  public async start(): Promise<void> {
-    for (const service of this.services) {
-      await service.start();
-    }
-  }
-
-  public async stop(): Promise<void> {
-    for (const service of this.services) {
-      await service.start();
-    }
   }
 }

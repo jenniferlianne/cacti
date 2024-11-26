@@ -10,7 +10,7 @@ import {
 } from "@hyperledger-cacti/cacti-copm-core";
 import { copmTesterFactory } from "../../../main/typescript/lib/copm-tester-factory";
 import { CopmTester } from "../../../main/typescript/interfaces/copm-tester";
-import { CopmTestNetwork } from "../../../main/typescript/network/copm-testnetwork";
+import { TestNetworks } from "../../../main/typescript/network/test-networks";
 import * as path from "path";
 import * as dotenv from "dotenv";
 import { CopmNetworkMode } from "../../../main/typescript/lib/types";
@@ -22,7 +22,7 @@ const log: Logger = LoggerProvider.getOrCreate({
   level: logLevel,
 });
 
-const copmTestNetwork = new CopmTestNetwork(log, CopmNetworkMode.Lock);
+const copmTestNetwork = new TestNetworks(log, CopmNetworkMode.Lock);
 const copmTesterMap: Map<string, CopmTester> = new Map();
 
 let networksToTest: string[] = copmTestNetwork.supportedNetworks;
