@@ -4,6 +4,7 @@ module.exports = {
   logHeapUsage: true,
   testEnvironment: "node",
   moduleNameMapper: {
+    "./build/src/(.*js)": "./dist/lib/$1", // special handling for weaver/sdks/fabric/interoperation-node-sdk
     "^(\\.\\.?\\/.+)\\.jsx?$": "$1",
   },
   modulePathIgnorePatterns: ["./weaver/core"],
