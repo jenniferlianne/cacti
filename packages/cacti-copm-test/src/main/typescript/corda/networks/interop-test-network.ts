@@ -53,12 +53,14 @@ export class CordaInteropTestNetwork extends TestNetwork {
     this.add(new TestRelay("relay-corda2", "docker/testnet-envs/.env.corda2"));
     this.add(
       new TestDriver(
+        "corda",
         "driver-corda-Corda_Network",
         "docker-testnet-envs/.env.corda",
       ),
     );
     this.add(
       new TestDriver(
+        "corda",
         "driver-corda-Corda_Network2",
         "docker-testnet-envs/.env.corda2",
       ),

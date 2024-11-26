@@ -3,6 +3,7 @@ import { Logger } from "@hyperledger/cactus-common";
 import { CordaLockNetwork } from "../corda/networks/lock-test-network";
 import { TestNetwork } from "../interfaces/test-network";
 import { CordaInteropTestNetwork } from "../corda/networks/interop-test-network";
+import { FabricInteropTestNetwork } from "../fabric/networks/interop-test-network";
 
 /**
  * Manages the docker network for the weaver and digital ledger
@@ -58,10 +59,10 @@ export class TestNetworks {
     switch (networkType) {
       case "fabric":
         switch (this.mode) {
-          //case CopmNetworkMode.Lock:
-          //  return new FabricLockNetwork();
-          //case CopmNetworkMode.Pledge:
-          //  return new FabricInteropNetwork();
+          case CopmNetworkMode.Lock:
+          //return new FabricLockNetwork();
+          case CopmNetworkMode.Pledge:
+            return new FabricInteropTestNetwork(this.log);
           default:
             throw new Error(
               `Unsupported network mode: ${this.mode} for ${networkType}`,

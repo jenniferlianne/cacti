@@ -2,7 +2,7 @@ import { TestDockerNetwork } from "./test-docker-network";
 import { TestProcess } from "./test-process";
 
 export class TestDriver extends TestDockerNetwork {
-  constructor(containerName: string, cordaEnvFile: string) {
+  constructor(type: string, containerName: string, envFile: string) {
     /*
     	echo "starting corda driver 1"
 	cd $(WORKSPACE)/weaver/core/drivers/corda-driver && \
@@ -11,17 +11,17 @@ export class TestDriver extends TestDockerNetwork {
     super(
       [
         new TestProcess(
-          "/home/jennifer/cacti/weaver/core/drivers/corda-driver",
+          `/home/jennifer/cacti/weaver/core/drivers/${type}-driver`,
           "make",
           ["deploy"],
-          { ...process.env, COMPOSE_ARG: `--env-file ${cordaEnvFile}` },
+          { ...process.env, COMPOSE_ARG: `--env-file ${envFile}` },
         ),
       ],
       new TestProcess(
-        "/home/jennifer/cacti/weaver/core/drivers/corda-driver",
+        `/home/jennifer/cacti/weaver/core/drivers/${type}-driver`,
         "make",
         ["stop"],
-        { ...process.env, COMPOSE_ARG: `--env-file ${cordaEnvFile}` },
+        { ...process.env, COMPOSE_ARG: `--env-file ${envFile}` },
       ),
       [containerName],
     );

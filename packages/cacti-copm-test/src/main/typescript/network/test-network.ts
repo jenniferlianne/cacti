@@ -36,7 +36,9 @@ export class TestNetwork {
 
   private async isUp(): Promise<boolean> {
     for (const service of this.services) {
-      if (!(await service.isUp())) {
+      const up = await service.isUp();
+      this.log.info(`service ${service.idStr()} is up: ${up}`);
+      if (!up) {
         return false;
       }
     }

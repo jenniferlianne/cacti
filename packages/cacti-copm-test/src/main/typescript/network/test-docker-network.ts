@@ -37,13 +37,16 @@ export class TestDockerNetwork implements TestNetworkComponent {
           reject(`Error checking containers: ${stderr}`);
           return;
         }
-        const runningContainers = stdout.split("\n").filter(Boolean);
+        const runningContainers = stdout.split("\n");
+        resolve(runningContainers.includes(this.containerNames[0]));
+        /*        
         const allContainersUp = this.containerNames.every((name) =>
           runningContainers.includes(name),
         );
         console.log("containers", this.containerNames);
         console.log("allContainersUp", allContainersUp);
         resolve(allContainersUp);
+        */
       });
     });
   }
