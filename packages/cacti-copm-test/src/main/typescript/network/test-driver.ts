@@ -11,18 +11,16 @@ export class TestDriver extends TestDockerNetwork {
     super(
       [
         new TestProcess(
-          `/home/jennifer/cacti/weaver/core/drivers/${type}-driver`,
+          `weaver/core/drivers/${type}-driver`,
           "make",
           ["deploy"],
           { ...process.env, COMPOSE_ARG: `--env-file ${envFile}` },
         ),
       ],
-      new TestProcess(
-        `/home/jennifer/cacti/weaver/core/drivers/${type}-driver`,
-        "make",
-        ["stop"],
-        { ...process.env, COMPOSE_ARG: `--env-file ${envFile}` },
-      ),
+      new TestProcess(`weaver/core/drivers/${type}-driver`, "make", ["stop"], {
+        ...process.env,
+        COMPOSE_ARG: `--env-file ${envFile}`,
+      }),
       [containerName],
     );
   }

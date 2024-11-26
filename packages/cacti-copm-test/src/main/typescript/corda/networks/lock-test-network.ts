@@ -8,16 +8,15 @@ export class CordaLockNetwork extends TestNetwork {
     this.add(
       new TestDockerNetwork(
         [
-          new TestProcess(
-            "/home/jennifer/cacti/weaver/tests/network-setups/corda",
-            "/bin/bash",
-            ["./scripts/get-cordapps.sh", "simple", "local"],
-          ),
-          new TestProcess(
-            "/home/jennifer/cacti/weaver/tests/network-setups/corda",
-            "make",
-            ["start-local", "PROFILE=3-nodes"],
-          ),
+          new TestProcess("weaver/tests/network-setups/corda", "/bin/bash", [
+            "./scripts/get-cordapps.sh",
+            "simple",
+            "local",
+          ]),
+          new TestProcess("weaver/tests/network-setups/corda", "make", [
+            "start-local",
+            "PROFILE=3-nodes",
+          ]),
         ],
         new TestProcess("weaver/tests/network-setups/corda", "make", [
           "stop",

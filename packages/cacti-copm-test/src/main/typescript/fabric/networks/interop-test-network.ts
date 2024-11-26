@@ -6,7 +6,12 @@ import { TestRelay } from "../../network/test-relay";
 import { TestDriver } from "../../network/test-driver";
 import { IINAgentService } from "./iin-agent-service";
 import { ProcessPair } from "../../network/test-process-pair";
+import path from "path";
 
+const WEAVER_RELATIVE_PATH = path.join(
+  __dirname,
+  "../../../../../../../weaver/",
+);
 export class FabricInteropTestNetwork extends TestNetwork {
   constructor(log: Logger) {
     super(log, "FabricInteropTestNetwork");
@@ -32,7 +37,7 @@ export class FabricInteropTestNetwork extends TestNetwork {
       new TestDockerNetwork(
         [
           new TestProcess(
-            "/home/jennifer/cacti/weaver/tests/network-setups/fabric/dev",
+            "weaver/tests/network-setups/fabric/dev",
             "make",
             ["start-interop-local", `PATH=${process.env.PATH}`],
             {
@@ -91,21 +96,24 @@ export class FabricInteropTestNetwork extends TestNetwork {
       new IINAgentService(
         "iin-agent-Org1MSP-network1",
         "docker-testnet/envs/.env.n1.org1",
-        "/home/jennifer/cacti/weaver/tests/network-setups/fabric/shared/network1/peerOrganizations/org1.network1.com",
+        WEAVER_RELATIVE_PATH +
+          "tests/network-setups/fabric/shared/network1/peerOrganizations/org1.network1.com",
       ),
     );
     this.add(
       new IINAgentService(
         "iin-agent-Org2MSP-network1",
         "docker-testnet/envs/.env.n1.org2",
-        "/home/jennifer/cacti/weaver/tests/network-setups/fabric/shared/network1/peerOrganizations/org2.network1.com",
+        WEAVER_RELATIVE_PATH +
+          "tests/network-setups/fabric/shared/network1/peerOrganizations/org2.network1.com",
       ),
     );
     this.add(
       new IINAgentService(
         "iin-agent-Org1MSP-network2",
         "docker-testnet/envs/.env.n2.org1",
-        "/home/jennifer/cacti/weaver/tests/network-setups/fabric/shared/network2/peerOrganizations/org1.network2.com",
+        WEAVER_RELATIVE_PATH +
+          "tests/network-setups/fabric/shared/network2/peerOrganizations/org1.network2.com",
       ),
     );
 
@@ -113,7 +121,8 @@ export class FabricInteropTestNetwork extends TestNetwork {
       new IINAgentService(
         "iin-agent-Org2MSP-network2",
         "docker-testnet/envs/.env.n2.org2",
-        "/home/jennifer/cacti/weaver/tests/network-setups/fabric/shared/network2/peerOrganizations/org2.network2.com",
+        WEAVER_RELATIVE_PATH +
+          "tests/network-setups/fabric/shared/network2/peerOrganizations/org2.network2.com",
       ),
     );
     this.add(

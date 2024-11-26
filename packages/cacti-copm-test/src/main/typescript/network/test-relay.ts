@@ -18,20 +18,8 @@ export class TestRelay extends TestDockerNetwork {
       env = { ...process.env, COMPOSE_ARG: `--env-file ${cordaEnvFile}` };
     }
     super(
-      [
-        new TestProcess(
-          "/home/jennifer/cacti/weaver/core/relay",
-          "make",
-          ["start-server"],
-          env,
-        ),
-      ],
-      new TestProcess(
-        "/home/jennifer/cacti/weaver/core/relay",
-        "make",
-        ["stop"],
-        env,
-      ),
+      [new TestProcess("weaver/core/relay", "make", ["start-server"], env)],
+      new TestProcess("weaver/core/relay", "make", ["stop"], env),
       [containerName],
     );
   }

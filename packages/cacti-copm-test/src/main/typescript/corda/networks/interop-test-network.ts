@@ -5,6 +5,9 @@ import { TestProcess } from "../../network/test-process";
 import { TestRelay } from "../../network/test-relay";
 import { TestDriver } from "../../network/test-driver";
 import { ProcessPair } from "../../network/test-process-pair";
+import path from "path";
+
+const WEAVER_RELATIVE_PATH = path.join(__dirname, "../../../../../weaver/");
 
 export class CordaInteropTestNetwork extends TestNetwork {
   constructor(log: Logger) {
@@ -29,16 +32,14 @@ export class CordaInteropTestNetwork extends TestNetwork {
     this.add(
       new TestDockerNetwork(
         [
-          new TestProcess(
-            "/home/jennifer/cacti/weaver/tests/network-setups/corda",
-            "/bin/bash",
-            ["./scripts/get-cordapps.sh", "simple", "local"],
-          ),
-          new TestProcess(
-            "/home/jennifer/cacti/weaver/tests/network-setups/corda",
-            "make",
-            ["start-local"],
-          ),
+          new TestProcess("weaver/tests/network-setups/corda", "/bin/bash", [
+            "./scripts/get-cordapps.sh",
+            "simple",
+            "local",
+          ]),
+          new TestProcess("weaver/tests/network-setups/corda", "make", [
+            "start-local",
+          ]),
         ],
         new TestProcess("weaver/tests/network-setups/corda", "make", ["stop"]),
         [

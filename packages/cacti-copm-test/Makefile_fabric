@@ -114,7 +114,7 @@ fabric-setup.txt:
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
 	touch fabric-setup.txt
 
-setup: common-relay-config iin-config fabric-driver-config setup-fabric.txt
+setup: common-relay-config iin-config fabric-driver-config fabric-setup.txt
 
 pledge-network: fabric-dl fabric1-driver fabric2-driver common-relay-config fabric1-relay fabric2-relay iin fabric-cli
 
