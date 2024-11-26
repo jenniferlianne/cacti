@@ -99,22 +99,29 @@ fabric-cli:
 	docker logs iin-agent-Org1MSP-network1 && \
 	docker logs iin-agent-Org1MSP-network2 
 
+$(WORKSPACE)/weaver/common/protos-js/build/tsconfig.tsbuildinfo:
+	cd $(WORKSPACE)/weaver/common/protos-js && make build
 
+$(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build/package.json:
+	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
+
+$(WORKSPACE)/weaver/core/identity-management/iin-agent/out/server.js:
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local
+
+iin-agent-image: $(WORKSPACE)/weaver/core/identity-management/iin-agent/out/server.js
+	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-image-local
+
+$(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts:
+	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local  
 # MAIN TARGETS
 
 PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
-# SETUP - run once
 
-fabric-setup.txt: 
-	cd $(WORKSPACE)/weaver/common/protos-js && make build
-	rm -Rf $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build
-	cd $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk && make build-local
-	cd $(WORKSPACE)/weaver/core/identity-management/iin-agent && make build-local build-image-local
-	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local 
-	touch fabric-setup.txt
-
-setup: common-relay-config iin-config fabric-driver-config fabric-setup.txt
+setup: common-relay-config iin-config iin-agent-image fabric-driver-config \
+ $(WORKSPACE)/weaver/common/protos-js/build/tsconfig.tsbuildinfo \
+ $(WORKSPACE)/weaver/sdks/fabric/interoperation-node-sdk/build/package.json \
+ $(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts
 
 pledge-network: fabric-dl fabric1-driver fabric2-driver common-relay-config fabric1-relay fabric2-relay iin fabric-cli
 

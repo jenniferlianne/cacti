@@ -70,10 +70,9 @@ corda-pledge-cli-setup:
 PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
 # SETUP - run once
-corda-setup.txt:
+copm-server-setup:
 	cd $(WORKSPACE)/packages/cacti-plugin-copm-corda/src/test/kotlin && make build-image-local
-	touch corda-setup.txt
 
-setup: corda-setup.txt
+setup: common-relay-config corda-relay-config copm-server-setup
 
 
