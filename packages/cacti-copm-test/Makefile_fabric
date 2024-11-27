@@ -113,6 +113,7 @@ iin-agent-image: $(WORKSPACE)/weaver/core/identity-management/iin-agent/out/serv
 
 $(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts:
 	cd $(WORKSPACE)/weaver/samples/fabric/fabric-cli && make build-local  
+
 # MAIN TARGETS
 
 PATH := $(PATH):$(WORKSPACE)/protoc/bin
@@ -123,7 +124,9 @@ setup: common-relay-config fabric-driver-config \
  $(WORKSPACE)/weaver/samples/fabric/fabric-cli/build/types/types.d.ts \
  iin-config iin-agent-image
 
+.PHONY
 pledge-network: fabric-dl fabric-driver-config fabric1-driver fabric2-driver common-relay-config fabric1-relay fabric2-relay iin fabric-cli
 
+.PHONY
 lock-network: fabric-dl iin fabric-cli
 

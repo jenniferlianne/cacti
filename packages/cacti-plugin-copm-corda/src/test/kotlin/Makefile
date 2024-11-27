@@ -6,6 +6,8 @@ PACKAGES = localdeps/protos-java-kt-$(VERSION).jar \
  localdeps/interop-contracts-$(VERSION).jar \
  localdeps/weaver-sdk-corda-$(VERSION).jar \
  localdeps/contracts-kotlin-$(WEAVER_SAMPLE_VERSION).jar
+ 
+PATH := $(PATH):$(WORKSPACE)/protoc/bin
 
 localdeps/protos-java-kt-$(VERSION).jar: 
 	mkdir -p localdeps
