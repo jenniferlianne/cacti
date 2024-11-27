@@ -32,7 +32,7 @@ export class ViewAddress {
         "/" +
         this.remoteNetConfig.partyEndPoint +
         "#" +
-        this.remoteNetConfig.flowPackage +
+        this.transactionParams.contract +
         "." +
         this.transactionParams.method +
         ":" +

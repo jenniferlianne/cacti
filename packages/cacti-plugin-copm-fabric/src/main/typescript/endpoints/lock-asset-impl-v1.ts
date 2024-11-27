@@ -15,7 +15,7 @@ export async function lockAssetV1Impl(
   const params = Validators.validateLockAssetRequest(req);
 
   const transactionContext = await contextFactory.getTransactionContext(
-    params.owner,
+    params.sourceAccount,
   );
 
   const serializeAgreementFunc = params.asset.isNFT()

@@ -1,6 +1,6 @@
 .PHONY: build
 build:
-	sh ../get-fabric-protos.sh ../..
+	/bin/sh ../get-fabric-protos.sh ../..
 	./gradlew clean jar
 
 .PHONY: publish

@@ -76,7 +76,7 @@ initialise-vault-asset-transfer:
 	if [ $(shell docker ps | grep corda_network2_partya_1 | wc -l) -eq 1 ]; then \
 		CORDA_PORT=30006 NETWORK_NAME=Corda_Network2 ./clients/build/install/clients/bin/clients configure network; \
 	fi
-	bash scripts/initNetworkId.sh
+	/bin/bash scripts/initNetworkId.sh
 
 .PHONY: initialise-vault-asset-transfer-docker
 initialise-vault-asset-transfer-docker:
@@ -86,7 +86,7 @@ initialise-vault-asset-transfer-docker:
 	if [ $(shell docker ps | grep corda_network2_partya_1 | wc -l) -eq 1 ]; then \
 		MEMBER_CREDENTIAL_FOLDER="clients/src/main/resources/config/credentials_docker" CORDA_PORT=30006 NETWORK_NAME=Corda_Network2 ./clients/build/install/clients/bin/clients configure network; \
 	fi
-	bash scripts/initNetworkId.sh
+	/bin/bash scripts/initNetworkId.sh
 
 .PHONY: get-access-control-policies
 get-access-control-policies:
