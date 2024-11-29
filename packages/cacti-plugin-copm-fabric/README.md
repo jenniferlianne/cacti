@@ -3,7 +3,7 @@
 This cactus plugin implements a connectRPC server for the fabric COPM implementation.
 
 Command documentation as OpenAPI:
-https://jenniferlianne.github.io/cacti/references/openapi/cacti-copm-core_openapi/
+https://hyperledger-cacti.github.io/cacti/references/openapi/cacti-copm-core_openapi/
 
 These endpoints require the following:
 
@@ -28,12 +28,14 @@ The following application-specific interfaces must be implemented:
 
 -  FabricConfiguration
    -    getConnectionProfile(orgKey: string): object;
-   -    getContractContext(orgKey: string): Promise<FabricContractContext>;
-   -    getOrgWallet(orgKey: string): Promise<Wallet>;
+   -    getContractContext(orgKey: string): Promise\<FabricContractContext\>;
+   -    getOrgWallet(orgKey: string): Promise\<Wallet\>;
 
 -  InteropConfiguration (from cacti-copm-common)
    -    getLocalRelayConfig(orgKey: string): LocalRelayConfig;
    -    getRemoteNetworkConfig(remoteOrgKey: string): RemoteNetworkConfig;
+   -    getRemotePledgeStatusCmd(remoteOrgKey: string, ValidatedClaimPledgedAssetRequest): DLTransactionParams;
+
 
   These implementations are then supplied to the plugin constructor. 
 
