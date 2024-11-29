@@ -56,9 +56,6 @@ class AssetTransferSDK {
                         remoteNetworkId, // @property remoteNetworkId
                         recipientCert, // @property recipientCert
                         expiryTimeSecs, // @property expiryTimeSecs
-                        getAssetStateAndRefFlow, // @property getAssetStateAndRefFlow
-                        deleteAssetStateCommand, // @property deleteAssetStateCommand
-                        issuer, // @property issuer
                         observers // @property observers
                     )
                     proxy.startFlow(::AssetTransferPledge, pledgeArgs).returnValue.get()
@@ -101,9 +98,6 @@ class AssetTransferSDK {
                         remoteNetworkId, // @property remoteNetworkId
                         recipientCert, // @property recipientCert
                         expiryTimeSecs, // @property expiryTimeSecs
-                        getAssetStateAndRefFlow, // @property getAssetStateAndRefFlow
-                        deleteAssetStateCommand, // @property deleteAssetStateCommand
-                        issuer, // @property issuer
                         observers // @property observers
                     )
                     proxy.startFlow(::AssetTransferPledge, pledgeArgs).returnValue.get()
@@ -201,14 +195,11 @@ class AssetTransferSDK {
 
                     val claimArgs: AssetClaimParameters = AssetClaimParameters(
                         pledgeId, // @property pledgeId
-                        createAssetStateCommand, // @property createAssetStateCommand
                         pledgeStatusLinearId, // @property pledgeStatusLinearId
-                        getAssetAndContractIdFlowName, // @property getAssetAndContractIdFlowName
                         tokenType, // @property assetType
                         numUnits, // @property assetIdOrQuantity
                         pledgerCert, // @property pledgerCert
                         recipientCert, // @property recipientCert
-                        issuer, // @property issuer
                         observers // @property observers
                     )
 
@@ -248,14 +239,11 @@ class AssetTransferSDK {
 
                     val claimArgs: AssetClaimParameters = AssetClaimParameters(
                         pledgeId, // @property pledgeId
-                        createAssetStateCommand, // @property createAssetStateCommand
                         pledgeStatusLinearId, // @property pledgeStatusLinearId
-                        getAssetAndContractIdFlowName, // @property getAssetAndContractIdFlowName
                         assetType, // @property assetType
                         assetId, // @property assetIdOrQuantity
                         pledgerCert, // @property pledgerCert
                         recipientCert, // @property recipientCert
-                        issuer, // @property issuer
                         observers // @property observers
                     )
 

@@ -29,6 +29,7 @@ import net.corda.core.contracts.requireThat
 import java.util.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import net.corda.core.identity.CordaX500Name
 import org.hyperledger.cacti.weaver.imodule.corda.flows.GetAssetClaimStatusState
 import org.hyperledger.cacti.weaver.imodule.corda.states.AssetPledgeState
 import org.hyperledger.cacti.weaver.imodule.corda.flows.GetAssetPledgeStatus
@@ -767,6 +768,20 @@ class GetSimpleAssetStateAndContractId(
         return Pair(AssetContract.ID, simpleasset)
     }
 }
+
+@StartableByRPC
+class GetTokenIssuer(val assetType: String, val assetIdOrQuantity: Any) : FlowLogic<Party>() {
+
+    @Suspendable
+    override fun call(): Party {
+        val ISSUER_DN="O=PartyA,L=London,C=GB"
+        val issuerParty = serviceHub.identityService.wellKnownPartyFromX500Name(CordaX500Name.parse(ISSUER_DN))
+            ?: throw IllegalArgumentException("Party with name $ISSUER_DN not found.")
+        return issuerParty
+    }
+
+}
+
 
 /**
  * The marshalFungibleAsset function is used to obtain the JSON encoding of the fungible asset of interest to the user.

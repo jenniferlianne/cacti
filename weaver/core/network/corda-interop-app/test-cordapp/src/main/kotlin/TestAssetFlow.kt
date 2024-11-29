@@ -23,6 +23,7 @@ import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
 import net.corda.core.contracts.requireSingleCommand
 import net.corda.core.contracts.requireThat
+import net.corda.core.identity.CordaX500Name
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.TransactionBuilder
 
@@ -116,5 +117,21 @@ class GetAssetRef(
                     .filter { it.state.data.id == id }
         println(assetStateRef)
         return assetStateRef.first()
+    }
+}
+
+@InitiatingFlow
+@StartableByRPC
+class GetIssuer(
+    val type: String,
+    val id: Any
+) : FlowLogic<Party>() {
+
+    @Suspendable
+    override fun call(): Party {
+        val issuer_dn="O=PartyA,L=London,C=GB"
+        val issuerParty = serviceHub.identityService.wellKnownPartyFromX500Name(CordaX500Name.parse(issuer_dn))
+            ?: throw IllegalArgumentException("Party with name $issuer_dn not found.")
+        return issuerParty
     }
 }

@@ -22,14 +22,16 @@ message AssetLockV1PB {
 
   TransferrableAssetV1PB asset = 93121264;
 
-  AssetAccountV1PB owner = 106164915;
+  AssetAccountV1PB source = 359634918;
+
+  AssetAccountV1PB dest = 3079842;
 
   HashInfoV1PB hash_info = 309318975;
 
-  string destination_certificate = 4;
+  string destination_certificate = 5;
 
-  string source_certificate = 5;
+  string source_certificate = 6;
 
-  int64 expiry_secs = 6;
+  int64 expiry_secs = 7;
 
 }

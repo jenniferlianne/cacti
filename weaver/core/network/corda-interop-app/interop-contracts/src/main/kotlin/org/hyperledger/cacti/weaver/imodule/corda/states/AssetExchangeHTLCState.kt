@@ -36,6 +36,8 @@ import net.corda.core.crypto.SecureHash
 data class AssetExchangeHTLCState(
     val lockInfo: AssetLockHTLCData,
     val assetStatePointer: StaticPointer<ContractState>,
+    val assetType: String,
+    val idOrQuantity: Any,
     val locker: Party,
     val recipient: Party,
     override val linearId: UniqueIdentifier = UniqueIdentifier(assetStatePointer.hashCode().toString())

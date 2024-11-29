@@ -50,7 +50,7 @@ class AssetManager {
                     val assetAgreement = createAssetExchangeAgreement(assetType, assetId, recipientParty, "")
                     val lockInfo = createAssetLockInfo(hash, timeSpec, expiryTimeSecs)
 
-                    proxy.startFlow(::LockAsset, lockInfo, assetAgreement, getAssetStateAndRefFlow, deleteAssetStateCommand, issuer, observers)
+                    proxy.startFlow(::LockAsset, lockInfo, assetAgreement, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { linearId ->
@@ -88,7 +88,7 @@ class AssetManager {
                     val assetAgreement = createFungibleAssetExchangeAgreement(tokenType, numUnits, recipientParty, "")
                     val lockInfo = createAssetLockInfo(hash, timeSpec, expiryTimeSecs)
 
-                    proxy.startFlow(::LockFungibleAsset, lockInfo, assetAgreement, getAssetStateAndRefFlow, deleteAssetStateCommand, issuer, observers)
+                    proxy.startFlow(::LockFungibleAsset, lockInfo, assetAgreement, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { linearId ->
@@ -124,7 +124,7 @@ class AssetManager {
                     
                     val claimInfo: AssetLocks.AssetClaim = createAssetClaimInfo(hash)
 
-                    proxy.startFlow(::ClaimAsset, contractId, claimInfo, createAssetStateCommand, updateAssetStateOwnerFlow, issuer, observers)
+                    proxy.startFlow(::ClaimAsset, contractId, claimInfo, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { retSignedTx ->
@@ -153,7 +153,7 @@ class AssetManager {
                 AssetManager.logger.debug("Sending asset-unlock request to Corda as part of asset-exchange.\n")
                 val signedTx = runCatching {
                     
-                    proxy.startFlow(::UnlockAsset, contractId, createAssetStateCommand, issuer, observers)
+                    proxy.startFlow(::UnlockAsset, contractId, observers)
                         .returnValue.get()
                 }.fold({
                     it.map { retSignedTx ->

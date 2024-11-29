@@ -77,6 +77,7 @@ initialise-vault-asset-transfer:
 		CORDA_PORT=30006 NETWORK_NAME=Corda_Network2 ./clients/build/install/clients/bin/clients configure network; \
 	fi
 	bash scripts/initNetworkId.sh
+	bash scripts/initAssetTypes.sh
 
 .PHONY: initialise-vault-asset-transfer-docker
 initialise-vault-asset-transfer-docker:
@@ -87,6 +88,7 @@ initialise-vault-asset-transfer-docker:
 		MEMBER_CREDENTIAL_FOLDER="clients/src/main/resources/config/credentials_docker" CORDA_PORT=30006 NETWORK_NAME=Corda_Network2 ./clients/build/install/clients/bin/clients configure network; \
 	fi
 	bash scripts/initNetworkId.sh
+	bash scripts/initAssetTypes.sh
 
 .PHONY: get-access-control-policies
 get-access-control-policies:

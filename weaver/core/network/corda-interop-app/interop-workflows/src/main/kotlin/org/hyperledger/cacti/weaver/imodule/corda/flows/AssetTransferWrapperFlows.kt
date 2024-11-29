@@ -13,6 +13,7 @@ import org.hyperledger.cacti.weaver.imodule.corda.states.AssetPledgeState
 import org.hyperledger.cacti.weaver.imodule.corda.states.AssetPledgeParameters
 import org.hyperledger.cacti.weaver.imodule.corda.states.AssetReclaimParameters
 import org.hyperledger.cacti.weaver.imodule.corda.states.AssetClaimParameters
+import org.hyperledger.cacti.weaver.imodule.corda.flows.GetInteropAssetTypeStateByName
 
 import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.CommandData
@@ -77,39 +78,59 @@ constructor(
             Left(Error("Invalid Expiry Time."))
         }
 
-        // Get AssetStateAndRef
-        resolveStateAndRefFlow(pledgeArgs.getAssetStateAndRefFlow,
-            listOf(pledgeArgs.assetType, pledgeArgs.assetIdOrQuantity)
-        ).fold({
-            println("Error: Unable to resolve Get Asset StateAndRef Flow.")
-            Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
-        }, {
-            println("Resolved Get Asset flow to ${it}")
-            val assetRef: StateAndRef<ContractState>? = subFlow(it)
+        subFlow(GetInteropAssetTypeStateByName(pledgeArgs.assetType)).fold(
+            {
+                println("Error: Unable to resolve interop asset type $pledgeArgs.assetType.")
+                Left(Error("Error: Unable to resolve interop asset type $pledgeArgs.assetType."))
+            },
+            {
+                val interopAssetType = it.state.data.assetType
+                // Get AssetStateAndRef
+                resolveStateAndRefFlow(interopAssetType.getAssetStateAndRef,
+                    listOf(pledgeArgs.assetType, pledgeArgs.assetIdOrQuantity)
+                ).fold({
+                    println("Error: Unable to resolve Get Asset StateAndRef Flow.")
+                    Left(Error("Error: Unable to resolve Get Asset StateAndRef Flow"))
+                }, {
+                    println("Resolved Get Asset flow to ${it}")
+                    val assetRef: StateAndRef<ContractState>? = subFlow(it)
 
-            if (assetRef == null) {
-                println("Error: Unable to Get Asset StateAndRef for type: ${pledgeArgs.assetType} and id: ${pledgeArgs.assetIdOrQuantity}.")
-                Left(Error("Error: Unable to Get Asset StateAndRef for type: ${pledgeArgs.assetType} and id: ${pledgeArgs.assetIdOrQuantity}."))
+                    if (assetRef == null) {
+                        println("Error: Unable to Get Asset StateAndRef for type: ${pledgeArgs.assetType} and id: ${pledgeArgs.assetIdOrQuantity}.")
+                        Left(Error("Error: Unable to Get Asset StateAndRef for type: ${pledgeArgs.assetType} and id: ${pledgeArgs.assetIdOrQuantity}."))
+                    }
+
+                    if (pledgeArgs.recipientCert == "") {
+                        println("Error: recipient party cannot be empty: ${pledgeArgs.recipientCert}.")
+                        Left(Error("Error: Receipient party cannot be empty: ${pledgeArgs.recipientCert}."))
+                    }
+
+                    resolveAssetIssuer(interopAssetType.getAssetIssuer,
+                        listOf(pledgeArgs.assetType, pledgeArgs.assetIdOrQuantity)).fold(
+                        {
+                            println("Error: Unable to resolve issuer.")
+                            Left(Error("Error: Unable to resolve issuer"))
+                        },
+                        {
+                            val issuer = subFlow(it)
+                            subFlow(PledgeAsset.Initiator(
+                                pledgeArgs.expiryTimeSecs,
+                                assetRef!!,
+                                interopAssetType.deleteAssetCommand,
+                                pledgeArgs.recipientCert,
+                                pledgeArgs.localNetworkId,
+                                pledgeArgs.remoteNetworkId,
+                                issuer,
+                                pledgeArgs.observers
+                            ))
+                        }
+                        )
+
+
+                })
             }
+        )
 
-            if (pledgeArgs.recipientCert == "") {
-                println("Error: recipient party cannot be empty: ${pledgeArgs.recipientCert}.")
-                Left(Error("Error: Receipient party cannot be empty: ${pledgeArgs.recipientCert}."))
-            }
-
-            println("Local network id is ${pledgeArgs.localNetworkId} and remote network id is ${pledgeArgs.remoteNetworkId}")
-
-            subFlow(PledgeAsset.Initiator(
-                pledgeArgs.expiryTimeSecs,
-                assetRef!!,
-                pledgeArgs.deleteAssetStateCommand,
-                pledgeArgs.recipientCert,
-                pledgeArgs.localNetworkId,
-                pledgeArgs.remoteNetworkId,
-                pledgeArgs.issuer,
-                pledgeArgs.observers
-            ))
-        })
     } catch (e: Exception) {
         println("Error pledging asset: ${e.message}\n")
         Left(Error("Failed to pledge asset: ${e.message}"))
@@ -193,18 +214,37 @@ constructor(
             Left(Error("Error: Receipient party cannot be empty: ${recipientCert}."))
         }
 
-        subFlow(ClaimRemoteAsset.Initiator(
-            claimArgs.pledgeId,
-            claimArgs.pledgeStatusLinearId,
-            claimArgs.getAssetAndContractIdFlowName,
-            claimArgs.assetType,
-            claimArgs.assetIdOrQuantity,
-            claimArgs.createAssetStateCommand,
-            claimArgs.pledgerCert,
-            recipientCert,
-            claimArgs.issuer,
-            claimArgs.observers
-        ))
+        subFlow(GetInteropAssetTypeStateByName(claimArgs.assetType)).fold(
+            {
+                println("Error: Unable to resolve interop asset type ${claimArgs.assetType}.")
+                Left(Error("Error: Unable to resolve interop asset type ${claimArgs.assetType}."))
+            },
+            {
+                val interopAssetType = it.state.data.assetType
+                resolveAssetIssuer(interopAssetType.getAssetIssuer,
+                    listOf(claimArgs.assetType, claimArgs.assetIdOrQuantity)).fold(
+                    {
+                        println("Error: Unable to resolve issuer. Error: ${it.message}")
+                        Left(Error("Error: Unable to resolve issuer. Error: ${it.message}"))
+                    },
+                    {
+                        val issuer = subFlow(it)
+                        subFlow(
+                            ClaimRemoteAsset.Initiator(
+                                claimArgs.pledgeId,
+                                claimArgs.pledgeStatusLinearId,
+                                interopAssetType.getAssetStateAndContractId,
+                                claimArgs.assetType,
+                                claimArgs.assetIdOrQuantity,
+                                interopAssetType.issueAssetCommand,
+                                claimArgs.pledgerCert,
+                                recipientCert,
+                                issuer,
+                                claimArgs.observers
+                            )
+                        )
+                    })
+            })
     } catch (e: Exception) {
         println("Error claiming remote asset: ${e.message}\n")
         Left(Error("Failed to claim remote asset: ${e.message}"))
